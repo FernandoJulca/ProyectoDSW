@@ -57,7 +57,7 @@ namespace ProyectoDSWToolify.Data.Repositorios
 
         public int Registrar(string tipo, Proveedor proveedor)
         {
-            int idCreado = 0;
+            int idRegistrado ;
             using (SqlConnection cn = new SqlConnection(cadenaConexion)) {
                 cn.Open();
                 using (SqlCommand cm = new SqlCommand("crudProveedores", cn)) {
@@ -70,10 +70,11 @@ namespace ProyectoDSWToolify.Data.Repositorios
                     cm.Parameters.AddWithValue("@idDistrito", proveedor.distrito.idDistrito);
                     cm.Parameters.AddWithValue("@fecha", proveedor.fechaRegistro);
 
-                    idCreado = Convert.ToInt32(cm.ExecuteScalar());
-                }
+                    idRegistrado = Convert.ToInt32(cm.ExecuteScalar());}
+                System.Diagnostics.Debug.WriteLine("ID obtenido: " + idRegistrado);
+
             }
-            return idCreado;
+            return idRegistrado;
         }
         public bool Actualizar(string tipo, Proveedor proveedor)
         {

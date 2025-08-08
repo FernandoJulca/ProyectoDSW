@@ -26,7 +26,8 @@ begin
 	if @tipo = 'registrar'
 		begin
 			insert into TB_PROVEEDOR(RUC, RAZON_SOCIAL, TELEFONO, DIRECCION, ID_DISTRITO, FECHA_REGISTRO,ESTADO)
-			values (@ruc,@razon,@telefono,@direccion,@idDistrito,@fecha,1)
+			values (@ruc,@razon,@telefono,@direccion,@idDistrito,@fecha,1);
+			select @@IDENTITY
 		end
 	
 	if @tipo = 'actualizar'
@@ -49,3 +50,5 @@ begin
 			set ESTADO = 0 where ID_PROVEEDOR = @idProveedor
 		end
 end
+
+select * from TB_PROVEEDOR
