@@ -6,6 +6,52 @@
 
 <h1>Listado de Proveedor</h1>
 
+@{  
+    if (TempData["exitoCrear"]!= null)
+    {
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                iziToast.success({
+                    title: 'Éxito',
+                    message: '@TempData["exitoCrear"]',
+                    position: 'topRight',
+                    transitionIn: 'fadeInUp',
+                    transitionOut: 'fadeOut',
+                });
+            });
+        </script>
+    }
+
+    if (TempData["exitoActualizar"] != null)
+    {
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                iziToast.info({
+                    title: 'Actualizado',
+                    message: '@TempData["exitoActualizar"]',
+                    position: 'bottomRight'
+                });
+            });
+        </script>
+    }
+
+    if (TempData["exitoEliminar"] != null)
+    {
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                iziToast.warning({
+                    title: 'Eliminado',
+                    message: '@TempData["exitoEliminar"]',
+                    position: 'topLeft'
+                });
+            });
+        </script>
+    }
+
+}
+
+
+
 <p>
     <a asp-action="Create">Agregar Proveedor</a>
 </p>

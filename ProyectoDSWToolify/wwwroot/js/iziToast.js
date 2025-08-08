@@ -1,3 +1,0 @@
-﻿/* SCRIPTS PARA izi toast*/
-
-

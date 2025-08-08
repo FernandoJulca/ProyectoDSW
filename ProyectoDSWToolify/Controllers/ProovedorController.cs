@@ -36,7 +36,9 @@ namespace ProyectoDSWToolify.Controllers
         [HttpPost]
         public IActionResult Create(Proveedor provedor) {
 
+ 
             int registrado = proveRepo.Registrar("registrar", provedor);
+            TempData["exitoCrear"] = ($"El usuario {registrado} fue registrado.");
             return RedirectToAction("Index");
         }
 
