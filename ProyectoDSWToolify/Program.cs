@@ -6,17 +6,25 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-
+builder.Services.AddDistributedMemoryCache(); 
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 #region Inicio de depencias
 
 builder.Services.AddScoped<ICrud<Proveedor>, ProveRepo>();
 builder.Services.AddScoped<ICrud<Distrito>, DistritoRepo>();
 
-
-
+builder.Services.AddScoped<ICategoria, CategoriaRepo>();
+builder.Services.AddScoped<IProducto, ProductoRepo>();
+builder.Services.AddScoped<IUsuario, UsuarioRepo>();
+builder.Services.AddScoped<IVenta, VentaRepo>();
 
 #endregion 
-
+builder.Services.AddControllersWithViews();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -30,11 +38,11 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
+app.UseSession();
 app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Proovedor}/{action=Index}/{id?}");
+    pattern: "{controller=Cliente}/{action=Index}/{id?}");
 
 app.Run();

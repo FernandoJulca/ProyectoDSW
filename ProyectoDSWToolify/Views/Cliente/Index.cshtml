@@ -1,0 +1,239 @@
+﻿@model ProyectoDSWToolify.Models.ViewModels.IndexViewModel;
+@{
+    ViewBag.Title = "Index";
+}
+<div class="top--10">
+    <section class="custom-section">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h1 class="custom-title">
+                    Herramientas Profesionales para
+                    <span class="text-primary-custom">Cada Trabajo</span>
+                </h1>
+                <p class="custom-paragraph mx-auto">
+                    Desde herramientas eléctricas hasta instrumentos de precisión, encuentra todo lo que necesitas para
+                    hacer el trabajo correctamente. Confianza de profesionales y entusiastas del bricolaje.
+                </p>
+                <div class="d-flex flex-column flex-sm-row justify-content-center gap-3 mt-4">
+                    <a type="button" asp-controller="Cliente" asp-action="Producto"
+                            class="btn btn-primary-custom d-flex align-items-center px-5 py-2 shadow-sm">
+                        Comprar Ahora
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor"
+                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ms-2"
+                             aria-hidden="true">
+                            <path d="M5 12h14"></path>
+                            <path d="m12 5 7 7-7 7"></path>
+                        </svg>
+                    </a>
+                    <button type="button"
+                            class="btn btn-outline-primary-custom d-flex align-items-center px-5 py-2 shadow-sm">
+                        Saber Más
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="py-5 bg-white">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold display-5 mb-3">Categorías de Productos Destacadas</h2>
+                <p class="text-muted mx-auto fs-5" style="max-width: 600px;">
+                    Explora nuestra selección completa de herramientas y equipos de grado profesional
+                </p>
+            </div>
+
+            <div id="productosCarousel" class="carousel slide rounded-3 overflow-hidden bg-light" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    @for (int i = 0; i < Model.CategoriasMasVendidas.Count; i++)
+                    {
+                        var category = Model.CategoriasMasVendidas[i];
+                        <div class="carousel-item @(i == 0 ? "active" : "") position-relative">
+                            <img src="@Url.Content("~/assets/categorias/C" + category.IdCategoria + ".jpg")" class="d-block w-100"
+                                 alt="@category.Categoria" style="height: 400px; object-fit: cover;" />
+                            <div class="position-absolute top-0 bottom-0 start-0 end-0 d-flex flex-column justify-content-center bg-dark bg-opacity-50 p-4 text-white">
+                                <div class="d-flex align-items-center flex-column">
+                                    <h3 class="display-6 fw-bold">@category.Categoria</h3>
+                                    <a href="@Url.Action("Producto", "Cliente", new { categorias = category.IdCategoria })"
+                                       class="btn btn-primary-custom px-4 py-2 d-inline-flex align-items-center gap-2">
+                                        Ver @category.CantidadProductos Productos
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"
+                                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                             class="bi bi-arrow-right" viewBox="0 0 24 24" aria-hidden="true">
+                                            <path d="M5 12h14"></path>
+                                            <path d="m12 5 7 7-7 7"></path>
+                                        </svg>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <button class="carousel-control-prev" type="button" data-bs-target="#productosCarousel"
+                        data-bs-slide="prev" aria-label="Diapositiva anterior">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#productosCarousel"
+                        data-bs-slide="next" aria-label="Siguiente diapositiva">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                </button>
+
+                <div class="carousel-indicators custom-indicators d-flex align-items-center">
+                    @for (int i = 0; i < Model.CategoriasMasVendidas.Count; i++)
+                    {
+                        <button type="button" data-bs-target="#productosCarousel" data-bs-slide-to="@i"
+                                class="@(i == 0 ? "active" : "")"
+                                aria-current="@(i == 0 ? "true" : "false")"
+                                aria-label="Ir a diapositiva @(i + 1)">
+                        </button>
+                    }
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold mb-3 display-5">Nuestros Servicios</h2>
+                <p class="text-secondary mx-auto fs-5" style="max-width: 40rem;">
+                    Más allá de solo vender herramientas, brindamos servicios integrales para apoyar tus proyectos
+                </p>
+            </div>
+            <div class="row g-4">
+                <div class="col-12 col-md-6 col-lg-3">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body text-center">
+                            <div class="section-servicio bg-color-custom bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3">
+                                <!-- SVG icon -->
+                                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="none"
+                                     stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                     stroke-linejoin="round" class="bi bi-wrench" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z">
+                                    </path>
+                                </svg>
+                            </div>
+                            <h3 class="h5 fw-semibold mb-3 fs-4">Servicio de Reparación de Herramientas</h3>
+                            <p class="text-secondary mb-0 fs-5">
+                                Servicio de reparación profesional para todas las marcas principales de herramientas
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 col-lg-3">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body text-center">
+                            <div class="section-servicio bg-color-custom bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3">
+                                <!-- SVG icon -->
+                                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="none"
+                                     stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                     stroke-linejoin="round" class="bi bi-calendar" viewBox="0 0 24 24"
+                                     aria-hidden="true">
+                                    <path d="M8 2v4"></path>
+                                    <path d="M16 2v4"></path>
+                                    <rect width="18" height="18" x="3" y="4" rx="2"></rect>
+                                    <path d="M3 10h18"></path>
+                                </svg>
+                            </div>
+                            <h3 class="h5 fw-semibold mb-3 fs-4">Alquiler de Equipos</h3>
+                            <p class="text-secondary mb-0 fs-5">
+                                Alquila equipos pesados para proyectos a corto plazo
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 col-lg-3">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body text-center">
+                            <div class="section-servicio bg-color-custom bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3">
+                                <!-- SVG icon -->
+                                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="none"
+                                     stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                     stroke-linejoin="round" class="bi bi-box-seam " viewBox="0 0 24 24"
+                                     aria-hidden="true">
+                                    <path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z">
+                                    </path>
+                                    <path d="M12 22V12"></path>
+                                    <polyline points="3.29 7 12 12 20.71 7"></polyline>
+                                    <path d="m7.5 4.27 9 5.15"></path>
+                                </svg>
+                            </div>
+                            <h3 class="h5 fw-semibold mb-3 fs-4">Pedidos Especiales</h3>
+                            <p class="text-secondary mb-0 fs-5">
+                                Pedidos especiales para herramientas y repuestos difíciles de encontrar
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 col-lg-3">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body text-center">
+                            <div class="section-servicio bg-color-custom bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3">
+                                <!-- SVG icon -->
+                                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="none"
+                                     stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                     stroke-linejoin="round" class="bi bi-people" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                                    <path d="M16 3.128a4 4 0 0 1 0 7.744"></path>
+                                    <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                                    <circle cx="9" cy="7" r="4"></circle>
+                                </svg>
+                            </div>
+                            <h3 class="h5 fw-semibold mb-3 fs-4">Consultoría Profesional</h3>
+                            <p class="text-secondary mb-0 fs-5">
+                                Asesoría experta para sus necesidades industriales y de construcción
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+   
+    <section class="py-5" style="background-color: #576EAA; color: white;">
+        <div class="max-w-7xl px-3 px-sm-4 px-lg-5">
+            <div class="row text-center g-4">
+                <div class="col-12 col-md-3">
+                    <div class="display-4 fw-bold mb-2">25+</div>
+                    <div class="h5 opacity-75">Años en el Negocio</div>
+                </div>
+                <div class="col-12 col-md-3">
+                    <div class="display-4 fw-bold mb-2">@Model.TotalProductos+</div>
+                    <div class="h5 opacity-75">Productos Disponibles</div>
+                </div>
+                <div class="col-12 col-md-3">
+                    <div class="display-4 fw-bold mb-2">@Model.TotalClientes+</div>
+                    <div class="h5 opacity-75">Clientes Satisfechos</div>
+                </div>
+                <div class="col-12 col-md-3">
+                    <div class="display-4 fw-bold mb-2">24/7</div>
+                    <div class="h5 opacity-75">Atención al Cliente</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="py-5 bg-white">
+        <div class="container max-w-4xl text-center px-3 px-sm-4 px-lg-5">
+            <h2 class="display-5 fw-bold text-dark mb-4">¿Listo para Comenzar?</h2>
+            <p class="fs-5 text-secondary mb-5">
+                Únete a miles de profesionales que confían en Toolify para sus necesidades de herramientas y ferretería.
+            </p>
+            <div class="d-flex flex-column flex-sm-row justify-content-center gap-3">
+                <a asp-controller="Cliente" asp-action="Producto"
+                   class="btn btn-primary-custom px-4 py-2 fs-5 d-inline-flex align-items-center gap-2 shadow-sm">
+                    Explorar Productos
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor"
+                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="bi bi-arrow-right ms-2"
+                         viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M5 12h14"></path>
+                        <path d="m12 5 7 7-7 7"></path>
+                    </svg>
+                </a>
+                <a asp-controller="Cliente" asp-action="Contacto"
+                   class="btn btn-outline-primary-custom px-4 py-2 fs-5 d-inline-flex align-items-center">
+                    Contáctanos
+                </a>
+            </div>
+        </div>
+    </section>
+
+</div>

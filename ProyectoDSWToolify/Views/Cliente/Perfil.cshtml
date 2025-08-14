@@ -1,0 +1,77 @@
+﻿@model ProyectoDSWToolify.Models.ViewModels.PerfilClienteViewModel
+
+@{
+    ViewBag.Title = "Mi Perfil";
+}
+
+<div class="container py-5 top--10">
+    <h1 class="display-4 fw-bold titulos-Primary mb-4">Mi Perfil</h1>
+    <p class="fs-5 text-muted mb-4">Consulta tus datos personales y el historial de tus compras en Toolify.</p>
+
+    <div class="card mb-5 shadow-sm">
+        <div class="card-body">
+            <h4 class="card-title fw-semibold">@Model.Nombre</h4>
+            <p class="card-text text-muted">@Model.Email</p>
+        </div>
+    </div>
+
+    <h2 class="fw-bold mb-4">Historial de Compras</h2>
+
+    @if (Model.HistorialVentas.Any())
+    {
+        <div class="accordion" id="accordionVentas">
+            @for (int i = 0; i < Model.HistorialVentas.Count; i++)
+            {
+                var venta = Model.HistorialVentas[i];
+                var collapseId = $"collapseVenta{i}";
+                var headingId = $"headingVenta{i}";
+                <div class="accordion-item shadow-sm mb-3 border-0">
+                    <h2 class="accordion-header" id="@headingId">
+                        <button class="accordion-button collapsed fw-semibold bg-color-custom" type="button" data-bs-toggle="collapse" data-bs-target="#@collapseId" aria-expanded="false" aria-controls="@collapseId">
+                            Venta #@venta.idVenta — @venta.Fecha.ToString("dd/MM/yyyy") — S/. @venta.total
+                        </button>
+                    </h2>
+                    <div id="@collapseId" class="accordion-collapse collapse" aria-labelledby="@headingId" data-bs-parent="#accordionVentas">
+                        <div class="accordion-body">
+                            <p><strong>Estado:</strong> @venta.estado</p>
+                            <p><strong>Tipo:</strong> @(venta.tipoVenta == "P" ? "Presencial" : "Remota")</p>
+
+                            @if (venta.Detalles != null && venta.Detalles.Any())
+                            {
+                                <table class="table table-bordered table-hover mt-3">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Producto</th>
+                                            <th>Cantidad</th>
+                                            <th>Subtotal</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in venta.Detalles)
+                                        {
+                                            <tr>
+                                                <td>@item.producto.nombre</td>
+                                                <td>@item.cantidad</td>
+                                                <td>S/. @item.subTotal</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            }
+                            else
+                            {
+                                <p class="text-muted">No hay detalles de productos para esta venta.</p>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            No tienes compras registradas.
+        </div>
+    }
+</div>
