@@ -1,5 +1,4 @@
-using ProyectoDSWToolify.Data.Contratos;
-using ProyectoDSWToolify.Data.Repositorios;
+
 using ProyectoDSWToolify.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,15 +6,6 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-#region Inicio de depencias
-
-builder.Services.AddScoped<ICrud<Proveedor>, ProveRepo>();
-builder.Services.AddScoped<ICrud<Distrito>, DistritoRepo>();
-
-
-
-
-#endregion 
 
 var app = builder.Build();
 
@@ -35,6 +25,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Proovedor}/{action=Index}/{id?}");
+    pattern: "{controller=Proveedor}/{action=Index}/{id?}");
 
 app.Run();

@@ -15,6 +15,16 @@ namespace ProyectoDSWToolify.Data.Repositorios
             cadenaConexion = config["ConnectionStrings:DB"];
         }
 
+        public Distrito Actualizar(string tipo, Distrito entidad)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int Eliminar(string tipo, int id)
+        {
+            throw new NotImplementedException();
+        }
+
         public List<Distrito> ListaCompleta()
         {
            List<Distrito> listaDistrito = new List<Distrito>();
@@ -39,19 +49,13 @@ namespace ProyectoDSWToolify.Data.Repositorios
             }
                 return listaDistrito;
         }
-        public bool Actualizar(string tipo, Distrito entidad)
-        {
-            throw new NotImplementedException();
-        }
-        public bool Eliminar(string tipo, int id)
-        {
-            throw new NotImplementedException();
-        }
+
         public Distrito ObtenerId(string tipo, int id)
         {
             throw new NotImplementedException();
         }
-        public int Registrar(string tipo, Distrito entidad)
+
+        public Distrito Registrar(string tipo, Distrito entidad)
         {
             throw new NotImplementedException();
         }

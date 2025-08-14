@@ -55,9 +55,10 @@ namespace ProyectoDSWToolify.Data.Repositorios
             return listaProveedor;
         }
 
-        public int Registrar(string tipo, Proveedor proveedor)
+        public Proveedor Registrar(string tipo, Proveedor proveedor)
         {
-            int idRegistrado ;
+            Proveedor proveGuardado = new Proveedor();
+            int idRegistrado = 0;
             using (SqlConnection cn = new SqlConnection(cadenaConexion)) {
                 cn.Open();
                 using (SqlCommand cm = new SqlCommand("crudProveedores", cn)) {
@@ -70,15 +71,19 @@ namespace ProyectoDSWToolify.Data.Repositorios
                     cm.Parameters.AddWithValue("@idDistrito", proveedor.distrito.idDistrito);
                     cm.Parameters.AddWithValue("@fecha", proveedor.fechaRegistro);
 
-                    idRegistrado = Convert.ToInt32(cm.ExecuteScalar());}
-                System.Diagnostics.Debug.WriteLine("ID obtenido: " + idRegistrado);
+                    idRegistrado = Convert.ToInt32(cm.ExecuteScalar());
+                }
+
+              
 
             }
-            return idRegistrado;
+            proveGuardado = ObtenerId("detalle",idRegistrado);
+
+            return proveGuardado;
         }
-        public bool Actualizar(string tipo, Proveedor proveedor)
+        public Proveedor Actualizar(string tipo, Proveedor proveedor)
         {
-            bool actualizado = false;
+            Proveedor actualizado = new Proveedor();
             using (SqlConnection cn = new SqlConnection(cadenaConexion))
             {
                 cn.Open();
@@ -95,16 +100,14 @@ namespace ProyectoDSWToolify.Data.Repositorios
                     cm.Parameters.AddWithValue("@fecha", proveedor.fechaRegistro);
 
                     int filasAfectadas = cm.ExecuteNonQuery();
-                    actualizado = filasAfectadas > 0;
+                    actualizado = proveedor;
                 }
             }
             return actualizado;
         }
 
-        public bool Eliminar(string tipo, int id)
-        {
-            bool eliminado = false;
-
+        public int Eliminar(string tipo, int id)
+        { 
             using (SqlConnection cn = new SqlConnection(cadenaConexion))
             {
                 cn.Open();
@@ -115,15 +118,16 @@ namespace ProyectoDSWToolify.Data.Repositorios
                     cm.Parameters.AddWithValue("@idProveedor", id);
 
                     int filasAfectadas = cm.ExecuteNonQuery();
-                    eliminado = filasAfectadas > 0;
+
+                    return filasAfectadas;
                 }
             }
-            return eliminado;
+           
         }
 
         public Proveedor ObtenerId(string tipo, int id)
         {
-            Proveedor provEncotrado = null;
+            Proveedor provEncotrado = new Proveedor();
 
             using (SqlConnection cn = new SqlConnection(cadenaConexion))
             {
@@ -146,9 +150,10 @@ namespace ProyectoDSWToolify.Data.Repositorios
                                 direccion = r.GetString(4),
                                 distrito = new Distrito() { 
                                     idDistrito = r.GetInt32(5),
+                                    nombre = r.GetString(6),
                                 },
-                                fechaRegistro = r.GetDateTime(6),
-                                estado = r.GetBoolean(7)
+                                fechaRegistro = r.GetDateTime(7),
+                                estado = r.GetBoolean(8)
                                };
                             }
                         }
