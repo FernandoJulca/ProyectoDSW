@@ -1,24 +1,21 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using ProyectoDSWToolify.Data.Contratos;
 using ProyectoDSWToolify.Extensions;
 using ProyectoDSWToolify.Models;
 using ProyectoDSWToolify.Models.ViewModels;
+using ProyectoDSWToolify.Services.Contratos;
 
 namespace ProyectoDSWToolify.Controllers
 {
     public class CarroController : Controller
     {
-        private readonly IProducto productorepo;
-        private readonly IVenta ventarepo;
+        private readonly IClienteService _clienteService;
+        private readonly IVentaService ventaService;
 
-        public CarroController(IProducto productorepo, IVenta ventarepo)
+        public CarroController(IClienteService clienteService, IVentaService ventaService)
         {
-            this.productorepo = productorepo;
-            this.ventarepo = ventarepo;
+            _clienteService = clienteService;
+            this.ventaService = ventaService;
         }
-
-        // ---------- Vistas ----------
-
         // Mostrar página para finalizar compra con datos del usuario y carrito
         public IActionResult FinalizarCompra()
         {
@@ -46,12 +43,12 @@ namespace ProyectoDSWToolify.Controllers
         [HttpPost]
         public IActionResult AgregarAlCarrito(int id, int cantidad = 1)
         {
-            var producto = productorepo.obtenerPorId(id);
+            var producto = _clienteService.ObtenerProductoPorIdAsync(id).Result;
             if (producto == null)
                 return NotFound();
 
             var carrito = HttpContext.Session.GetObjectFromJson<List<Carro>>("carrito") ?? new List<Carro>();
-            var itemExistente = carrito.FirstOrDefault(c => c.IdProducto == producto.idProducto);
+            var itemExistente = carrito.FirstOrDefault(c => c.IdProducto == producto.id);
 
             int cantidadActual = itemExistente?.Cantidad ?? 0;
             int nuevaCantidad = cantidadActual + cantidad;
@@ -72,9 +69,9 @@ namespace ProyectoDSWToolify.Controllers
             {
                 carrito.Add(new Carro
                 {
-                    IdProducto = producto.idProducto,
+                    IdProducto = producto.id,
                     Nombre = producto.nombre,
-                    Imagen = producto.imagen,
+                    Imagen = producto.imagenbyte,
                     Precio = producto.precio,
                     Cantidad = cantidad
                 });
@@ -120,58 +117,16 @@ namespace ProyectoDSWToolify.Controllers
 
         // ---------- Compra ----------
 
-        public IActionResult ConfirmarCompra()
-        {
-            var carrito = HttpContext.Session.GetObjectFromJson<List<Carro>>("carrito");
-            int? idCliente = HttpContext.Session.GetInt32("ClienteId");
 
-            if (carrito == null || carrito.Count == 0)
-            {
-                TempData["ErrorMessage"] = "No hay productos en el carrito.";
-                return RedirectToAction("Productos", "Producto");
-            }
-
-            if (!idCliente.HasValue)
-            {
-                TempData["ErrorMessage"] = "Debe iniciar sesión para comprar.";
-                return RedirectToAction("Login", "Usuario");
-            }
-
-            var venta = new Venta
-            {
-                usuario = new Usuario { idUsuario = idCliente.Value },
-                total = carrito.Sum(c => c.Precio * c.Cantidad),
-                Detalles = carrito.Select(c => new DetalleVenta
-                {
-                    producto = new Producto { idProducto = c.IdProducto },
-                    cantidad = c.Cantidad,
-                    subTotal = c.Precio * c.Cantidad
-                }).ToList()
-            };
-
-            var resultado = ventarepo.generarVentaCliente(venta);
-
-            if (resultado != null && resultado.idVenta > 0)
-            {
-                HttpContext.Session.Remove("carrito");
-                TempData["GoodMessage"] = "Compra realizada con éxito. ID Venta: " + resultado.idVenta;
-            }
-            else
-            {
-                TempData["ErrorMessage"] = "Hubo un problema al procesar la compra.";
-            }
-
-            return RedirectToAction("Productos", "Producto");
-        }
 
         [HttpPost]
         public IActionResult RealizarPago(
-            int IdUsuario,
-            string MetodoPago,
-            string TarjetaNumero,
-            string TarjetaMes,
-            string TarjetaAnio,
-            string TarjetaCVV)
+     int IdUsuario,
+     string MetodoPago,
+     string TarjetaNumero,
+     string TarjetaMes,
+     string TarjetaAnio,
+     string TarjetaCVV)
         {
             var carrito = HttpContext.Session.GetObjectFromJson<List<Carro>>("carrito");
 
@@ -181,24 +136,25 @@ namespace ProyectoDSWToolify.Controllers
                 return RedirectToAction("FinalizarCompra");
             }
 
-            var detalles = carrito.Select(item => new DetalleVenta
+            var detalles = carrito.Select(item => new DetalleVentaViewModel
             {
-                producto = new Producto { idProducto = item.IdProducto },
+                idProducto = item.IdProducto,
                 cantidad = item.Cantidad,
                 subTotal = item.Precio * item.Cantidad
             }).ToList();
 
-            var venta = new Venta
+            var ventaViewModel = new VentaViewModel
             {
-                usuario = new Usuario { idUsuario = IdUsuario },
+                idUsuario = IdUsuario,
                 total = detalles.Sum(d => d.subTotal),
                 tipoVenta = MetodoPago,
-                Detalles = detalles
+                estado = "P", // o lo que corresponda según tu lógica
+                detalles = detalles
             };
 
             try
             {
-                var ventaGenerada = ventarepo.generarVentaCliente(venta);
+                var ventaConfirmada = ventaService.ConfirmarCompra(ventaViewModel).Result;
                 HttpContext.Session.Remove("carrito");
 
                 TempData["GoodMessage"] = "Compra realizada exitosamente.";
@@ -211,12 +167,13 @@ namespace ProyectoDSWToolify.Controllers
             }
         }
 
+
         // ---------- Modificar cantidades en carrito ----------
 
         [HttpPost]
         public IActionResult SumarCantidad(int id)
         {
-            var producto = productorepo.obtenerPorId(id);
+            var producto = _clienteService.ObtenerProductoPorIdAsync(id).Result;
             if (producto == null)
                 return NotFound();
 

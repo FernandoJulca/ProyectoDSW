@@ -1,5 +1,7 @@
 
 using ProyectoDSWToolify.Models;
+using ProyectoDSWToolify.Services.Contratos;
+using ProyectoDSWToolify.Services.Implementacion;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,7 +14,15 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
-#region Inicio de depencias
+#region Inyeccion de URl
+builder.Services.AddHttpClient<IClienteService, ClienteService>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["Services:URL_API"]);
+});
+builder.Services.AddHttpClient<IVentaService, VentaService>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["Services:URL_API"]);
+});
 #endregion 
 builder.Services.AddControllersWithViews();
 

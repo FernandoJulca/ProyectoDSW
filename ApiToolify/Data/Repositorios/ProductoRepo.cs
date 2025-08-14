@@ -30,7 +30,7 @@ namespace ProyectoDSWToolify.Data.Repositorios
                 using (var cnx = new SqlConnection(cadenaConexion))
                 {
                     cnx.Open();
-                    using (var cmd = new SqlCommand("listarProductos", cnx))
+                    using (var cmd = new SqlCommand("listarProductosCliente", cnx))
                     {
                         cmd.CommandType = System.Data.CommandType.StoredProcedure;
                         using (var rdr = cmd.ExecuteReader())
@@ -67,6 +67,7 @@ namespace ProyectoDSWToolify.Data.Repositorios
             }
             catch (Exception ex)
             {
+                Console.WriteLine("Error en listProductosCliente: " + ex.Message);
                 list = new List<Producto>();
             }
             return list;

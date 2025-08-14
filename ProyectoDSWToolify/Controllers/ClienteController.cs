@@ -1,127 +1,138 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using ProyectoDSWToolify.Data.Contratos;
-using ProyectoDSWToolify.Models;
-using ProyectoDSWToolify.Models.ViewModels;
-
-namespace ProyectoDSWToolify.Controllers
+﻿namespace ProyectoDSWToolify.Controllers
 {
-    public class ClienteController : Controller
+    using Microsoft.AspNetCore.Mvc;
+
+    using System.Threading.Tasks;
+    using System.Collections.Generic;
+    using System.Linq;
+    using global::ProyectoDSWToolify.Services.Contratos;
+    using global::ProyectoDSWToolify.Models.ViewModels;
+
+    namespace ProyectoDSWToolify.Controllers
     {
-        private readonly ICategoria categoriarepo;
-        private readonly IProducto productorepo;
-        private readonly IUsuario usuariorepo;
-        private readonly IVenta ventarepo;
-
-        public ClienteController(ICategoria categoriarepo, IProducto productorepo, IUsuario usuariorepo, IVenta ventarepo)
+        public class ClienteController : Controller
         {
-            this.categoriarepo = categoriarepo;
-            this.productorepo = productorepo;
-            this.usuariorepo = usuariorepo;
-            this.ventarepo = ventarepo;
-        }
+            private readonly IClienteService _clienteService;
+            private readonly IVentaService _ventaService;
 
-        public IActionResult Index()
-        {
-            var totalProductos = productorepo.contadorProductos();
-            var totalClientes = usuariorepo.contadorClientes();
-            var categoriasMasVendidas = categoriarepo.top4CategoriasMasVendidas();
-            var vm = new IndexViewModel
+            public ClienteController(IClienteService clienteService, IVentaService ventaService)
             {
-                CategoriasMasVendidas = categoriasMasVendidas,
-                TotalProductos = totalProductos,
-                TotalClientes = totalClientes
-            };
-
-            return View(vm);
-        }
-        public IActionResult Producto(List<int> categorias = null, string orden = "asc", int pagina = 1)
-        {
-            var todasCategorias = categoriarepo.listCategoriasCliente().ToList();
-            var todosProductos = productorepo.listProductosCliente().ToList();
-
-            if (categorias != null && categorias.Any())
-            {
-                todosProductos = todosProductos
-                    .Where(p => categorias.Contains(p.categoria.idCategoria))
-                    .ToList();
+                _clienteService = clienteService;
+                _ventaService = ventaService;
             }
 
-            todosProductos = orden == "desc"
-                ? todosProductos.OrderByDescending(p => p.precio).ToList()
-                : todosProductos.OrderBy(p => p.precio).ToList();
-
-            int tamañoPagina = 12;
-            int totalProductos = todosProductos.Count();
-            int totalPaginas = (int)Math.Ceiling((double)totalProductos / tamañoPagina);
-            var productosPaginados = todosProductos
-                .Skip((pagina - 1) * tamañoPagina)
-                .Take(tamañoPagina)
-                .ToList();
-
-            var modelo = new ProductosViewModel
+            // El método ahora es async porque consume API async
+            public async Task<IActionResult> Index()
             {
-                Categorias = todasCategorias,
-                Productos = productosPaginados,
-                IdCategoriasSeleccionadas = categorias ?? new List<int>(),
-                OrdenPrecio = orden,
-                PaginaActual = pagina,
-                TotalPaginas = totalPaginas,
-                TamañoPagina = tamañoPagina
-            };
+                var resumen = await _clienteService.ObtenerResumenAsync();
 
-            return View(modelo);
-        }
-        [HttpGet]
-        public IActionResult ObtenerProductoPorId(int id)
-        {
-            var producto = productorepo.obtenerPorId(id); 
-            if (producto == null) return NotFound();
+                var vm = new IndexViewModel
+                {
+                    TotalProductos = resumen.TotalProductos,
+                    TotalClientes = resumen.TotalClientes,
+                    CategoriasMasVendidas = resumen.CategoriasMasVendidas
+                };
 
-            return Json(new
+                return View(vm);
+            }
+
+            public async Task<IActionResult> Producto(List<int> categorias = null, string orden = "asc", int pagina = 1)
             {
-                id = producto.idProducto,
-                nombre = producto.nombre,
-                descripcion = producto.descripcion,
-                categoria = producto.categoria.descripcion,
-                precio = producto.precio.ToString("F2"),
-                stock = producto.stock,
-                imagen = string.IsNullOrEmpty(producto.imagenBase64)
-                    ? Url.Content("~/assets/productos/P" + producto.idProducto + ".jpg")
-                    : "data:image/png;base64," + producto.imagenBase64
-            });
-        }
-        public IActionResult Nosotros()
-        {
-            var totalProductos = productorepo.contadorProductos();
-            var totalClientes = usuariorepo.contadorClientes();
-            var vm = new IndexViewModel
+                categorias = categorias?.Distinct().ToList() ?? new List<int>();
+
+                if (pagina < 1) pagina = 1;
+                var todasCategorias = await _clienteService.ObtenerCategorias();
+
+                var productos = await _clienteService.ObtenerProductosAsync(categorias, orden, pagina);
+
+                int tamañoPagina = 12;
+                int totalProductos = await _clienteService.ContarProductosAsync(categorias);
+                int totalPaginas = (int)System.Math.Ceiling((double)totalProductos / tamañoPagina);
+
+                var modelo = new ProductosViewModel
+                {
+                    Categorias = todasCategorias,
+                    Productos = productos,
+                    IdCategoriasSeleccionadas = categorias ?? new List<int>(),
+                    OrdenPrecio = orden,
+                    PaginaActual = pagina,
+                    TotalPaginas = totalPaginas,
+                    TamañoPagina = tamañoPagina
+                };
+
+                return View(modelo);
+            }
+
+            [HttpGet]
+            public async Task<IActionResult> ObtenerProductoPorId(int id)
             {
-                TotalProductos = totalProductos,
-                TotalClientes = totalClientes
-            };
-            return View(vm);
-        }
-        public IActionResult Contacto()
-        {
-            return View();
-        }
+                var producto = await _clienteService.ObtenerProductoPorIdAsync(id);
+                if (producto == null) return NotFound();
 
-        public IActionResult Perfil()
-        {
-            int id = 2; 
+                return Json(new
+                {
+                    id = producto.id,
+                    nombre = producto.nombre,
+                    descripcion = producto.descripcion,
+                    categoria = producto.categoria,
+                    precio = producto.precio.ToString("F2"),
+                    stock = producto.stock,
+                    imagen = string.IsNullOrEmpty(producto.imagen)
+                        ? Url.Content("~/assets/productos/P" + producto.id + ".jpg")
+                        : producto.imagen.StartsWith("data:image")
+                            ? producto.imagen
+                            : Url.Content(producto.imagen)
+                });
+            }
 
-            var ventas = ventarepo.obtenerPorCliente(id);
-
-            var viewModel = new PerfilClienteViewModel
+            public async Task<IActionResult> Nosotros()
             {
-                idCliente = id,
-                Nombre = "María Ramírez", // Simulado
-                Email = "maria.ramirez@example.com", // Simulado
-                HistorialVentas = ventas
-            };
+                var resumen = await _clienteService.ObtenerResumenAsync();
 
-            return View(viewModel);
+                var vm = new IndexViewModel
+                {
+                    TotalProductos = resumen.TotalProductos,
+                    TotalClientes = resumen.TotalClientes,
+                    CategoriasMasVendidas = resumen.CategoriasMasVendidas
+                };
+
+                return View(vm);
+            }
+
+            public IActionResult Contacto()
+            {
+                return View();
+            }
+
+            public async Task<IActionResult> Perfil()
+            {
+                int id = 2; 
+                var ventas = await _clienteService.ObtenerVentasClienteAsync(id);
+
+                var viewModel = new PerfilClienteViewModel
+                {
+                    idCliente = id,
+                    Nombre = "María Ramírez", 
+                    Email = "maria.ramirez@example.com", 
+                    HistorialVentas = ventas
+                };
+
+                return View(viewModel);
+            }
+            public async Task<IActionResult> DescargarVentaPdf(int idCliente, int idVenta)
+            {
+                try
+                {
+                    var pdfBytes = await _ventaService.DescargarVentaPdf(idCliente, idVenta);
+                    return File(pdfBytes, "application/pdf", $"venta_{idVenta}.pdf");
+                }
+                catch (Exception ex)
+                {
+                    // Maneja error (por ejemplo, mostrar mensaje)
+                    return NotFound(ex.Message);
+                }
+            }
+
         }
-
     }
 }

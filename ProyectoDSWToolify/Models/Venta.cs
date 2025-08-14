@@ -9,7 +9,6 @@ namespace ProyectoDSWToolify.Models
         [Display(Name = "Fecha")] public DateTime fecha { get; set; }
         [Display(Name = "Total")] public decimal  total { get; set; }
         [Display(Name = "Tipo Venta")] public string tipoVenta { get; set; }
-        public DateTime Fecha { get; set; }
         public string estado { get; set; }
         public List<DetalleVenta> Detalles { get; set; } = new();
 
