@@ -1,22 +1,18 @@
 ﻿@model ProyectoDSWToolify.Models.Proveedor
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Create";
 }
 
-<h1>Edit</h1>
+<h1>Create</h1>
 
 <h4>Proveedor</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="idProveedor" class="control-label"></label>
-                <input asp-for="idProveedor" class="form-control" readonly/>
-                <span asp-validation-for="idProveedor" class="text-danger"></span>
-            </div>
+            
             <div class="form-group">
                 <label asp-for="ruc" class="control-label"></label>
                 <input asp-for="ruc" class="form-control" />
@@ -37,6 +33,7 @@
                 <input asp-for="direccion" class="form-control" />
                 <span asp-validation-for="direccion" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="distrito" class="control-label"></label>
                 @Html.DropDownListFor(model => model.distrito.idDistrito, (SelectList)ViewBag.distritos, "Seleccione un distrito", new { @class = "form-control" })
@@ -47,9 +44,13 @@
                 <input asp-for="fechaRegistro" class="form-control" />
                 <span asp-validation-for="fechaRegistro" class="text-danger"></span>
             </div>
-           
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="estado" /> @Html.DisplayNameFor(model => model.estado)
+                </label>
+            </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
     </div>

@@ -4,16 +4,20 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Listado de Proveedor</h1>
+<h1>Index</h1>
 
-@{  
-    if (TempData["exitoCrear"]!= null)
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+
+@{
+    if (TempData["ExitoListado"] != null)
     {
         <script>
             document.addEventListener("DOMContentLoaded", function () {
                 iziToast.success({
                     title: 'Éxito',
-                    message: '@TempData["exitoCrear"]',
+                    message: '@TempData["ExitoListado"]',
                     position: 'topRight',
                     transitionIn: 'fadeInUp',
                     transitionOut: 'fadeOut',
@@ -22,39 +26,49 @@
         </script>
     }
 
-    if (TempData["exitoActualizar"] != null)
+    if (TempData["ExitoCreate"] != null)
     {
         <script>
             document.addEventListener("DOMContentLoaded", function () {
-                iziToast.info({
-                    title: 'Actualizado',
-                    message: '@TempData["exitoActualizar"]',
+                iziToast.success({
+                    title: 'Registrado',
+                    message: '@TempData["ExitoCreate"]',
                     position: 'bottomRight'
                 });
             });
         </script>
     }
-
-    if (TempData["exitoEliminar"] != null)
+    if (TempData["ExitoActualizar"] != null)
     {
         <script>
             document.addEventListener("DOMContentLoaded", function () {
-                iziToast.warning({
-                    title: 'Eliminado',
-                    message: '@TempData["exitoEliminar"]',
-                    position: 'topLeft'
+                iziToast.info({
+                    title: 'Actualizado',
+                    message: '@TempData["ExitoActualizar"]',
+                    position: 'topRight',
+                    transitionIn: 'fadeInUp',
+                    transitionOut: 'fadeOut',
                 });
             });
         </script>
     }
-
+    if (TempData["ExitoDesactivar"] != null)
+    {
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                iziToast.warning({
+                    title: 'Desactivado',
+                    message: '@TempData["ExitoDesactivar"]',
+                    position: 'topRight',
+                    transitionIn: 'fadeInUp',
+                    transitionOut: 'fadeOut',
+                });
+            });
+        </script>
+    }
 }
 
 
-
-<p>
-    <a asp-action="Create">Agregar Proveedor</a>
-</p>
 <table class="table">
     <thead>
         <tr>
@@ -74,12 +88,14 @@
                 @Html.DisplayNameFor(model => model.direccion)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.distrito)
+                @Html.DisplayNameFor(model => model.distrito.nombre)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.fechaRegistro)
             </th>
-          
+            <th>
+                @Html.DisplayNameFor(model => model.estado)
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -107,11 +123,13 @@
             <td>
                 @Html.DisplayFor(modelItem => item.fechaRegistro)
             </td>
-            
             <td>
-                @Html.ActionLink("Editar", "Edit", new { id=item.idProveedor  }) |
-                @Html.ActionLink("Detalles", "Details", new { id = item.idProveedor }) |
-                @Html.ActionLink("Desactivar", "Delete", new { id = item.idProveedor })
+                @Html.DisplayFor(modelItem => item.estado)
+            </td>
+            <td>
+                    @Html.ActionLink("Edit", "Actualizar", new { id = item.idProveedor }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.idProveedor }) |
+                    @Html.ActionLink("Delete", "Desactivar", new { id = item.idProveedor })
             </td>
         </tr>
 }

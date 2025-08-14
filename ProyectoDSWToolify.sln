@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35527.113 d17.12
+VisualStudioVersion = 17.12.35527.113
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProyectoDSWToolify", "ProyectoDSWToolify\ProyectoDSWToolify.csproj", "{09FAADB2-34C2-4DA7-9B69-BEEA727C4094}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiToolify", "ApiToolify\ApiToolify.csproj", "{2EF60857-C9DB-477A-A133-CF223A80D6F3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,8 +17,15 @@ Global
 		{09FAADB2-34C2-4DA7-9B69-BEEA727C4094}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{09FAADB2-34C2-4DA7-9B69-BEEA727C4094}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{09FAADB2-34C2-4DA7-9B69-BEEA727C4094}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2EF60857-C9DB-477A-A133-CF223A80D6F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2EF60857-C9DB-477A-A133-CF223A80D6F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2EF60857-C9DB-477A-A133-CF223A80D6F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2EF60857-C9DB-477A-A133-CF223A80D6F3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {18B2367E-E274-40AF-B211-89AAC8CF8CAB}
 	EndGlobalSection
 EndGlobal
