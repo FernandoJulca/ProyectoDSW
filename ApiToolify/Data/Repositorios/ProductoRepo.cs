@@ -55,8 +55,8 @@ namespace ProyectoDSWToolify.Data.Repositorios
                                     },
                                     precio = rdr.GetDecimal(rdr.GetOrdinal("PRECIO")),
                                     stock = rdr.GetInt32(rdr.GetOrdinal("STOCK")),
-                                    imagen = imagenData,
-                                    imagenBase64 = imagenData != null ? Convert.ToBase64String(imagenData) : null,
+                                    imagenbyte = imagenData,
+                                    imagen = imagenData != null ? Convert.ToBase64String(imagenData) : null,
                                     fechaRegistro = rdr.GetDateTime(rdr.GetOrdinal("FECHA_REGISTRO")),
                                     estado = rdr.GetBoolean(rdr.GetOrdinal("ESTADO"))
                                 });

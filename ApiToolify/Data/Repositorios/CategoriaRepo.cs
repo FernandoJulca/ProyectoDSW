@@ -1,7 +1,7 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using ApiToolify.Models.DTO;
+using Microsoft.Data.SqlClient;
 using ProyectoDSWToolify.Data.Contratos;
 using ProyectoDSWToolify.Models;
-using ProyectoDSWToolify.Models.ViewModels;
 
 namespace ProyectoDSWToolify.Data.Repositorios
 {
@@ -48,9 +48,9 @@ namespace ProyectoDSWToolify.Data.Repositorios
             return list;
         }
 
-        public List<CategoriaVendidaViewModel> top4CategoriasMasVendidas()
+        public List<CategoriaDTO> top4CategoriasMasVendidas()
         {
-            var list = new List<CategoriaVendidaViewModel>();
+            var list = new List<CategoriaDTO>();
             try
             {
                 using (var cnx = new SqlConnection(cadenaConexion))
@@ -63,7 +63,7 @@ namespace ProyectoDSWToolify.Data.Repositorios
                         {
                             while (reader.Read())
                             {
-                                list.Add(new CategoriaVendidaViewModel()
+                                list.Add(new CategoriaDTO()
                                 {
                                     IdCategoria = reader.GetInt32(0),
                                     Categoria = reader.GetString(1),
@@ -77,7 +77,7 @@ namespace ProyectoDSWToolify.Data.Repositorios
             }
             catch (Exception ex)
             {
-                list = new List<CategoriaVendidaViewModel>();
+                list = new List<CategoriaDTO>();
             }
             return list;
         }

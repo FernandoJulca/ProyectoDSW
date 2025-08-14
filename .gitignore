@@ -65,3 +65,9 @@ node_modules/
 
 # Others
 *.tmp
+
+#----------------------
+# Variables de entorno(AppSettings)
+#---------------------
+appsettings.json
+appsettings.Development.json

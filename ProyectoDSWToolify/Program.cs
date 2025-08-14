@@ -1,5 +1,4 @@
-using ProyectoDSWToolify.Data.Contratos;
-using ProyectoDSWToolify.Data.Repositorios;
+
 using ProyectoDSWToolify.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,17 +13,10 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 #region Inicio de depencias
-
-builder.Services.AddScoped<ICrud<Proveedor>, ProveRepo>();
-builder.Services.AddScoped<ICrud<Distrito>, DistritoRepo>();
-
-builder.Services.AddScoped<ICategoria, CategoriaRepo>();
-builder.Services.AddScoped<IProducto, ProductoRepo>();
-builder.Services.AddScoped<IUsuario, UsuarioRepo>();
-builder.Services.AddScoped<IVenta, VentaRepo>();
-
 #endregion 
 builder.Services.AddControllersWithViews();
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -44,5 +36,6 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Cliente}/{action=Index}/{id?}");
+
 
 app.Run();

@@ -1,7 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 using ProyectoDSWToolify.Data.Contratos;
 using ProyectoDSWToolify.Models;
-using ProyectoDSWToolify.Models.ViewModels;
 
 namespace ProyectoDSWToolify.Data.Repositorios
 {
