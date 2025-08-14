@@ -1,0 +1,136 @@
+﻿@model IEnumerable<ProyectoDSWToolify.Models.Producto>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+
+@{
+    if (TempData["ExitoListado"] != null)
+    {
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                iziToast.success({
+                    title: 'Éxito',
+                    message: '@TempData["ExitoListado"]',
+                    position: 'topLeft',
+                    transitionIn: 'fadeInUp',
+                    transitionOut: 'fadeOut',
+                });
+            });
+        </script>
+    }
+
+    if (TempData["ExitoCreate"] != null)
+    {
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                iziToast.success({
+                    title: 'Registrado',
+                    message: '@TempData["ExitoCreate"]',
+                    position: 'topRight'
+                });
+            });
+        </script>
+    }
+    if (TempData["ExitoActualizar"] != null)
+    {
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                iziToast.info({
+                    title: 'Actualizado',
+                    message: '@TempData["ExitoActualizar"]',
+                    position: 'topRight',
+                    transitionIn: 'fadeInUp',
+                    transitionOut: 'fadeOut',
+                });
+            });
+        </script>
+    }
+    if (TempData["ExitoDesactivar"] != null)
+    {
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                iziToast.warning({
+                    title: 'Desactivado',
+                    message: '@TempData["ExitoDesactivar"]',
+                    position: 'topRight',
+                    transitionIn: 'fadeInUp',
+                    transitionOut: 'fadeOut',
+                });
+            });
+        </script>
+    }
+}
+
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.idProducto)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.nombre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.descripcion)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.proveedor.razonSocial)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.categoria.descripcion)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.precio)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.stock)
+            </th>
+           
+           
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.idProducto)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.nombre)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.descripcion)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.proveedor.razonSocial)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.categoria.descripcion)
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.precio)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.stock)
+            </td>
+            
+            <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.idProducto }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.idProducto }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.idProducto })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
