@@ -69,6 +69,17 @@
                 var producto = await _clienteService.ObtenerProductoPorIdAsync(id);
                 if (producto == null) return NotFound();
 
+                string imagenUrl;
+
+                if (string.IsNullOrEmpty(producto.imagen))
+                {
+                    imagenUrl = Url.Content("~/assets/productos/P" + producto.id + ".jpg");
+                }
+                else
+                {
+                    imagenUrl = producto.imagen;
+                }
+
                 return Json(new
                 {
                     id = producto.id,
@@ -77,11 +88,7 @@
                     categoria = producto.categoria,
                     precio = producto.precio.ToString("F2"),
                     stock = producto.stock,
-                    imagen = string.IsNullOrEmpty(producto.imagen)
-                        ? Url.Content("~/assets/productos/P" + producto.id + ".jpg")
-                        : producto.imagen.StartsWith("data:image")
-                            ? producto.imagen
-                            : Url.Content(producto.imagen)
+                    imagen = imagenUrl
                 });
             }
 

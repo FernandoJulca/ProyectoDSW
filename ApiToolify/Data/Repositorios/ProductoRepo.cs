@@ -37,12 +37,11 @@ namespace ProyectoDSWToolify.Data.Repositorios
                         {
                             while (rdr.Read())
                             {
-                                byte[] imagenData = rdr.IsDBNull(rdr.GetOrdinal("IMAGEN")) ? null : (byte[])rdr["IMAGEN"];
                                 list.Add(new Producto()
                                 {
                                     idProducto = rdr.GetInt32(rdr.GetOrdinal("ID_PRODUCTO")),
                                     nombre = rdr.GetString(rdr.GetOrdinal("NOMBRE")),
-                                    descripcion = rdr.GetString(rdr.GetOrdinal("DESCRIPCION")),
+                                    descripcion = rdr.GetString(rdr.GetOrdinal("DESCRIPCION_P")),
                                     proveedor = new Proveedor()
                                     {
                                         idProveedor = rdr.GetInt32(rdr.GetOrdinal("ID_PROVEEDOR")),
@@ -51,12 +50,11 @@ namespace ProyectoDSWToolify.Data.Repositorios
                                     categoria = new Categoria()
                                     {
                                         idCategoria = rdr.GetInt32(rdr.GetOrdinal("ID_CATEGORIA")),
-                                        descripcion = rdr.GetString(rdr.GetOrdinal("DESCRIPCION")),
+                                        descripcion = rdr.GetString(rdr.GetOrdinal("DESCRIPCION_C")),
                                     },
                                     precio = rdr.GetDecimal(rdr.GetOrdinal("PRECIO")),
                                     stock = rdr.GetInt32(rdr.GetOrdinal("STOCK")),
-                                    imagenbyte = imagenData,
-                                    imagen = imagenData != null ? Convert.ToBase64String(imagenData) : null,
+                                    imagen = rdr.IsDBNull(rdr.GetOrdinal("IMAGEN")) ? "" : rdr.GetString(rdr.GetOrdinal("IMAGEN")),
                                     fechaRegistro = rdr.GetDateTime(rdr.GetOrdinal("FECHA_REGISTRO")),
                                     estado = rdr.GetBoolean(rdr.GetOrdinal("ESTADO"))
                                 });

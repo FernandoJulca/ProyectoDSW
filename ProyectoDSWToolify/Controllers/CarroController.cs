@@ -71,7 +71,7 @@ namespace ProyectoDSWToolify.Controllers
                 {
                     IdProducto = producto.id,
                     Nombre = producto.nombre,
-                    Imagen = producto.imagenbyte,
+                    imagen = producto.imagen,
                     Precio = producto.precio,
                     Cantidad = cantidad
                 });
@@ -109,7 +109,7 @@ namespace ProyectoDSWToolify.Controllers
                 precio = c.Precio,
                 cantidad = c.Cantidad,
                 subTotal = c.Precio * c.Cantidad,
-                imagenBase64 = c.Imagen != null ? $"data:image/png;base64,{Convert.ToBase64String(c.Imagen)}" : null
+                imagen = c.imagen 
             });
 
             return Json(resultado);

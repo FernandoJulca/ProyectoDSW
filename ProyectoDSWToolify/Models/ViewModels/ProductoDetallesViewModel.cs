@@ -9,6 +9,5 @@
         public decimal precio { get; set; }
         public int stock { get; set; }
         public string imagen { get; set; }
-        public byte[] imagenbyte { get; set; }
     }
 }
