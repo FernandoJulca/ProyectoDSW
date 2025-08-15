@@ -72,13 +72,16 @@ go
 select * From TB_PROVEEDOR where ID_PROVEEDOR = 21
 go
 
+select * From TB_PRODUCTO
+go
+
 --SCRIPTS PRODUCTOS
 create or alter proc listarProductos
 as 
 begin
 	select pr.ID_PRODUCTO, pr.NOMBRE, pr.DESCRIPCION, pv.RAZON_SOCIAL, ct.DESCRIPCION, pr.PRECIO, pr.STOCK from TB_PRODUCTO pr 
 	INNER JOIN TB_CATEGORIA ct ON pr.ID_CATEGORIA = ct.ID_CATEGORIA
-	INNER JOIN TB_PROVEEDOR pv ON pr.ID_PROVEEDOR = pv.ID_PROVEEDOR
+	INNER JOIN TB_PROVEEDOR pv ON pr.ID_PROVEEDOR = pv.ID_PROVEEDOR where pr.ESTADO = 1
 end
 go
 
@@ -106,7 +109,7 @@ begin
 	
 	if @tipo = 'actualizar'
 		begin
-			if @imagen = 'null'
+			if @imagen is Null
 				update TB_PRODUCTO 
 					set NOMBRE = @nombre, DESCRIPCION = @descripcion,ID_PROVEEDOR=@idProveedor,ID_CATEGORIA = @idCategoria,
 					PRECIO = @precio, STOCK = @stock, FECHA_REGISTRO = @fecha, ESTADO = 1 where ID_PRODUCTO = @idProducto
@@ -122,12 +125,13 @@ begin
 
 	if @tipo = 'detalle'
 		begin
-			select pr.ID_PRODUCTO, pr.NOMBRE, pr.DESCRIPCION, pv.RAZON_SOCIAL, ct.DESCRIPCION, pr.PRECIO, pr.STOCK, pr.IMAGEN,
+			select pr.ID_PRODUCTO, pr.NOMBRE, pr.DESCRIPCION,pv.ID_PROVEEDOR ,pv.RAZON_SOCIAL,ct.ID_CATEGORIA ,ct.DESCRIPCION, pr.PRECIO, pr.STOCK, pr.IMAGEN,
 				   pr.FECHA_REGISTRO, pr.ESTADO		
 			from TB_PRODUCTO pr 
 			INNER JOIN TB_CATEGORIA ct ON pr.ID_CATEGORIA = ct.ID_CATEGORIA
 			INNER JOIN TB_PROVEEDOR pv ON pr.ID_PROVEEDOR = pv.ID_PROVEEDOR where ID_PRODUCTO = @idProducto
 		end
+
 end
 go
 
