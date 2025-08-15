@@ -69,68 +69,30 @@
 }
 
 
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    @foreach (var item in Model)
+    {
+        <div class="col">
+            <div class="card h-100">
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.idProducto)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.nombre)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.descripcion)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.proveedor.razonSocial)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.categoria.descripcion)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.precio)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.stock)
-            </th>
-           
-           
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.idProducto)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.nombre)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.descripcion)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.proveedor.razonSocial)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.categoria.descripcion)
-            </td>
+                <img src="@(string.IsNullOrEmpty(item.imagen) ? "/uploads/ErrorImagen.png" : item.imagen)"
+                     class="card-img-top" alt="@item.nombre" />
 
-            <td>
-                @Html.DisplayFor(modelItem => item.precio)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.stock)
-            </td>
-            
-            <td>
-                    @Html.ActionLink("Edit", "Edit", new { id = item.idProducto }) |
-                    @Html.ActionLink("Details", "Details", new { id = item.idProducto }) |
-                    @Html.ActionLink("Delete", "Delete", new { id = item.idProducto })
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+                <div class="card-body">
+                    <h5 class="card-title">@item.nombre</h5>
+                    <p class="card-text">@item.descripcion</p>
+                    <p class="card-text"><strong>Proveedor:</strong> @item.proveedor.razonSocial</p>
+                    <p class="card-text"><strong>Categoría:</strong> @item.categoria.descripcion</p>
+                    <p class="card-text"><strong>Precio:</strong> S/ @item.precio</p>
+                    <p class="card-text"><strong>Stock:</strong> @item.stock</p>
+                </div>
+
+                <div class="card-footer text-center">
+                    @Html.ActionLink("Editar", "Edit", new { id = item.idProducto }, new { @class = "btn btn-warning btn-sm" })
+                    @Html.ActionLink("Detalles", "Details", new { id = item.idProducto }, new { @class = "btn btn-info btn-sm" })
+                    @Html.ActionLink("Eliminar", "Delete", new { id = item.idProducto }, new { @class = "btn btn-danger btn-sm" })
+                </div>
+            </div>
+        </div>
+    }
+</div>

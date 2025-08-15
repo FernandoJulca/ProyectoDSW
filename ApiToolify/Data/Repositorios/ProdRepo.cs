@@ -89,8 +89,9 @@ namespace ProyectoDSWToolify.Data.Repositorios
                                     {
                                         descripcion = r.IsDBNull(4) ? "" : r.GetString(4),
                                     },
-                                    precio = r.IsDBNull(5) ? 0 : r.GetDecimal(5),
-                                    stock = r.IsDBNull(6) ? 0 : r.GetInt32(6),
+                                    imagen = r.IsDBNull(5) ? "" : r.GetString(5),
+                                    precio = r.IsDBNull(6) ? 0 : r.GetDecimal(6),
+                                    stock = r.IsDBNull(7) ? 0 : r.GetInt32(7),
                                 });
                                 
                             }
