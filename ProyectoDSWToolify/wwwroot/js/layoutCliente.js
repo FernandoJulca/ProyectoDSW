@@ -22,10 +22,16 @@
             data.forEach(item => {
                 total += item.subTotal;
                 cantidadTotal += item.cantidad;
+                let src = item.imagen;
 
+                if (!src || src === "null" || src.trim() === "") {
+                    src = `/assets/productos/P${item.idProducto}.jpg`;
+                }
+
+                console.log("Imagen cargada en carrito:", src);
                 const productoHtml = `
                     <div class="d-flex mb-3 align-items-start p-3 rounded bg-light shadow-sm position-relative">
-                        <img src="${item.imagen}" alt="Producto" width="70" height="70" class="rounded me-3 object-fit-cover" onerror="this.onerror=null;this.src='/assets/no-imagen.jpg';" />
+                        <img src="${src}" alt="Producto" width="70" height="70" class="rounded me-3 object-fit-cover" onerror="this.onerror=null;this.src='/assets/no-imagen.jpg';" />
                         <div class="flex-grow-1">
                             <h5 class="mb-1 fw-semibold">${item.nombre}</h5>
                             <h6 class="d-block mb-2 titulos-Primary fw-bold">S/. ${item.precio.toFixed(2)}</h6>

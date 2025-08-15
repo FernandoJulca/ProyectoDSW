@@ -89,8 +89,8 @@ namespace ApiToolify.Controllers
                 precio = producto.precio.ToString("F2"),
                 stock = producto.stock,
                 imagen = string.IsNullOrEmpty(producto.imagen)
-                    ? Url.Content("~/assets/productos/P" + producto.idProducto + ".jpg")
-                    : "data:image/png;base64," + producto.imagen
+                    ? Url.Content("~/assets/productos/P" + producto.idProducto + ".jpg") :
+                    producto.imagen
             });
         }
 

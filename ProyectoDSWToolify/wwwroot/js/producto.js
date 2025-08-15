@@ -56,17 +56,15 @@ function cargarDetallesProducto(idProducto) {
             document.getElementById("modalCategoriaProducto").textContent = data.categoria;
             document.getElementById("modalPrecioProducto").textContent = data.precio;
             console.log("Valor de data.imagen:", data.imagen);
-            // Reemplazar con la URL completa si es necesario
-            let imagenUrl = data.imagen;
+            const imgElem = document.getElementById("modalImagenProducto");
+            imgElem.src = data.imagen;  // Solo asignar la ruta
 
-            // Si data.imagen NO comienza con http o https, o no es URL absoluta, entonces construye la URL completa
-            if (!imagenUrl.startsWith('http') && !imagenUrl.startsWith('data:')) {
-                imagenUrl = window.location.origin + imagenUrl;
-            }
+            // Opcional: para manejar error y poner imagen por defecto
+            imgElem.onerror = function () {
+                this.onerror = null;
+                this.src = '/assets/no-imagen.jpg';
+            };
 
-            document.getElementById("modalImagenProducto").src = imagenUrl;
-
-            console.log("Valor de data.imagen:", imagenUrl);
 
             const stockWarning = document.getElementById("stockWarning");
             const btnAgregar = document.getElementById("btnAgregarCarrito");

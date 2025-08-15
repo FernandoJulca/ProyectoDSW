@@ -24,7 +24,7 @@ namespace ProyectoDSWToolify.Controllers
             var viewModel = new CarritoViewModel
             {
                 Carrito = carrito,
-                idUsuario = 2, 
+                idUsuario = 2,
                 NombreUsuario = "María Ramírez",
                 Correo = "maria.ramirez@example.com",
                 Direccion = "Calle Real 456",
@@ -71,7 +71,7 @@ namespace ProyectoDSWToolify.Controllers
                 {
                     IdProducto = producto.id,
                     Nombre = producto.nombre,
-                    imagen = producto.imagen,
+                    Imagen = producto.imagen,
                     Precio = producto.precio,
                     Cantidad = cantidad
                 });
@@ -109,11 +109,15 @@ namespace ProyectoDSWToolify.Controllers
                 precio = c.Precio,
                 cantidad = c.Cantidad,
                 subTotal = c.Precio * c.Cantidad,
-                imagen = c.imagen 
+                imagen = string.IsNullOrEmpty(c.Imagen)
+    ? Url.Content("~/assets/productos/P" + c.IdProducto + ".jpg")
+    : Url.Content(c.Imagen)
+
             });
 
             return Json(resultado);
         }
+
 
         // ---------- Compra ----------
 

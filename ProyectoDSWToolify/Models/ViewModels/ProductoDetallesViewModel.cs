@@ -8,6 +8,6 @@
         public string categoria { get; set; }  
         public decimal precio { get; set; }
         public int stock { get; set; }
-        public string imagen { get; set; }
+        public string? imagen { get; set; }
     }
 }
