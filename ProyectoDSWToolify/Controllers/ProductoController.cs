@@ -1,4 +1,5 @@
 ﻿using System.Net.Http.Headers;
+using System.Threading.Tasks;
 using Azure;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -207,9 +208,9 @@ namespace ProyectoDSWToolify.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(Producto producto) { 
-            Producto prdRegistrado = RegistrarProducto(producto).Result;
-            TempData["ExitoCreate"] = ($"Se Registro el producto {prdRegistrado.descripcion} codigo:{prdRegistrado.idProducto}");
+        public async Task<IActionResult> Create(Producto producto) { 
+           var proveedorRegistrado = await RegistrarProducto(producto);
+            TempData["ExitoCreate"] = ($"Se Registro el producto {proveedorRegistrado.descripcion} codigo:{proveedorRegistrado.idProducto}");
 
             return RedirectToAction("Index");   
         }

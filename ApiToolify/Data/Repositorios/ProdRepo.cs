@@ -223,7 +223,7 @@ namespace ProyectoDSWToolify.Data.Repositorios
                
 
             }
-            prodGuardodo = producto;
+            prodGuardodo = ObtenerId("detalle",idRegistrado);
 
             return prodGuardodo;
         }
