@@ -83,15 +83,17 @@ namespace ProyectoDSWToolify.Data.Repositorios
                                     descripcion = r.IsDBNull(2) ? "" : r.GetString(2),
                                     proveedor = new Proveedor()
                                     {
-                                        razonSocial = r.IsDBNull(3) ? "" : r.GetString(3),
+                                        idProveedor = r.IsDBNull(3) ? 0 : r.GetInt32(3),
+                                        razonSocial = r.IsDBNull(4) ? "" : r.GetString(4),
                                     },
                                     categoria = new Categoria()
                                     {
-                                        descripcion = r.IsDBNull(4) ? "" : r.GetString(4),
+                                        idCategoria = r.IsDBNull(5) ? 0 : r.GetInt32(5),
+                                        descripcion = r.IsDBNull(6) ? "" : r.GetString(6),
                                     },
-                                    imagen = r.IsDBNull(5) ? "" : r.GetString(5),
-                                    precio = r.IsDBNull(6) ? 0 : r.GetDecimal(6),
-                                    stock = r.IsDBNull(7) ? 0 : r.GetInt32(7),
+                                    imagen = r.IsDBNull(7) ? "" : r.GetString(7),
+                                    precio = r.IsDBNull(8) ? 0 : r.GetDecimal(8),
+                                    stock = r.IsDBNull(9) ? 0 : r.GetInt32(9),
                                 });
                                 
                             }

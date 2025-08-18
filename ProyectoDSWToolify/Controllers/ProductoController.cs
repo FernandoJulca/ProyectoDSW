@@ -1,4 +1,5 @@
-﻿using System.Net.Http.Headers;
+﻿using System.Diagnostics;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Azure;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -148,18 +149,22 @@ namespace ProyectoDSWToolify.Controllers
                         formData.Add(new StringContent(producto.precio.ToString()), "precio");
                         formData.Add(new StringContent(producto.stock.ToString()), "stock");
                         formData.Add(new StringContent(producto.fechaRegistro.ToString("yyyy-MM-dd HH:mm:ss")), "fechaRegistro");
-                        
-                        
+
+
                         //actualizar solo si estamos pasando una imagen, si no se envia nada la 
                         //imagen seguira siendo la misma 
-                        if (producto.file != null && producto.file.Length > 0) {
-                           
+                        if (producto.file != null && producto.file.Length > 0)
+                        {
+
                             var fileContent = new StreamContent(producto.file.OpenReadStream()); //abre el archivo
                             fileContent.Headers.ContentType = new MediaTypeHeaderValue(producto.file.ContentType); //indicamos q tipo es
                             formData.Add(fileContent, "file", producto.file.FileName); //se agrega al formulario con la nueva imagen
                         }
+                        else { /*cuando no seleccione nada debe reonocer la ruta de imagen q para q se guarde */
+                            formData.Add(new StringContent(producto.imagen), "imagen");
+                        }
 
-                        var msg = await httpCliente.PutAsync($"producto/{producto.idProducto}", formData);
+                            var msg = await httpCliente.PutAsync($"producto/{producto.idProducto}", formData);
                        
                         var data = await msg.Content.ReadAsStringAsync();
                       
@@ -187,17 +192,74 @@ namespace ProyectoDSWToolify.Controllers
                 return JsonConvert.DeserializeObject<int>(data);
             }
         }
-       
+
         #endregion
 
         #region Metodos Vistas
 
         [HttpGet]
-        public IActionResult Index() {
-
+        public IActionResult Index(int pag = 1, int proveedor = 0, int categoria = 0) {
             var listado = ListaCompleta().Result;
+            var nombreProveedor = "";
+            var nombreCategoria = "";
+
+            //Listado de proveedores y categorias
+            ViewBag.Proveedores = new SelectList(ListaProveedor().Result, "idProveedor", "razonSocial", proveedor);
+            ViewBag.Categorias = new SelectList(ListaCategoria().Result, "idCategoria", "descripcion", categoria);
+           
+
+            if (proveedor > 0)
+            {
+                listado = listado.Where(x => x.proveedor.idProveedor == proveedor).ToList();
+                nombreProveedor = listado.FirstOrDefault(x=> x.proveedor.idProveedor == proveedor)?.proveedor.razonSocial;
+              
+            }
+            if (categoria > 0)
+            {
+                listado = listado.Where(x => x.categoria.idCategoria == categoria).ToList();
+                nombreCategoria = listado.FirstOrDefault(x=> x.categoria.idCategoria == categoria)?.categoria.descripcion;
+            }
+
+            if (proveedor > 0 || categoria > 0) {
+
+                var mensaje = "Se filtro por ";
+
+                if (proveedor != 0) {
+                    mensaje += nombreProveedor;
+                }
+                if (categoria != 0) {
+                    if (proveedor != 0)
+                       
+                        mensaje += ",";
+                        mensaje += nombreCategoria;
+                }
+                if (listado.Count != 0) {
+                    TempData["ExitoFiltros"] = mensaje;
+                }
+                else {
+                    listado = ListaCompleta().Result;
+                    TempData["FalloFiltros"] = ($"No hay Productos para esos Filtros");
+                }
+             /*   
+                TempData["ExitoFiltros"] = (
+                $@"Se filtro por 
+                {(proveedor != 0 ? nombreProveedor : ", ")} 
+                {(categoria != 0 ? nombreCategoria : null)}"
+                );
+             */
+            }
+            
             TempData["ExitoListado"] = ($"Se obtuvo {listado.Count} productos");
-            return View(listado);
+            
+            var paginasTotales = listado.Count;
+            var paginasMax = 9;
+            var numeroPag = (int)Math.Ceiling((double)paginasTotales / paginasMax);
+            ViewBag.pagActual = pag;
+            ViewBag.numeroPag = numeroPag;
+            var skip = (pag - 1) * paginasMax;
+
+
+            return View(listado.Skip(skip).Take(paginasMax));
         }
 
         [HttpGet]
@@ -217,16 +279,9 @@ namespace ProyectoDSWToolify.Controllers
 
         [HttpGet]
         public IActionResult Edit(int id) {
-
             Producto prdEncontrado = ObtenerIdProducto(id).Result;
-
             ViewBag.Categorias = new SelectList(ListaCategoria().Result, "idCategoria", "descripcion", prdEncontrado.categoria.idCategoria );
-            System.Diagnostics.Debug.WriteLine("ID Categoria OBTENIDO: " + prdEncontrado.categoria.idCategoria);
-
             ViewBag.Proveedores = new SelectList(ListaProveedor().Result, "idProveedor", "razonSocial", prdEncontrado.proveedor.idProveedor);
-            System.Diagnostics.Debug.WriteLine("ID PROVEEDOR OBTENIDO: " + prdEncontrado.proveedor.idProveedor);
-
-
             return View(prdEncontrado);
         }
 
