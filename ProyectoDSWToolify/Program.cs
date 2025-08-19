@@ -1,9 +1,29 @@
 
 using ProyectoDSWToolify.Models;
+using ProyectoDSWToolify.Services.Contratos;
+using ProyectoDSWToolify.Services.Implementacion;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddControllersWithViews();
+builder.Services.AddDistributedMemoryCache(); 
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+#region Inyeccion de URl
+builder.Services.AddHttpClient<IClienteService, ClienteService>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["Services:URL_API"]);
+});
+builder.Services.AddHttpClient<IVentaService, VentaService>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["Services:URL_API"]);
+});
+#endregion 
 builder.Services.AddControllersWithViews();
 
 
@@ -25,6 +45,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Producto}/{action=Index}/{id?}");
+    pattern: "{controller=Cliente}/{action=Index}/{id?}");
 
 app.Run();

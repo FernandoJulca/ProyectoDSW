@@ -13,14 +13,12 @@ namespace ProyectoDSWToolify.Models
         [Display(Name = "Categoria" )] public Categoria categoria { get; set; }
         [Display(Name = "Precio")] public decimal precio { get; set; }
         [Display(Name = "Stock")] public int stock { get; set; }
-        [Display(Name = "Imagen")] public string? imagen { get; set; }
         [Display(Name = "Registro")] public DateTime fechaRegistro { get; set; }
         [Display(Name = "Estado")] public bool estado { get; set; }
-
+        [Display(Name = "Imagen")] public string? imagen { get; set; }
 
         [NotMapped] 
         public IFormFile? file { get; set; }
 
-      
     }
 }

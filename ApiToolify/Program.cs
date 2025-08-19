@@ -15,10 +15,15 @@ builder.Services.AddSwaggerGen();
 
 #region Inyeccion de dependecias
 
- builder.Services.AddScoped<ICrud<Proveedor>, ProveRepo>();
+builder.Services.AddScoped<ICrud<Proveedor>, ProveRepo>();
 builder.Services.AddScoped<ICrud<Distrito>, DistritoRepo>();
 builder.Services.AddScoped<ICrud<Producto>, ProdRepo>();
 builder.Services.AddScoped<ICrud<Categoria>, CateRepo>();
+
+builder.Services.AddScoped<ICategoria, CategoriaRepo>();
+builder.Services.AddScoped<IProducto, ProductoRepo>();
+builder.Services.AddScoped<IUsuario, UsuarioRepo>();
+builder.Services.AddScoped<IVenta, VentaRepo>();
 
 #endregion
 

@@ -13,7 +13,8 @@ namespace ProyectoDSWToolify.Data.Repositorios
         {
 
             config = configuration;
-            cadenaConexion = config["ConnectionStrings:DB"];
+            cadenaConexion = config.GetConnectionString("DB");
+            Console.WriteLine("Conexión: " + cadenaConexion);
         }
 
 
@@ -22,6 +23,7 @@ namespace ProyectoDSWToolify.Data.Repositorios
             List<Proveedor> listaProveedor = new List<Proveedor>();
             using (SqlConnection con = new SqlConnection(cadenaConexion))
             {
+                Console.WriteLine("Conexión: " + cadenaConexion);
                 con.Open();
                 using (SqlCommand cmd = new SqlCommand("listarProveedores", con))
                 {
