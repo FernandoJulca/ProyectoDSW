@@ -214,5 +214,3 @@ INSERT INTO TB_PRODUCTO (NOMBRE, DESCRIPCION, ID_PROVEEDOR, ID_CATEGORIA, PRECIO
 ('Porcelanato Blanco Brillo', 'Porcelanato blanco brillo 60x60', 10, 9, 150.00, 45, NULL),
 ('Piso Cerámico 60x60cm', 'Cerámica interior lisa', 10, 10, 65.00, 100, NULL);
 
-
-select * From TB_PROVEEDOR
