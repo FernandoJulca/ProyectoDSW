@@ -79,13 +79,11 @@ namespace ProyectoDSWToolify.Services.Implementacion
 
         public async Task<IndexViewModel> ObtenerResumenAsync()
         {
-          
-                var response = await _httpClient.GetAsync("cliente/resumen");
-                response.EnsureSuccessStatusCode();
+            var response = await _httpClient.GetAsync("/api/cliente/resumen");
+            response.EnsureSuccessStatusCode();
 
-                var json = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<IndexViewModel>(json);
-            
+            var json = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<IndexViewModel>(json);
         }
     }
 }

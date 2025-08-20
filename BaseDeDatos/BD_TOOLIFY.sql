@@ -42,7 +42,6 @@ CREATE TABLE TB_USUARIO (
     TELEFONO CHAR(9) NOT NULL,
     ROL INT DEFAULT 2,
     FECHA_REGISTRO DATETIME DEFAULT GETDATE(),
-		
     FOREIGN KEY (ID_DISTRITO) REFERENCES TB_DISTRITO(ID_DISTRITO),
     FOREIGN KEY (ROL) REFERENCES TB_ROL(ID_ROL)
 );
@@ -80,7 +79,7 @@ CREATE TABLE TB_VENTA (
     FECHA DATETIME DEFAULT GETDATE(),
     TOTAL DECIMAL(11,2),
     ESTADO CHAR(1),
-    CONSTRAINT EST_CHECK CHECK (ESTADO IN ('G','P','C')), -- Generado, Pendiente, Cancelado
+    CONSTRAINT EST_CHECK CHECK (ESTADO IN ('G','P','C','T')), -- Generado, Pendiente, Cancelado
     TIPO_VENTA CHAR(1) DEFAULT 'P', -- 'P' (Presencial), 'R' (Remota)
     FOREIGN KEY (ID_USUARIO) REFERENCES TB_USUARIO(ID_USUARIO)
 );
@@ -213,6 +212,3 @@ INSERT INTO TB_PRODUCTO (NOMBRE, DESCRIPCION, ID_PROVEEDOR, ID_CATEGORIA, PRECIO
 ('Porcelanato Gris Mate 60x120cm', 'Porcelanato gris mate', 10, 9, 160.00, 40, NULL),
 ('Porcelanato Blanco Brillo', 'Porcelanato blanco brillo 60x60', 10, 9, 150.00, 45, NULL),
 ('Piso Cerámico 60x60cm', 'Cerámica interior lisa', 10, 10, 65.00, 100, NULL);
-
-
-select * From TB_PROVEEDOR

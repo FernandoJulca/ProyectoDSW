@@ -14,7 +14,7 @@ namespace ProyectoDSWToolify.Models
         [Display(Name = "Direccion")] public string direccion { get; set; }
         [Display(Name = "Distrito")] public Distrito distrito { get; set; }
         [Display(Name = "Telefono")] public string telefono { get; set; }
-        [Display(Name = "Rol")] public Rol rol { get; set; }
+        public Rol? rol { get; set; }
         [Display(Name = "Registro")] public DateTime fechaRegistro { get; set; }
 
 

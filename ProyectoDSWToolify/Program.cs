@@ -23,8 +23,11 @@ builder.Services.AddHttpClient<IVentaService, VentaService>(client =>
 {
     client.BaseAddress = new Uri(builder.Configuration["Services:URL_API"]);
 });
+builder.Services.AddHttpClient<IUserAuthService, UserAuthService>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["Services:URL_API"]);
+});
 #endregion 
-builder.Services.AddControllersWithViews();
 
 
 var app = builder.Build();
@@ -40,7 +43,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
+app.UseSession();
 app.UseAuthorization();
 app.UseSession();
 app.MapControllerRoute(
