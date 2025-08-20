@@ -1,4 +1,5 @@
 
+using Microsoft.Extensions.Options;
 using ProyectoDSWToolify.Models;
 using ProyectoDSWToolify.Services.Contratos;
 using ProyectoDSWToolify.Services.Implementacion;
@@ -14,6 +15,20 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
+
+//Add Security to Cookies
+builder.Services.AddAuthentication(
+        Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults
+        .AuthenticationScheme
+    ).AddCookie(options => {
+        options.LoginPath = "/UserAuth/Login";
+        options.LogoutPath = "/Producto/Index";
+        options.AccessDeniedPath = "/AccessDenied/Error";
+        options.ExpireTimeSpan = TimeSpan.FromMinutes(30); 
+        options.SlidingExpiration = true;   
+
+    });
+
 #region Inyeccion de URl
 builder.Services.AddHttpClient<IClienteService, ClienteService>(client =>
 {
@@ -43,11 +58,16 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
 app.UseSession();
+//añadiendo cookies para cada login
+app.UseAuthentication();
+
 app.UseAuthorization();
+
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Cliente}/{action=Index}/{id?}");
+    pattern: "{controller=Producto}/{action=Index}/{id?}");
 
 app.Run();
