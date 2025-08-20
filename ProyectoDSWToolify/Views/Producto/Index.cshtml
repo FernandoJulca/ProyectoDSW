@@ -66,8 +66,60 @@
             });
         </script>
     }
-}
+     if (TempData["ExitoFiltros"] != null)
+    {
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                iziToast.info({
+                    title: 'Filtros',
+                    message: '@TempData["ExitoFiltros"]',
+                    position: 'topRight',
+                    transitionIn: 'fadeInUp',
+                    transitionOut: 'fadeOut',
+                });
+            });
+        </script>
+    }
+     if (TempData["FalloFiltros"] != null)
+    {
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                iziToast.warning({
+                    title: 'Error',
+                    message: '@TempData["FalloFiltros"]',
+                    position: 'topRight',
+                    transitionIn: 'fadeInUp',
+                    transitionOut: 'fadeOut',
+                });
+            });
+        </script>
+    }
 
+
+}
+<form method="get">
+    <di class="row">
+    
+        <div class="col-md-5">
+            <label>Proveedores</label>
+            <select name="proveedor" class="form-control" asp-items="@ViewBag.Proveedores">
+                <option value="0">--Seleccione--</option>
+            </select>
+        </div>
+        <div class="col-md-5">
+            <label>Categorias</label>
+            <select name="categoria" class="form-control" asp-items="@ViewBag.Categorias">
+                <option value="0">--Seleccione--</option>
+            </select>
+        </div>
+
+        <div class="col-md-2">
+            <label>&nbsp;</label><br />
+            <button type="submit" class="btn btn-primary">Filtrar</button>
+            <a href="@Url.Action("Index")" class="btn btn-secondary">Limpiar</a>
+        </div>
+    </di    v>
+</form>
 
 <div class="row row-cols-1 row-cols-md-3 g-4">
     @foreach (var item in Model)
@@ -94,5 +146,19 @@
                 </div>
             </div>
         </div>
+    }
+</div>
+
+<div class="text-center mt-3">
+    @for (int pag = 1; pag < ViewBag.numeroPag; pag++)
+    {
+        bool pagActual = (ViewBag.pagActual == pag);
+        <a asp-action="Index"
+           asp-controller="Producto"
+           asp-route-pag="@pag"
+           class="btn @(pagActual ? "btn-danger" : "btn-outline-secondary")"
+           style="@(pagActual ? "pointer-events: none; background-color: darkred" : null)">
+            @pag
+        </a>
     }
 </div>
