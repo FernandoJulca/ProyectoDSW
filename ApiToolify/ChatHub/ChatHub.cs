@@ -20,7 +20,7 @@ namespace ApiToolify.ChatHub
             }
             return Task.CompletedTask;
         }
-
+        
         public async Task SendMessage(int userIdDestino, string mensaje) {
             System.Diagnostics.Debug.WriteLine("************************** INICIANDO EL METODO SENDMESAGGE **************************");
             System.Diagnostics.Debug.WriteLine($"Llega userIdDestino={userIdDestino}, mensaje={mensaje}");
