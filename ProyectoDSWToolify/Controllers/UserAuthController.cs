@@ -5,6 +5,14 @@ using ProyectoDSWToolify.Models;
 using ProyectoDSWToolify.Models.ViewModels;
 using ProyectoDSWToolify.Services.Contratos;
 
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
+using System.Security.Claims;
+using System.Net;
+using System.Threading.Tasks;
+
+
+
 namespace ProyectoDSWToolify.Controllers
 {
     public class UserAuthController : Controller
@@ -55,6 +63,22 @@ namespace ProyectoDSWToolify.Controllers
                 return View();
             }
 
+            /*Agregando Cookies*/
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name , usuario.nombre),
+                new Claim("Correo" , usuario.correo),
+                new Claim("UserId", usuario.idUsuario.ToString())
+            };
+
+            claims.Add(new Claim(ClaimTypes.Role, usuario.rol.descripcion));
+
+            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+
+
+
             HttpContext.Session.SetString("usuario", JsonConvert.SerializeObject(usuario));
             TempData["GoodMessage"] = $"¡Bienvenido, {usuario.nombre}!";
             switch (usuario.rol.idRol)
@@ -104,8 +128,12 @@ namespace ProyectoDSWToolify.Controllers
         }
 
         [HttpPost]
-        public IActionResult Logout()
+        public async Task<IActionResult> Logout()
         {
+
+            //ELIMINAMOS LA COOKIE CREADA
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
             HttpContext.Session.Clear();
             TempData["GoodMessage"] = "Sesión cerrada exitosamente.";
             return RedirectToAction("Index", "Cliente");

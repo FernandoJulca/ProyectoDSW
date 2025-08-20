@@ -1,10 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
 using ProyectoDSWToolify.Models;
 
 namespace ProyectoDSWToolify.Controllers
 {
+
+    [Authorize(Roles = "A")] //SOLO ADMINISTRADOR
     public class ProveedorController : Controller
     {
         private readonly IConfiguration _config;

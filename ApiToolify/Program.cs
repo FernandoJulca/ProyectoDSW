@@ -1,3 +1,4 @@
+using ApiToolify.ChatHub;
 using ApiToolify.Data.Contratos;
 using ApiToolify.Data.Repositorios;
 using ProyectoDSWToolify.Data.Contratos;
@@ -13,6 +14,20 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowWebApp",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:5211")
+                  .AllowAnyHeader()
+                  .AllowAnyMethod()
+                  .AllowCredentials();
+        });
+});
+
+builder.Services.AddSignalR();
 
 
 #region Inyeccion de dependecias
@@ -31,12 +46,19 @@ builder.Services.AddScoped<IUserAuth, UserAuthRepository>();
 
 var app = builder.Build();
 
+
+
+
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors("AllowWebApp");
+app.MapHub<ChatHub>("/chatHub");
 
 app.UseHttpsRedirection();
 
