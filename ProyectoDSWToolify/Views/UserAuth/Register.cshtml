@@ -1,0 +1,208 @@
+﻿@{
+	ViewData["Title"] = "Registrate";
+	Layout = null;
+}
+
+<!-- Estilos -->
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/ProyectoDSWToolify.styles.css" asp-append-version="true" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/izitoast/dist/css/iziToast.min.css">
+<title>@ViewData["Title"] - ProyectoDSWToolify</title>
+
+<style>
+	body {
+		background: #f4f6f9;
+	}
+
+	.register-container {
+		background: white;
+		padding: 2rem;
+		border-radius: 12px;
+		box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+	}
+
+	.form-control {
+		height: 48px;
+		border-radius: 8px;
+		border: 1px solid #ced4da;
+		padding-left: 45px;
+	}
+
+	.input-group-text {
+		background: none;
+		border: none;
+		position: absolute;
+		top: 52%;
+		left: 4px;
+		color: #6c757d;
+	}
+
+	.input-group-position {
+		position: relative;
+	}
+
+	.toggle-password {
+		position: absolute;
+		right: 15px;
+		top: 60%;
+		cursor: pointer;
+		color: #6c757d;
+	}
+
+	.btn-register {
+		background-color: rgb(96, 108, 172);
+		border: none;
+		border-radius: 8px;
+		font-weight: bold;
+	}
+
+		.btn-register:hover {
+			background-color: #5a649c;
+		}
+</style>
+
+<!-- Registro Form -->
+<div class="d-flex justify-content-center align-items-center min-vh-100">
+	<div class="register-container">
+		<div class="text-center mb-4">
+			<div class="mb-2">
+				<div class="p-3 rounded-circle" style="background-color: rgb(96, 108, 172); display: inline-block;">
+					<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="white" viewBox="0 0 24 24">
+						<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
+					</svg>
+				</div>
+			</div>
+			<a asp-action="Index" asp-controller="Cliente" class="fw-bold mb-0 text-decoration-none fs-2" style="color: rgb(96, 108, 172);">Toolify</a>
+			<p class="text-muted mb-0">Sistema de Ventas de Herramientas</p>
+		</div>
+
+		<h5 class="text-center mb-3">
+			<i class="bi bi-person-plus me-2"></i> Registro de Cliente
+		</h5>
+		<p class="text-center text-muted mb-4">Complete el formulario para crear su cuenta</p>
+
+		<form method="post" asp-action="Register">
+			<div class="row">
+				<!-- Columna 1 -->
+				<div class="col-md-4">
+					<!-- Nombres -->
+					<div class="mb-3 input-group-position">
+						<label for="Nombres" class="form-label">Nombres</label>
+						<i class="fa fa-user input-group-text"></i>
+						<input type="text" name="nombre" id="nombre" class="form-control" placeholder="Ingrese sus nombres" required maxlength="50">
+					</div>
+
+					<!-- Apellido Materno -->
+					<div class="mb-3 input-group-position">
+						<label for="ApeMaterno" class="form-label">Apellido Materno</label>
+						<i class="fa fa-user input-group-text"></i>
+						<input type="text" name="apeMaterno" id="apeMaterno" class="form-control" placeholder="Ingrese su apellido materno" required maxlength="50">
+					</div>
+
+					<!-- Correo -->
+					<div class="mb-3 input-group-position">
+						<label for="Correo" class="form-label">Correo Electrónico</label>
+						<i class="fa fa-envelope input-group-text"></i>
+						<input type="email" name="correo" id="correo" class="form-control" placeholder="usuario@toolify.com" required maxlength="50">
+					</div>
+				</div>
+
+				<!-- Columna 2 -->
+				<div class="col-md-4">
+					<!-- Apellido Paterno -->
+					<div class="mb-3 input-group-position">
+						<label for="ApePaterno" class="form-label">Apellido Paterno</label>
+						<i class="fa fa-user input-group-text"></i>
+						<input type="text" name="apePaterno" id="apePaterno" class="form-control" placeholder="Ingrese su apellido paterno" required maxlength="50">
+					</div>
+
+					<!-- Contraseña -->
+					<div class="mb-3 input-group-position">
+						<label for="Clave" class="form-label">Contraseña</label>
+						<i class="fa fa-lock input-group-text"></i>
+						<input type="password" name="clave" id="clave" class="form-control" placeholder="••••••••" required maxlength="225">
+						<i class="fa fa-eye toggle-password" id="togglePassword"></i>
+					</div>
+
+					<!-- Número de Documento -->
+					<div class="mb-3 input-group-position">
+						<label for="NroDoc" class="form-label">Número de Documento</label>
+						<i class="fa fa-id-card input-group-text"></i>
+						<input type="text" name="nroDoc" id="nroDoc" class="form-control" placeholder="Ingrese su número de documento" required maxlength="15">
+					</div>
+				</div>
+
+				<!-- Columna 3 -->
+				<div class="col-md-4">
+					<!-- Dirección -->
+					<div class="mb-3 input-group-position">
+						<label for="Direccion" class="form-label">Dirección</label>
+						<i class="fa fa-map-marker-alt input-group-text"></i>
+						<input type="text" name="direccion" id="direccion" class="form-control" placeholder="Ingrese su dirección" required maxlength="50">
+					</div>
+
+					<!-- Distrito -->
+					<div class="mb-3 input-group-position" style="position: relative;">
+						<label for="IdDistrito" class="form-label">Distrito</label>
+						<i class="fa fa-map input-group-text" style="position: absolute; left: -1px; top: 43px; color: #6c757d;"></i>
+						<select name="distrito.idDistrito" class="form-select" style="padding: 12px 35px;" required>
+							@if (ViewBag.distritos != null)
+							{
+								foreach (var d in (SelectList)ViewBag.distritos)
+								{
+									<option value="@d.Value">@d.Text</option>
+								}
+							}
+							else
+							{
+								<option value="">No hay distritos disponibles</option>
+							}
+
+						</select>
+					</div>
+
+
+					<!-- Teléfono -->
+					<div class="mb-3 input-group-position">
+						<label for="Telefono" class="form-label">Teléfono</label>
+						<i class="fa fa-phone input-group-text"></i>
+						<input type="tel" name="telefono" id="telefono" class="form-control" placeholder="987654321" pattern="[0-9]{9}" maxlength="9" required>
+					</div>
+				</div>
+			</div>
+
+			<button type="submit" class="btn btn-register w-100 text-white mt-3">
+				Registrarse
+			</button>
+			<p class="text-center mt-3">
+				¿Ya tienes cuenta?
+				<a asp-controller="UserAuth" asp-action="Login" class="titulos-Primary fw-bold text-decoration-none">
+					Inicia sesión aquí
+				</a>
+			</p>
+		</form>
+	</div>
+</div>
+
+<!-- Scripts -->
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/izitoast/dist/js/iziToast.min.js"></script>
+@Html.Partial("_SweetAlert")
+
+<!-- Mostrar/Ocultar contraseña -->
+<script>
+	const togglePassword = document.getElementById('togglePassword');
+	const passwordInput = document.getElementById('clave');
+
+	togglePassword.addEventListener('click', function () {
+		const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+		passwordInput.setAttribute('type', type);
+		this.classList.toggle('fa-eye');
+		this.classList.toggle('fa-eye-slash');
+	});
+</script>

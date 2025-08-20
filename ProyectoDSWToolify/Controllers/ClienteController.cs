@@ -7,6 +7,8 @@
     using System.Linq;
     using global::ProyectoDSWToolify.Services.Contratos;
     using global::ProyectoDSWToolify.Models.ViewModels;
+    using System.Text.Json;
+    using global::ProyectoDSWToolify.Models;
 
     namespace ProyectoDSWToolify.Controllers
     {
@@ -110,22 +112,33 @@
             {
                 return View();
             }
-
+            [HttpGet]
             public async Task<IActionResult> Perfil()
             {
-                int id = 2; 
+                var usuarioJson = HttpContext.Session.GetString("usuario");
+                if (string.IsNullOrEmpty(usuarioJson))
+                {
+                    TempData["ErrorMessage"] = "Necesitas iniciar sesión para acceder a tu perfil.";
+                    return RedirectToAction("Login", "UserAuth");
+                }
+
+                var usuario = JsonSerializer.Deserialize<Usuario>(usuarioJson);
+
+                int id = usuario.idUsuario;
+
                 var ventas = await _clienteService.ObtenerVentasClienteAsync(id);
 
                 var viewModel = new PerfilClienteViewModel
                 {
                     idCliente = id,
-                    Nombre = "María Ramírez", 
-                    Email = "maria.ramirez@example.com", 
+                    Nombre = $"{usuario.nombre} {usuario.apePaterno} {usuario.apeMaterno}",
+                    Email = usuario.correo,
                     HistorialVentas = ventas
                 };
 
                 return View(viewModel);
             }
+
             public async Task<IActionResult> DescargarVentaPdf(int idCliente, int idVenta)
             {
                 try

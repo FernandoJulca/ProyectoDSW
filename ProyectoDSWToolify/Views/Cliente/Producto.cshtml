@@ -75,7 +75,7 @@
                             <div class="card h-100 shadow rounded">
                                 @if (!string.IsNullOrEmpty(producto.imagen))
                                 {
-                                    <img src="@producto.imagen" class="card-img-top" style="height: 200px; object-fit: cover;" />
+                                    <img src="@producto.imagen" class="card-img-top" style="height: 200px; object-fit: cover;" onerror="this.onerror=null;this.src='/assets/no-imagen.jpg';" />
                                 }
                                 else
                                 {

@@ -1,0 +1,135 @@
+﻿@{
+    ViewData["Title"] = "Iniciar Sesión";
+    Layout = null;
+}
+
+<!-- Estilos -->
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/ProyectoDSWToolify.styles.css" asp-append-version="true" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/izitoast/dist/css/iziToast.min.css">
+<title>@ViewData["Title"] - ProyectoDSWToolify</title>
+
+<style>
+    body {
+        background: #f4f6f9;
+    }
+
+    .login-container {
+        max-width: 450px;
+        background: white;
+        padding: 2.5rem;
+        border-radius: 12px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+    }
+
+    .form-control {
+        height: 48px;
+        border-radius: 8px;
+        border: 1px solid #ced4da;
+        padding-left: 45px;
+    }
+
+    .input-group-text {
+        background: none;
+        border: none;
+        position: absolute;
+        top: 52%;
+        left: 4px;
+        color: #6c757d;
+    }
+
+    .input-group-position {
+        position: relative;
+    }
+
+    .toggle-password {
+        position: absolute;
+        right: 15px;
+        top: 60%;
+        cursor: pointer;
+        color: #6c757d;
+    }
+
+    .btn-login {
+        background-color: rgb(96, 108, 172);
+        border: none;
+        border-radius: 8px;
+        font-weight: bold;
+    }
+
+        .btn-login:hover {
+            background-color: #5a649c;
+        }
+</style>
+
+<!-- Login Form -->
+<div class="d-flex justify-content-center align-items-center min-vh-100">
+    <div class="login-container">
+        <div class="text-center mb-4">
+            <div class="mb-2">
+                <div class="p-3 rounded-circle" style="background-color: rgb(96, 108, 172); display: inline-block;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="white" viewBox="0 0 24 24">
+                        <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
+                    </svg>
+                </div>
+            </div>
+            <a asp-action="Index" asp-controller="Cliente" class="fw-bold mb-0 text-decoration-none fs-2" style="color: rgb(96, 108, 172);">Toolify</a>
+            <p class="text-muted mb-0">Sistema de Ventas de Herramientas</p>
+        </div>
+
+        <h5 class="text-center mb-3">
+            <i class="bi bi-box-arrow-in-right me-2"></i> Iniciar Sesión
+        </h5>
+        <p class="text-center text-muted mb-4">Ingrese sus credenciales para acceder al sistema</p>
+
+        <form method="post" asp-action="Login">
+            <!-- Correo -->
+            <div class="mb-3 input-group-position">
+                <label for="Correo" class="form-label">Correo Electrónico</label>
+                <i class="fa fa-envelope input-group-text"></i>
+                <input type="email" name="Correo" id="Correo" class="form-control" placeholder="usuario@toolify.com" required>
+            </div>
+
+            <!-- Contraseña -->
+            <div class="mb-4 input-group-position">
+                <label for="Clave" class="form-label">Contraseña</label>
+                <i class="fa fa-lock input-group-text"></i>
+                <input type="password" name="Clave" id="Clave" class="form-control" placeholder="••••••••" required>
+                <i class="fa fa-eye toggle-password" id="togglePassword"></i>
+            </div>
+
+            <button type="submit" class="btn btn-login w-100 text-white">
+                Iniciar Sesión
+            </button>
+            <p class="text-center mt-3">
+                ¿No tienes cuenta?
+                <a asp-controller="UserAuth" asp-action="Register" class="titulos-Primary fw-bold text-decoration-none">
+                    Regístrate aquí
+                </a>
+            </p>
+        </form>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/izitoast/dist/js/iziToast.min.js"></script>
+@Html.Partial("_SweetAlert")
+
+<!-- Mostrar/Ocultar contraseña -->
+<script>
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('Clave');
+
+    togglePassword.addEventListener('click', function () {
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+        this.classList.toggle('fa-eye');
+        this.classList.toggle('fa-eye-slash');
+    });
+</script>

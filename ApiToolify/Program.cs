@@ -1,3 +1,5 @@
+using ApiToolify.Data.Contratos;
+using ApiToolify.Data.Repositorios;
 using ProyectoDSWToolify.Data.Contratos;
 using ProyectoDSWToolify.Data.Repositorios;
 using ProyectoDSWToolify.Models;
@@ -24,7 +26,7 @@ builder.Services.AddScoped<ICategoria, CategoriaRepo>();
 builder.Services.AddScoped<IProducto, ProductoRepo>();
 builder.Services.AddScoped<IUsuario, UsuarioRepo>();
 builder.Services.AddScoped<IVenta, VentaRepo>();
-
+builder.Services.AddScoped<IUserAuth, UserAuthRepository>();
 #endregion
 
 var app = builder.Build();
