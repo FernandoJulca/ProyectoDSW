@@ -11,6 +11,8 @@ begin
 end
 go
 
+select *from TB_PRODUCTO
+
 create or alter proc sp_Distrito
 @tipo varchar(50),
 @id int

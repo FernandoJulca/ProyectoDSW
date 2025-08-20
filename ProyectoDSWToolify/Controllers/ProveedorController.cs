@@ -67,7 +67,7 @@ namespace ProyectoDSWToolify.Controllers
             return proveedor;
         }
 
-        
+
         private async Task<Proveedor> RegistrarProveedor(Proveedor proveedor)
         {
             Proveedor provedorGuardado = null;
@@ -79,7 +79,7 @@ namespace ProyectoDSWToolify.Controllers
 
                 var msg = await clienteHttp.PostAsync("proveedor", contenidoJson);
                 var data = await msg.Content.ReadAsStringAsync();
-             
+
 
                 provedorGuardado = JsonConvert.DeserializeObject<Proveedor>(data);
             }
@@ -87,8 +87,8 @@ namespace ProyectoDSWToolify.Controllers
 
             return provedorGuardado;
         }
-        
-       
+
+
 
         private async Task<Proveedor> actualizarProveedor(Proveedor proveedor)
         {
@@ -101,7 +101,7 @@ namespace ProyectoDSWToolify.Controllers
 
                 var msg = await clienteHttp.PutAsync($"proveedor/{proveedor.idProveedor}", contenidoJson);
                 var data = await msg.Content.ReadAsStringAsync();
-          
+
                 provedorGuardado = JsonConvert.DeserializeObject<Proveedor>(data);
             }
 
@@ -109,7 +109,8 @@ namespace ProyectoDSWToolify.Controllers
             return provedorGuardado;
         }
 
-        private async Task<int> desactivarProveedor(int id) {
+        private async Task<int> desactivarProveedor(int id)
+        {
             Proveedor proveedorDesactivado = null;
 
             using (var clienteHttp = new HttpClient())
@@ -156,36 +157,42 @@ namespace ProyectoDSWToolify.Controllers
             return RedirectToAction("Index");
         }
 
-            [HttpGet]
-            public IActionResult Actualizar(int id = 0)
-            {
-                ViewBag.Distritos = new SelectList(obtenerListaDistritos().Result, "idDistrito", "nombre");
-
-                var proveedorEncontrado = ObtenerIdProveedor(id).Result;
-                return View(proveedorEncontrado);
-            }
-
-            [HttpPost]
-            public IActionResult Actualizar(Proveedor proveedor)
-            {
-
-                proveedor.distrito = new Distrito { idDistrito = proveedor.distrito.idDistrito };
-                var proveedorGuardado = actualizarProveedor(proveedor).Result;
-                TempData["ExitoActualizar"] = ($"Se actualizo a {proveedor.razonSocial} codigo:{proveedor.idProveedor}");
-
-            return RedirectToAction("Index");
-            }
-
-
         [HttpGet]
+        public IActionResult Actualizar(int id = 0)
+        {
+            ViewBag.Distritos = new SelectList(obtenerListaDistritos().Result, "idDistrito", "nombre");
 
-        public IActionResult Desactivar(int id) {
             var proveedorEncontrado = ObtenerIdProveedor(id).Result;
             return View(proveedorEncontrado);
         }
 
         [HttpPost]
-        [ActionName (name:"Desactivar")]
+        public IActionResult Actualizar(Proveedor proveedor)
+        {
+
+            proveedor.distrito = new Distrito { idDistrito = proveedor.distrito.idDistrito };
+            var proveedorGuardado = actualizarProveedor(proveedor).Result;
+            TempData["ExitoActualizar"] = ($"Se actualizo a {proveedor.razonSocial} codigo:{proveedor.idProveedor}");
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public IActionResult Details(int id) { 
+        
+                return View(ObtenerIdProveedor(id).Result);
+        }
+
+
+        [HttpGet]
+        public IActionResult Desactivar(int id)
+        {
+            var proveedorEncontrado = ObtenerIdProveedor(id).Result;
+            return View(proveedorEncontrado);
+        }
+
+        [HttpPost]
+        [ActionName(name: "Desactivar")]
 
         public IActionResult Desactivar_Confirmar(int id)
         {

@@ -42,9 +42,9 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
-
+app.UseSession();
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Cliente}/{action=Index}/{id?}");
+    pattern: "{controller=Proveedor}/{action=Index}/{id?}");
 
 app.Run();
