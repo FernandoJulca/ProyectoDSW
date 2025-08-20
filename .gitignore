@@ -69,5 +69,5 @@ node_modules/
 #----------------------
 # Variables de entorno(AppSettings)
 #---------------------
-#appsettings.json
-#appsettings.Development.json
+appsettings.json
+appsettings.Development.json

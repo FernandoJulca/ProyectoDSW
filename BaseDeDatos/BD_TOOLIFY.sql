@@ -79,7 +79,7 @@ CREATE TABLE TB_VENTA (
     FECHA DATETIME DEFAULT GETDATE(),
     TOTAL DECIMAL(11,2),
     ESTADO CHAR(1),
-    CONSTRAINT EST_CHECK CHECK (ESTADO IN ('G','P','C')), -- Generado, Pendiente, Cancelado
+    CONSTRAINT EST_CHECK CHECK (ESTADO IN ('G','P','C','T')), -- Generado, Pendiente, Cancelado
     TIPO_VENTA CHAR(1) DEFAULT 'P', -- 'P' (Presencial), 'R' (Remota)
     FOREIGN KEY (ID_USUARIO) REFERENCES TB_USUARIO(ID_USUARIO)
 );
