@@ -266,5 +266,3 @@ end
 go
 
 exec crudProductos 'detalle',54
-
-select * from  TB_PRODUCTO
