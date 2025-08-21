@@ -1,0 +1,21 @@
+﻿.accion-minimalista {
+    text-decoration: none;
+    color: #6c757d;
+    border: 1px solid #dee2e6;
+    border-radius: 1rem;
+    transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
+}
+
+    .accion-minimalista:hover {
+        background-color: #f5f5f5;
+        color: #343a40;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .accion-minimalista i {
+        color: inherit;
+    }
+
+    .accion-minimalista small {
+        color: inherit;
+    }

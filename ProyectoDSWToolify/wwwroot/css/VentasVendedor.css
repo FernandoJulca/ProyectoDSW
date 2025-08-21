@@ -1,0 +1,19 @@
+﻿.badge-hover {
+    transition: background-color 0.2s ease;
+    cursor: default;
+}
+
+    .badge-hover:hover {
+        background-color: rgba(108, 117, 125, 0.8);
+        color: white;
+    }
+
+.btn-hover {
+    transition: background-color 0.2s ease, opacity 0.2s ease;
+}
+
+    .btn-hover:hover {
+        background-color: rgba(96, 108, 172, 0.9) !important;
+        opacity: 0.9;
+        color: white;
+    }
