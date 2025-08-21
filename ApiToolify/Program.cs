@@ -1,3 +1,6 @@
+using ApiToolify.ChatHub;
+using ApiToolify.Data.Contratos;
+using ApiToolify.Data.Repositorios;
 using ProyectoDSWToolify.Data.Contratos;
 using ProyectoDSWToolify.Data.Repositorios;
 using ProyectoDSWToolify.Models;
@@ -12,6 +15,20 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowWebApp",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:5211")
+                  .AllowAnyHeader()
+                  .AllowAnyMethod()
+                  .AllowCredentials();
+        });
+});
+
+builder.Services.AddSignalR();
+
 
 #region Inyeccion de dependecias
 
@@ -24,10 +41,14 @@ builder.Services.AddScoped<ICategoria, CategoriaRepo>();
 builder.Services.AddScoped<IProducto, ProductoRepo>();
 builder.Services.AddScoped<IUsuario, UsuarioRepo>();
 builder.Services.AddScoped<IVenta, VentaRepo>();
-
+builder.Services.AddScoped<IUserAuth, UserAuthRepository>();
 #endregion
 
 var app = builder.Build();
+
+
+
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -35,6 +56,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors("AllowWebApp");
+app.MapHub<ChatHub>("/chatHub");
 
 app.UseHttpsRedirection();
 

@@ -21,14 +21,22 @@ namespace ProyectoDSWToolify.Controllers
         {
             var carrito = HttpContext.Session.GetObjectFromJson<List<Carro>>("carrito") ?? new List<Carro>();
 
+            var usuario = HttpContext.Session.GetObjectFromJson<Usuario>("usuario");
+
+            if (usuario == null)
+            {
+                TempData["ErrorMessage"] = "Necesitas iniciar sesión para poder culminar tu compra.";
+                return RedirectToAction("Login", "UserAuth");
+            }
+
             var viewModel = new CarritoViewModel
             {
                 Carrito = carrito,
-                idUsuario = 2,
-                NombreUsuario = "María Ramírez",
-                Correo = "maria.ramirez@example.com",
-                Direccion = "Calle Real 456",
-                Telefono = "987654322",
+                idUsuario = usuario.idUsuario,
+                NombreUsuario = $"{usuario.nombre} {usuario.apePaterno} {usuario.apeMaterno}",
+                Correo = usuario.correo,
+                Direccion = usuario.direccion,
+                Telefono = usuario.telefono,
                 MetodoPago = "",
                 Tarjeta = new TarjetaViewModel(),
                 Meses = Enumerable.Range(1, 12).Select(m => m.ToString("D2")).ToList(),
@@ -37,6 +45,7 @@ namespace ProyectoDSWToolify.Controllers
 
             return View(viewModel);
         }
+
 
         // ---------- Carrito: Agregar, Quitar, Obtener ----------
 
