@@ -11,8 +11,6 @@ begin
 end
 go
 
-select *from TB_PRODUCTO
-
 create or alter proc sp_Distrito
 @tipo varchar(50),
 @id int
@@ -299,4 +297,57 @@ BEGIN
 	VALUES(@NOMBRES,@APE_MATERNO, @APE_PATERNO, @CORREO,@CLAVE,@NRO_DOC,@DIRECCION,@ID_DISTRITO,@TELEFONO,2)
 	SELECT SCOPE_IDENTITY() AS NewUserId;
 END
+GO
+
+CREATE OR ALTER PROC usp_contarVentasPorMes
+@FechaMes CHAR(7)
+AS
+BEGIN
+    SELECT 
+        COUNT(v.ID_VENTA)
+    FROM TB_VENTA AS v
+    WHERE FORMAT(V.FECHA, 'yyyy-MM') = @FechaMes
+END
+GO
+
+exec usp_contarVentasPorMes '2025-08'
+go
+
+CREATE OR ALTER PROC usp_contarProductosVendidosPorMes
+@FechaMes CHAR(7)
+AS
+	SELECT COALESCE(SUM(d.CANTIDAD), 0) FROM TB_VENTA AS v
+    INNER JOIN TB_DETALLE_VENTA AS d ON v.ID_VENTA = d.ID_VENTA
+    WHERE CONVERT(CHAR(7), v.FECHA, 120) = @FechaMes
+GO
+
+exec usp_contarProductosVendidosPorMes '2025-08'
+go
+
+CREATE OR ALTER PROC usp_contarClientesAtendidosPorMes
+@FechaMes CHAR(7)
+AS
+	SELECT COUNT(DISTINCT v.ID_USUARIO) FROM TB_VENTA AS v
+	INNER JOIN TB_USUARIO AS u ON v.ID_USUARIO = u.ID_USUARIO
+	INNER JOIN TB_ROL AS r ON u.ROL = r.ID_ROL
+	WHERE CONVERT(CHAR(7), v.FECHA, 120) = @FechaMes and r.ID_ROL = 3
+GO
+
+exec usp_contarProductosVendidosPorMes '2025-08'
+go
+
+CREATE OR ALTER PROC usp_obtenerTotalVentas
+AS
+	SELECT COUNT(*) FROM TB_VENTA
+GO
+
+CREATE OR ALTER PROC usp_obtenerTotalProductosVendidos
+AS
+	SELECT COALESCE(SUM(d.CANTIDAD), 0) FROM TB_VENTA AS v
+    INNER JOIN TB_DETALLE_VENTA AS d ON v.ID_VENTA = d.ID_VENTA
+GO
+
+CREATE OR ALTER PROC usp_obtenerIngresosTotales
+AS
+    SELECT COALESCE(SUM(TOTAL), 0) FROM TB_VENTA
 GO
