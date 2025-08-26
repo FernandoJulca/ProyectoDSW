@@ -37,7 +37,7 @@ namespace ApiToolify.Controllers
         [HttpGet("ventas/{idCliente}/pdf/{idVenta}")]
         public IActionResult DescargarVentaPdf(int idCliente,int idVenta)
         {
-            var venta = ventarepo.obtenerVentaPorCliente(idVenta, idCliente);
+            var venta = ventarepo.obtenerVentaPorUsuario(idVenta, idCliente);
             if (venta == null)
                 return NotFound("Venta no encontrada.");
 

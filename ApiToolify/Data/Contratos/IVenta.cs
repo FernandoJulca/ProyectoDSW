@@ -7,6 +7,9 @@ namespace ProyectoDSWToolify.Data.Contratos
     {
         Venta generarVentaCliente(VentaDTO v);
         List<Venta> obtenerPorCliente(int id);
-        Venta obtenerVentaPorCliente(int idVenta, int idUsuario);
+        Venta obtenerVentaPorUsuario(int idVenta, int idUsuario);
+        List<Venta> obtenerPorVendedor(int id);
+        Venta obtenerVentaPorId(int id);
+
     }
 }

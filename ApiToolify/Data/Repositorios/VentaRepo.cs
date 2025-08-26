@@ -163,7 +163,78 @@ namespace ProyectoDSWToolify.Data.Repositorios
 
             return ventas;
         }
-        public Venta obtenerVentaPorCliente(int idVenta, int idUsuario)
+
+        public List<Venta> obtenerPorVendedor(int idUsuario)
+        {
+            var ventas = new List<Venta>();
+
+            using (SqlConnection con = new SqlConnection(cadenaConexion))
+            {
+                using (SqlCommand cmd = new SqlCommand("usp_obtenerHistorialVentas", con))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@ID_USUARIO", idUsuario);
+
+                    con.Open();
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        Dictionary<int, Venta> ventasMap = new();
+
+                        while (reader.Read())
+                        {
+                            int idVenta = Convert.ToInt32(reader["ID_VENTA"]);
+
+                            if (!ventasMap.ContainsKey(idVenta))
+                            {
+                                var venta = new Venta
+                                {
+                                    idVenta = idVenta,
+                                    fecha = Convert.ToDateTime(reader["FECHA"]),
+                                    usuario = new Usuario()
+                                    {
+                                        nombre = reader["NOMBRES"].ToString()
+                                    },
+                                    total = Convert.ToDecimal(reader["TOTAL"]),
+                                    estado = reader["ESTADO"].ToString(),
+                                    tipoVenta = reader["TIPO_VENTA"].ToString(),
+                                    Detalles = new List<DetalleVenta>()
+                                };
+                                ventasMap[idVenta] = venta;
+                            }
+
+                            if (reader["ID_PRODUCTO"] != DBNull.Value)
+                            {
+                                var detalle = new DetalleVenta
+                                {
+                                    producto = new Producto()
+                                    {
+                                        idProducto = Convert.ToInt32(reader["ID_PRODUCTO"]),
+                                        nombre = reader["NOMBRE_PRODUCTO"].ToString(),
+                                        precio = Convert.ToDecimal(reader["PRECIO"])
+                                    },
+                                    cantidad = Convert.ToInt32(reader["CANTIDAD"]),
+                                    subTotal = Convert.ToDecimal(reader["SUB_TOTAL"])
+                                };
+
+                                ventasMap[idVenta].Detalles.Add(detalle);
+                            }
+                        }
+
+                        ventas = ventasMap.Values.ToList();
+                    }
+                }
+            }
+
+            return ventas;
+        }
+
+        public Venta obtenerVentaPorId(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Venta obtenerVentaPorUsuario(int idVenta, int idUsuario)
         {
             Venta venta = null;
 
@@ -225,7 +296,5 @@ namespace ProyectoDSWToolify.Data.Repositorios
 
             return venta;
         }
-
-
     }
 }
