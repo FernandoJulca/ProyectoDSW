@@ -1,14 +1,14 @@
-
-using Microsoft.Extensions.Options;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using ProyectoDSWToolify.Models;
 using ProyectoDSWToolify.Services.Contratos;
 using ProyectoDSWToolify.Services.Implementacion;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// 👇 Agrega servicios para MVC + sesiones
 builder.Services.AddControllersWithViews();
-builder.Services.AddDistributedMemoryCache(); 
+
+builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(30);
@@ -16,20 +16,20 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
-//Add Security to Cookies
-builder.Services.AddAuthentication(
-        Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults
-        .AuthenticationScheme
-    ).AddCookie(options => {
+// 👇 Seguridad: Cookies compartidas con la API
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
         options.LoginPath = "/UserAuth/Login";
         options.LogoutPath = "/Producto/Index";
         options.AccessDeniedPath = "/AccessDenied/Error";
-        options.ExpireTimeSpan = TimeSpan.FromMinutes(30); 
-        options.SlidingExpiration = true;   
-
+        options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+        options.SlidingExpiration = true;
+        options.Cookie.SameSite = SameSiteMode.None;
+        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
     });
 
-#region Inyeccion de URl
+// 👇 Configurar consumo de la API (base URL en appsettings.json)
 builder.Services.AddHttpClient<IClienteService, ClienteService>(client =>
 {
     client.BaseAddress = new Uri(builder.Configuration["Services:URL_API"]);
@@ -42,32 +42,28 @@ builder.Services.AddHttpClient<IUserAuthService, UserAuthService>(client =>
 {
     client.BaseAddress = new Uri(builder.Configuration["Services:URL_API"]);
 });
-#endregion 
-
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// 👇 Middlewares de ejecución
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseSession();
-//a�adiendo cookies para cada login
-app.UseAuthentication();
-
+app.UseSession(); // 🟡 Para guardar datos de usuario
+app.UseAuthentication(); // 🛡️ Cookies de login
 app.UseAuthorization();
 
-
+// 👇 MVC routing
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Producto}/{action=Index}/{id?}");
+    pattern: "{controller=Cliente}/{action=Index}/{id?}");
 
 app.Run();
