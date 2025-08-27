@@ -511,6 +511,125 @@ namespace ProyectoDSWToolify.Data.Repositorios
 
             return obtenerVentaPorId(idVenta);
         }
+        public List<Venta> obtenerVentasRemota()
+        {
+            var ventas = new List<Venta>();
 
+            using (SqlConnection conn = new SqlConnection(cadenaConexion))
+            {
+                using (SqlCommand cmd = new SqlCommand("listarVentasRemotasPendientes", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    conn.Open();
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var venta = new Venta
+                            {
+                                idVenta = Convert.ToInt32(reader["ID_VENTA"]),
+                                fecha = Convert.ToDateTime(reader["FECHA"]),
+                                total = Convert.ToDecimal(reader["TOTAL"]),
+                                estado = reader["ESTADO"].ToString(),
+                                tipoVenta = reader["TIPO_VENTA"].ToString(),
+                                usuario = new Usuario
+                                {
+                                    idUsuario = Convert.ToInt32(reader["ID_USUARIO"]),
+                                    nombre = reader["NOMBRES"].ToString(),
+                                    apePaterno = reader["APE_PATERNO"].ToString(),
+                                    apeMaterno = reader["APE_MATERNO"].ToString(),
+                                    direccion = reader["DIRECCION"].ToString()
+                                },
+                                Detalles = new List<DetalleVenta>()
+                            };
+
+                            ventas.Add(venta);
+                        }
+                    }
+                }
+            }
+
+            return ventas;
+        }
+
+        public List<Venta> obtenerVentasRemotaPendientes()
+        {
+            var ventas = new List<Venta>();
+
+            using (SqlConnection conn = new SqlConnection(cadenaConexion))
+            {
+                using (SqlCommand cmd = new SqlCommand("listarVentasRemotasPendientes", conn))
+                {
+                    cmd.Parameters.AddWithValue("@filtrarEstado", "P");
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    conn.Open();
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var venta = new Venta
+                            {
+                                idVenta = Convert.ToInt32(reader["ID_VENTA"]),
+                                fecha = Convert.ToDateTime(reader["FECHA"]),
+                                total = Convert.ToDecimal(reader["TOTAL"]),
+                                estado = reader["ESTADO"].ToString(),
+                                tipoVenta = reader["TIPO_VENTA"].ToString(),
+                                usuario = new Usuario
+                                {
+                                    idUsuario = Convert.ToInt32(reader["ID_USUARIO"]),
+                                    nombre = reader["NOMBRES"].ToString(),
+                                    apePaterno = reader["APE_PATERNO"].ToString(),
+                                    apeMaterno = reader["APE_MATERNO"].ToString(),
+                                    direccion = reader["DIRECCION"].ToString()
+                                },
+                                Detalles = new List<DetalleVenta>()
+                            };
+
+                            ventas.Add(venta);
+                        }
+                    }
+                }
+            }
+
+            return ventas;
+        }
+        public void CambiarEstadoVenta(int idVenta, string estado)
+        {
+            using (SqlConnection conn = new SqlConnection(cadenaConexion))
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand("cambiarEstadoVenta", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@ID_VENTA", idVenta);
+                    cmd.Parameters.AddWithValue("@ESTADO", estado);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+        public int ContarRemotas(string estado)
+        {
+            int total = 0;
+
+            using (SqlConnection conn = new SqlConnection(cadenaConexion))
+            {
+                conn.Open();
+
+                using (SqlCommand cmd = new SqlCommand("countRemotasPendientes", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@Estado", estado);
+
+
+                    total = Convert.ToInt32(cmd.ExecuteScalar());
+                }
+            }
+
+            return total;
+        }
     }
 }

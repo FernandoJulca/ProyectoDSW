@@ -14,10 +14,14 @@ namespace ProyectoDSWToolify.Data.Contratos
         Venta generarVentaVendedor(VentaDTO v);
         List<Venta> obtenerPorVendedor(int id);
         Venta obtenerVentaPorId(int id);
-
         List<Venta> obtenerLstPedidos();
         Venta editarEstadoVenta(int idVenta, string nuevoEstado);
 
+        //REPARTIDOR
+        List<Venta> obtenerVentasRemota();
+        void CambiarEstadoVenta(int idVenta, string estado);
+        int ContarRemotas(string estado);
+        List<Venta> obtenerVentasRemotaPendientes();
 
     }
 }

@@ -1,0 +1,122 @@
+﻿@{
+    var usuario = Context.Session.GetString("usuario");
+}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"] - Toolify Repartidor</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/izitoast/dist/css/iziToast.min.css" />
+
+    <style>
+        body {
+            padding-top: 4.5rem;
+            background-color: var(--color-gray-50);
+        }
+
+        .navbar-toggler {
+            border: 1px solid #dee2e6 !important;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+        }
+
+            .navbar-toggler:hover {
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            }
+    </style>
+</head>
+<body>
+    <div class="d-flex flex-column min-vh-100">
+        <header class="navbar navbar-expand-lg fixed-top bg-white shadow-sm">
+            <div class="container-fluid px-3 d-flex align-items-center">
+                <!-- Logo con separación -->
+                <a class="navbar-brand fw-bold titulos-Primary me-auto fs-3" asp-controller="Repartidor" asp-action="Index">
+                    Toolify
+                </a>
+
+                <!-- Botón hamburguesa (solo visible en móviles) -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
+                        aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
+                    <i class="fas fa-bars"></i>
+                </button>
+
+                <!-- Navbar (visible en pantallas grandes) -->
+                <div class="navbar-collapse d-none d-lg-flex align-items-center" id="navbarRepartidor" style="flex-grow: 0;">
+                    <ul class="navbar-nav flex-row align-items-center mb-2 mb-lg-0 gap-3">
+                        <li class="nav-item">
+                            <a class="nav-link titulos-Primary @(ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")"
+                               asp-controller="Repartidor" asp-action="Index">
+                                <i class="fas fa-home me-1"></i> Inicio
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link titulos-Primary @(ViewContext.RouteData.Values["action"]?.ToString() == "ListarVentas" ? "active" : "")"
+                               asp-controller="Repartidor" asp-action="ListarVentas">
+                                <i class="fas fa-box me-1"></i> Pedidos
+                            </a>
+                        </li>
+                    </ul>
+
+                    <!-- Botón Cerrar sesión solo en pantallas grandes -->
+                    @if (!string.IsNullOrEmpty(usuario))
+                    {
+                        <form asp-controller="UserAuth" asp-action="Logout" method="post" class="ms-3 d-none d-lg-block">
+                            <button class="btn btn-outline-secondary btn-sm" type="submit">
+                                <i class="fas fa-sign-out-alt me-1"></i> Cerrar sesión
+                            </button>
+                        </form>
+                    }
+                </div>
+            </div>
+        </header>
+
+
+        <div class="offcanvas offcanvas-start bg-white d-lg-none" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title fw-bold" id="offcanvasNavbarLabel">Menú</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body d-flex flex-column justify-content-between p-0">
+                <div class="list-group list-group-flush">
+                    <a class="list-group-item list-group-item-action px-3 py-2"
+                       asp-controller="Repartidor" asp-action="Index">
+                        <i class="fas fa-home me-1"></i> Inicio
+                    </a>
+                    <a class="list-group-item list-group-item-action px-3 py-2"
+                       asp-controller="Repartidor" asp-action="ListarVentas">
+                        <i class="fas fa-box me-1"></i> Pedidos
+                    </a>
+                </div>
+
+                @if (!string.IsNullOrEmpty(usuario))
+                {
+                    <div class="p-3 border-top">
+                        <form asp-controller="UserAuth" asp-action="Logout" method="post">
+                            <button class="btn btn-outline-danger w-100" type="submit">
+                                <i class="fas fa-sign-out-alt me-2"></i> Cerrar sesión
+                            </button>
+                        </form>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <main class="container py-4 flex-grow-1">
+            @RenderBody()
+        </main>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/izitoast/dist/js/iziToast.min.js"></script>
+    @Html.Partial("_SweetAlert")
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

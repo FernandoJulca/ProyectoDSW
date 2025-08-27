@@ -150,7 +150,8 @@
 </div>
 
 <div class="text-center mt-3">
-    @for (int pag = 1; pag < ViewBag.numeroPag; pag++)
+    @for (int pag = 1; pag <= ViewBag.numeroPag; pag++)
+
     {
         bool pagActual = (ViewBag.pagActual == pag);
         <a asp-action="Index"

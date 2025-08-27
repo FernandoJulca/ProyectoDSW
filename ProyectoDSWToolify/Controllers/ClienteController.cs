@@ -133,6 +133,7 @@
                     idCliente = id,
                     Nombre = $"{usuario.nombre} {usuario.apePaterno} {usuario.apeMaterno}",
                     Email = usuario.correo,
+                    UserName = usuario.nombre,
                     HistorialVentas = ventas
                 };
 

@@ -10,7 +10,6 @@ namespace ProyectoDSWToolify.Services.Implementacion
     {
         private readonly HttpClient _httpClient;
 
-
         public VentaService(HttpClient httpClient)
         {
             _httpClient = httpClient;
@@ -46,6 +45,93 @@ namespace ProyectoDSWToolify.Services.Implementacion
             {
                 throw new Exception($"Error al descargar el PDF: {response.StatusCode} - {response.ReasonPhrase}");
             }
+        }
+
+        public async Task<List<Venta>> ListarVentasRemotas()
+        {
+            var response = await _httpClient.GetAsync("venta/ventasPendientesyTransportada");
+            if (response.IsSuccessStatusCode)
+            {
+                var json = await response.Content.ReadAsStringAsync();
+                var ventas = JsonConvert.DeserializeObject<List<Venta>>(json);
+                return ventas;
+            }
+            else
+            {
+                throw new Exception($"Error al obtener las ventas remotas: {response.StatusCode} - {response.ReasonPhrase}");
+            }
+        }
+
+        public async Task<List<Venta>> ListarVentasRemotasPendientes()
+        {
+            var response = await _httpClient.GetAsync("venta/ventasPendientes");
+            if (response.IsSuccessStatusCode)
+            {
+                var json = await response.Content.ReadAsStringAsync();
+                var ventas = JsonConvert.DeserializeObject<List<Venta>>(json);
+                return ventas;
+            }
+            else
+            {
+                throw new Exception($"Error al obtener las ventas remotas: {response.StatusCode} - {response.ReasonPhrase}");
+            }
+        }
+        public async Task ActualizarEstadoVenta(int idVenta)
+        {
+            var response = await _httpClient.PostAsync($"venta/cambiarEstado?idVenta={idVenta}", null);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"Error al actualizar el estado de la venta: {response.StatusCode} - {response.ReasonPhrase}");
+            }
+        }
+
+        public async Task GenerarEstadoVenta(int idVenta)
+        {
+            var response = await _httpClient.PostAsync($"venta/generarEstado?idVenta={idVenta}", null);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"Error al actualizar el estado de la venta: {response.StatusCode} - {response.ReasonPhrase}");
+            }
+        }
+
+        public async Task CancelarEstadoVenta(int idVenta)
+        {
+            var response = await _httpClient.PostAsync($"venta/cancelarEstado?idVenta={idVenta}", null);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"Error al actualizar el estado de la venta: {response.StatusCode} - {response.ReasonPhrase}");
+            }
+        }
+
+        public async Task<int> ContarPendientes()
+        {
+            var response = await _httpClient.GetAsync("venta/pendientescount");
+            if (!response.IsSuccessStatusCode)
+                throw new Exception($"Error al obtener pendientes: {response.StatusCode} - {response.ReasonPhrase}");
+
+            var json = await response.Content.ReadAsStringAsync();
+            var obj = JsonConvert.DeserializeObject<Dictionary<string, int>>(json);
+            return obj["totalPendientes"];
+        }
+
+        public async Task<int> ContarGeneradas()
+        {
+            var response = await _httpClient.GetAsync($"venta/entregadascount");
+            if (!response.IsSuccessStatusCode)
+                throw new Exception($"Error al obtener generadas: {response.StatusCode} - {response.ReasonPhrase}");
+
+            var json = await response.Content.ReadAsStringAsync();
+            var obj = JsonConvert.DeserializeObject<Dictionary<string, int>>(json);
+            return obj["totalEntregadas"];
+        }
+
+        public async Task<Venta> ObtenerVentaPorUsuario(int idVenta)
+        {
+            var lista = await ListarVentasRemotas();
+            return lista.FirstOrDefault(v => v.idVenta == idVenta);
         }
     }
 }
