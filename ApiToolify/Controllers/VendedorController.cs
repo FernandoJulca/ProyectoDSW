@@ -61,8 +61,27 @@ namespace ApiToolify.Controllers
             return Ok(ventas);
         }
 
-        //integrar los procs de venta y detalle
-        //el listado de pedidos pa editar el estado - agregar en el layout el li "Pedidos"
-        //integrar el proc en IVenta y su repo y dsp en este controller
+        [HttpGet("{idVenta}")]
+        public IActionResult ObtenerVentaPorId(int idVenta)
+        {
+            var venta = ventarepo.obtenerVentaPorId(idVenta);
+            return Ok(venta);
+        }
+
+        
+        [HttpGet("pedidos")]
+        public IActionResult ObtenerListaPedidos()
+        {
+            var ventas = ventarepo.obtenerLstPedidos();
+            return Ok(ventas);
+        }
+
+        [HttpPut("{idVenta}")]
+        public IActionResult CambiarEstadoVenta(int idVenta, string nuevoEstado)
+        {
+            var venta = ventarepo.editarEstadoVenta(idVenta, nuevoEstado);
+            return Ok(venta);
+        }
+
     }
 }

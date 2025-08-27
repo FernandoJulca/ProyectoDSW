@@ -34,6 +34,23 @@ namespace ApiToolify.Controllers
                 return BadRequest(new { mensaje = "Error: " + ex.Message });
             }
         }
+
+
+
+        [HttpPost("venta-generada")]
+        public IActionResult GenerarVenta([FromBody] VentaDTO venta)
+        {
+            try
+            {
+                var resultado = ventarepo.generarVentaVendedor(venta);
+                return Ok(new { mensaje = "Compra realizada con éxito", idVenta = resultado.idVenta });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { mensaje = "Error: " + ex.Message });
+            }
+        }
+
         [HttpGet("ventas/{idCliente}/pdf/{idVenta}")]
         public IActionResult DescargarVentaPdf(int idCliente,int idVenta)
         {

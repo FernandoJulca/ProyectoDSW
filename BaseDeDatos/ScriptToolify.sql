@@ -329,7 +329,7 @@ END
 GO
 
 exec usp_obtenerHistorialVentas 3
-
+go
 
 CREATE OR ALTER PROC usp_obtenerListadoPedidos
 AS
@@ -338,20 +338,19 @@ BEGIN
         V.ID_VENTA,
         V.FECHA,
         U.NOMBRES,
-        COUNT(DISTINCT DV.ID_PRODUCTO) AS PRODUCTOS,
-		V.TOTAL,
-        V.ESTADO
+        V.TOTAL,
+        V.ESTADO,
+        V.TIPO_VENTA,
+        P.ID_PRODUCTO,
+        P.NOMBRE AS NOMBRE_PRODUCTO,
+        P.PRECIO,
+        DV.CANTIDAD,
+        DV.SUB_TOTAL
     FROM TB_VENTA V
     INNER JOIN TB_DETALLE_VENTA DV ON V.ID_VENTA = DV.ID_VENTA
     INNER JOIN TB_PRODUCTO P ON DV.ID_PRODUCTO = P.ID_PRODUCTO
     INNER JOIN TB_USUARIO U ON V.ID_USUARIO = U.ID_USUARIO
     WHERE V.TIPO_VENTA = 'P'
-    GROUP BY 
-        V.ID_VENTA, 
-        V.FECHA, 
-        U.NOMBRES, 
-        V.TOTAL, 
-        V.ESTADO
     ORDER BY V.FECHA DESC;
 END
 GO
@@ -385,6 +384,7 @@ END
 GO
 
 EXEC usp_obtenerVentaPorId 4
+go
 
 CREATE OR ALTER PROC usp_editarEstadoVenta
 @ID_VENTA INT,
@@ -394,10 +394,6 @@ AS
 	ESTADO = @ESTADO
 	WHERE ID_VENTA = @ID_VENTA
 GO
-
-usp_editarEstadoVenta 2, 'T'
-
-SELECT * FROM TB_VENTA
 
 CREATE OR ALTER PROC usp_contarVentasPorMes
 @FechaMes CHAR(7)
