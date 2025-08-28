@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ApiToolify.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/reporte")]
     [ApiController]
     public class ReporteController : ControllerBase
     {

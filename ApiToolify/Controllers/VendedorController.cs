@@ -31,7 +31,7 @@ namespace ApiToolify.Controllers
         [HttpGet("productos")]
         public IActionResult ListarProductosByCategorias([FromQuery] int? idCategoria)
         {
-            var productos = productorepo.listProductosCliente().ToList();
+            var productos = productorepo.listProductosVendedor().ToList();
 
             if (idCategoria.HasValue)
             {

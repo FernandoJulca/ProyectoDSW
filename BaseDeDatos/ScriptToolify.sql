@@ -167,6 +167,10 @@ BEGIN
 END
 GO
 
+exec obtenerCompraPorIdCliente 9
+go
+
+
 CREATE OR ALTER PROC obtenerCompraPorIdVenta
     @ID_VENTA INT,
     @ID_USUARIO INT
@@ -195,6 +199,9 @@ BEGIN
     WHERE V.ID_VENTA = @ID_VENTA AND V.ID_USUARIO = @ID_USUARIO
 END
 GO
+
+exec obtenerCompraPorIdVenta 5, 9
+go
 
 -- SCRIPTS PRODUCTOS
 create or alter proc listarProductos
@@ -303,6 +310,7 @@ BEGIN
 END
 GO
 
+
 CREATE OR ALTER PROC usp_obtenerHistorialVentas
     @ID_USUARIO INT
 AS
@@ -328,7 +336,7 @@ BEGIN
 END
 GO
 
-exec usp_obtenerHistorialVentas 3
+exec usp_obtenerHistorialVentas 9
 go
 
 CREATE OR ALTER PROC usp_obtenerListadoPedidos

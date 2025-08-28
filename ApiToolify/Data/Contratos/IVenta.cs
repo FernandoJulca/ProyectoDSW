@@ -8,11 +8,13 @@ namespace ProyectoDSWToolify.Data.Contratos
         //CLIENTE
         Venta generarVentaCliente(VentaDTO v);
         List<Venta> obtenerPorCliente(int id);
-        Venta obtenerVentaPorUsuario(int idVenta, int idUsuario); //metodo compartido
+
+        //COMPARTIDO
+        Venta obtenerVentaPorUsuario(int idVenta, int idUsuario); //metodo compartido pa los detalles de la venta en vista
 
         //VENDEDOR
         Venta generarVentaVendedor(VentaDTO v);
-        List<Venta> obtenerPorVendedor(int id);
+        List<Venta> obtenerPorVendedor(int id); 
         Venta obtenerVentaPorId(int id);
         List<Venta> obtenerLstPedidos();
         Venta editarEstadoVenta(int idVenta, string nuevoEstado);
