@@ -74,6 +74,16 @@
 							Historial
 						</a>
 					</li>
+					<li class="nav-item">
+						<a class="nav-link @(ViewData["Title"]?.ToString()=="Pedidos" ? "activo" : "")" asp-controller="Vendedor" asp-action="Pedidos">
+							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+								 class="bi bi-box-seam me-1" viewBox="0 0 16 16"
+								 aria-hidden="true" role="img" aria-label="Icono de pedidos">
+								<path d="M8.186 1.113a.5.5 0 0 0-.372 0l-6 2.25a.5.5 0 0 0-.314.465v8.344a.5.5 0 0 0 .314.465l6 2.25a.5.5 0 0 0 .372 0l6-2.25a.5.5 0 0 0 .314-.465V3.828a.5.5 0 0 0-.314-.465l-6-2.25Zm-.372 1.198L13 4.243v7.514l-5.186 1.948V2.311ZM2 4.243l5.186-1.93v11.394L2 11.757V4.243Z" />
+							</svg>
+							Pedidos
+						</a>
+					</li>
 				</ul>
 			</div>
 

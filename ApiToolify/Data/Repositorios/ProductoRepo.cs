@@ -71,6 +71,46 @@ namespace ProyectoDSWToolify.Data.Repositorios
             return list;
         }
 
+        public List<Producto> listProductosVendedor()
+        {
+            var list = new List<Producto>();
+            try
+            {
+                using (var cnx = new SqlConnection(cadenaConexion))
+                {
+                    cnx.Open();
+                    using (var cmd = new SqlCommand("usp_listarProductosVendedor", cnx))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        using (var rdr = cmd.ExecuteReader())
+                        {
+                            while (rdr.Read())
+                            {
+                                list.Add(new Producto()
+                                {
+                                    idProducto = rdr.GetInt32(rdr.GetOrdinal("ID_PRODUCTO")),
+                                    nombre = rdr.GetString(rdr.GetOrdinal("NOMBRE")),
+                                    categoria = new Categoria()
+                                    {
+                                        idCategoria = rdr.GetInt32(rdr.GetOrdinal("ID_CATEGORIA")),
+                                        descripcion = rdr.GetString(rdr.GetOrdinal("DESCRIPCION")),
+                                    },
+                                    precio = rdr.GetDecimal(rdr.GetOrdinal("PRECIO")),
+                                    stock = rdr.GetInt32(rdr.GetOrdinal("STOCK"))
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error en usp_listarProductosVendedor: " + ex.Message);
+                list = new List<Producto>();
+            }
+            return list;
+        }
+
         public Producto obtenerPorId(int id)
         {
             return listProductosCliente().FirstOrDefault(producto => producto.idProducto == id);

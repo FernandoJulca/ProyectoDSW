@@ -5,11 +5,20 @@ namespace ProyectoDSWToolify.Services.Contratos
 {
     public interface IVentaService
     {
+        //Cliente
         Task<VentaViewModel> ConfirmarCompra(VentaViewModel v);
+        Task<Venta> ObtenerVentaPorUsuario(int idVenta);
+
+        //Vendedor
+        Task<VentaViewModel> generarVentaVendedor(VentaViewModel v);
+
+        //Compartido
         Task<byte[]> DescargarVentaPdf(int idCliente, int idVenta);
+
+
+        //Repartidor
         Task<List<Venta>> ListarVentasRemotas();
         Task<List<Venta>> ListarVentasRemotasPendientes();
-        Task<Venta> ObtenerVentaPorUsuario(int idVenta);
         Task ActualizarEstadoVenta(int idVenta);
         Task GenerarEstadoVenta(int idVenta);
         Task CancelarEstadoVenta(int idVenta);

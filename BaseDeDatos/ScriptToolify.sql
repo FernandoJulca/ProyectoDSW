@@ -167,6 +167,10 @@ BEGIN
 END
 GO
 
+exec obtenerCompraPorIdCliente 9
+go
+
+
 CREATE OR ALTER PROC obtenerCompraPorIdVenta
     @ID_VENTA INT,
     @ID_USUARIO INT
@@ -196,16 +200,10 @@ BEGIN
 END
 GO
 
-select * from TB_DISTRITO
+exec obtenerCompraPorIdVenta 5, 9
 go
 
-select * From TB_PROVEEDOR where ID_PROVEEDOR = 21
-go
-
-select * From TB_PRODUCTO
-go
-
---SCRIPTS PRODUCTOS
+-- SCRIPTS PRODUCTOS
 create or alter proc listarProductos
 as 
 begin
@@ -299,6 +297,112 @@ BEGIN
 END
 GO
 
+-- INICIO PROCS DE VENDEDOR --
+
+CREATE OR ALTER PROC usp_listarProductosVendedor
+AS
+BEGIN
+	SELECT P.ID_PRODUCTO, P.NOMBRE, P.ID_CATEGORIA, C.DESCRIPCION, PRECIO, STOCK
+	FROM TB_PRODUCTO P
+	JOIN TB_CATEGORIA C ON P.ID_CATEGORIA = C.ID_CATEGORIA 
+	WHERE P.ESTADO = 1
+	ORDER BY 1 ASC
+END
+GO
+
+
+CREATE OR ALTER PROC usp_obtenerHistorialVentas
+    @ID_USUARIO INT
+AS
+BEGIN
+    SELECT 
+        V.ID_VENTA,
+        V.FECHA,
+        U.NOMBRES,
+        V.TOTAL,
+        V.ESTADO,
+        V.TIPO_VENTA,
+        P.ID_PRODUCTO,
+        P.NOMBRE AS NOMBRE_PRODUCTO,
+        P.PRECIO,
+        DV.CANTIDAD,
+        DV.SUB_TOTAL
+    FROM TB_VENTA V
+    INNER JOIN TB_DETALLE_VENTA DV ON V.ID_VENTA = DV.ID_VENTA
+    INNER JOIN TB_PRODUCTO P ON DV.ID_PRODUCTO = P.ID_PRODUCTO
+    INNER JOIN TB_USUARIO U ON V.ID_USUARIO = U.ID_USUARIO
+    WHERE V.ID_USUARIO = @ID_USUARIO
+    ORDER BY V.FECHA DESC;
+END
+GO
+
+exec usp_obtenerHistorialVentas 9
+go
+
+CREATE OR ALTER PROC usp_obtenerListadoPedidos
+AS
+BEGIN
+    SELECT 
+        V.ID_VENTA,
+        V.FECHA,
+        U.NOMBRES,
+        V.TOTAL,
+        V.ESTADO,
+        V.TIPO_VENTA,
+        P.ID_PRODUCTO,
+        P.NOMBRE AS NOMBRE_PRODUCTO,
+        P.PRECIO,
+        DV.CANTIDAD,
+        DV.SUB_TOTAL
+    FROM TB_VENTA V
+    INNER JOIN TB_DETALLE_VENTA DV ON V.ID_VENTA = DV.ID_VENTA
+    INNER JOIN TB_PRODUCTO P ON DV.ID_PRODUCTO = P.ID_PRODUCTO
+    INNER JOIN TB_USUARIO U ON V.ID_USUARIO = U.ID_USUARIO
+    WHERE V.TIPO_VENTA = 'P'
+    ORDER BY V.FECHA DESC;
+END
+GO
+
+CREATE OR ALTER PROC usp_obtenerVentaPorId
+    @ID_VENTA INT
+AS
+BEGIN
+    SELECT 
+        V.ID_VENTA,
+        V.FECHA,
+        U.NOMBRES,
+		U.APE_PATERNO,
+		U.APE_MATERNO,
+		U.NRO_DOC,
+        V.TOTAL,
+        V.ESTADO,
+        V.TIPO_VENTA,
+        P.ID_PRODUCTO,
+        P.NOMBRE AS NOMBRE_PRODUCTO,
+        P.PRECIO,
+        DV.CANTIDAD,
+        DV.SUB_TOTAL
+    FROM TB_VENTA V
+    INNER JOIN TB_DETALLE_VENTA DV ON V.ID_VENTA = DV.ID_VENTA
+    INNER JOIN TB_PRODUCTO P ON DV.ID_PRODUCTO = P.ID_PRODUCTO
+    INNER JOIN TB_USUARIO U ON V.ID_USUARIO = U.ID_USUARIO
+    WHERE V.ID_VENTA = @ID_VENTA
+    ORDER BY V.FECHA DESC;
+END
+GO
+
+EXEC usp_obtenerVentaPorId 4
+go
+
+CREATE OR ALTER PROC usp_editarEstadoVenta
+@ID_VENTA INT,
+@ESTADO CHAR(1)
+AS
+	UPDATE TB_VENTA SET
+	ESTADO = @ESTADO
+	WHERE ID_VENTA = @ID_VENTA
+GO
+
 CREATE OR ALTER PROC usp_contarVentasPorMes
 @FechaMes CHAR(7)
 AS
@@ -351,61 +455,31 @@ CREATE OR ALTER PROC usp_obtenerIngresosTotales
 AS
     SELECT COALESCE(SUM(TOTAL), 0) FROM TB_VENTA
 GO
-/**Repartidor**/
-CREATE OR ALTER PROC listarVentasRemotasPendientes
-    @filtrarEstado CHAR(1) = NULL
+
+CREATE OR ALTER PROC usp_agregarVenta
+    @ID_VENTA INT OUTPUT,
+    @ID_USUARIO INT,
+    @TOTAL DECIMAL(11,2)
 AS
 BEGIN
-    SELECT 
-        V.ID_VENTA,
-        V.FECHA,
-        V.TOTAL,
-        V.ESTADO,
-        V.TIPO_VENTA,
-        U.ID_USUARIO,
-        U.NOMBRES,
-        U.APE_PATERNO,
-        U.APE_MATERNO,
-        U.DIRECCION
-    FROM TB_VENTA V
-    INNER JOIN TB_USUARIO U ON V.ID_USUARIO = U.ID_USUARIO
-    WHERE V.TIPO_VENTA = 'R'
-    AND (
-        (@filtrarEstado IS NULL AND (V.ESTADO = 'P' OR V.ESTADO = 'T'))
-        OR (V.ESTADO = @filtrarEstado)
-    )
+    INSERT INTO TB_VENTA (ID_USUARIO, TOTAL, ESTADO)
+    VALUES (@ID_USUARIO, @TOTAL, 'G');
+
+    SET @ID_VENTA = SCOPE_IDENTITY(); 
 END
 GO
 
-CREATE OR ALTER PROCEDURE cambiarEstadoVenta
+CREATE OR ALTER PROC usp_detalleVenta
     @ID_VENTA INT,
-    @ESTADO CHAR(1)
+    @ID_PRODUCTO INT,
+    @CANTIDAD INT,
+	@SUB_TOTAL DECIMAL(10,2)
 AS
 BEGIN
-    UPDATE TB_VENTA
-    SET ESTADO = @ESTADO
-    WHERE ID_VENTA = @ID_VENTA;
+    INSERT INTO TB_DETALLE_VENTA (ID_VENTA, ID_PRODUCTO, CANTIDAD, SUB_TOTAL)
+    VALUES (@ID_VENTA, @ID_PRODUCTO, @CANTIDAD, @SUB_TOTAL);
 END
 GO
 
-CREATE OR ALTER PROC countRemotasPendientes
-    @Estado CHAR(1)
-AS
-BEGIN
-    IF @Estado = 'E'
-    BEGIN
-        SELECT COUNT(*) AS totalPendientes
-        FROM TB_VENTA
-        WHERE TIPO_VENTA = 'R'
-          AND ESTADO = @Estado
-    END
-    ELSE IF @Estado = 'P'
-    BEGIN
-        SELECT COUNT(*) AS totalPendientes
-        FROM TB_VENTA
-        WHERE TIPO_VENTA = 'R'
-          AND ESTADO = @Estado;
-    END
-END
-GO
+-- FIN PROCS DE VENDEDOR --
 
