@@ -8,5 +8,9 @@ namespace ProyectoDSWToolify.Data.Contratos
         Producto obtenerPorId(int id);
 
         int contadorProductos();
+
+        //Vendedor
+        List<Producto> listProductosVendedor();
+
     }
 }

@@ -133,5 +133,24 @@ namespace ProyectoDSWToolify.Services.Implementacion
             var lista = await ListarVentasRemotas();
             return lista.FirstOrDefault(v => v.idVenta == idVenta);
         }
+
+        public async Task<VentaViewModel> generarVentaVendedor(VentaViewModel v)
+        {
+            var json = JsonConvert.SerializeObject(v);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.PostAsync("venta/venta-generadaa", content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var responseJson = await response.Content.ReadAsStringAsync();
+                var ventaConfirmada = JsonConvert.DeserializeObject<VentaViewModel>(responseJson);
+                return ventaConfirmada;
+            }
+            else
+            {
+                throw new Exception("Error al confirmar la compra: " + response.ReasonPhrase);
+            }
+        }
     }
 }

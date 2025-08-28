@@ -20,7 +20,7 @@ builder.Services.AddCors(options =>
     });
 });
 
-// ?? Autenticación por cookies (asegura que SameSite=None y HTTPS)
+// ?? Autenticaciï¿½n por cookies (asegura que SameSite=None y HTTPS)
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
@@ -48,6 +48,7 @@ builder.Services.AddScoped<IUsuario, UsuarioRepo>();
 builder.Services.AddScoped<IVenta, VentaRepo>();
 builder.Services.AddScoped<IUserAuth, UserAuthRepository>();
 builder.Services.AddScoped<IGrafico, GraficoRepositorio>();
+builder.Services.AddScoped<IReporte, ReporteRepo>();
 
 var app = builder.Build();
 
