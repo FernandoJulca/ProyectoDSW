@@ -455,6 +455,18 @@ begin
 			ORDER BY DATEPART(MONTH, vt.FECHA);
 		end
 
+	if @consulta = 'ventaPorMesAndTipoVenta'
+		begin
+			select  
+				DATENAME(MONTH,FECHA) as mes,
+				TIPO_VENTA as tipoVenta,
+				COUNT(*) as cantidadVentas
+			from TB_VENTA
+			where datepart(year,FECHA) = 2025
+			group by DATENAME(MONTH,FECHA),TIPO_VENTA,DATEPART(MONTH,FECHA)
+			order by DATEPART(MONTH,FECHA) 
+		end
+
 	if @consulta = 'ventaPorDistrito'
 		begin
 			select 
@@ -469,4 +481,6 @@ begin
 end
 go
 
-exec GraficosDatosProcedure 'ventaPorDistrito'
+
+select * from TB_USUARIO
+exec GraficosDatosProcedure 'ventaPorMesAndTipoVenta'
