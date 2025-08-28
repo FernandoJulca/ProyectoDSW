@@ -1,0 +1,39 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/IndexAdministrador.css" />
+}
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/non-cartesian-zoom.js"></script>
+<script src="https://code.highcharts.com/modules/mouse-wheel-zoom.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/themes/adaptive.js"></script>
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/series-label.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+<script src="https://code.highcharts.com/modules/accessibility.js"></script>
+<script src="https://code.highcharts.com/themes/adaptive.js"></script>
+
+<div class="containerGraficos">
+    <div class="grafico1">
+        <figure class="highcharts-figure">
+            <div id="container1"></div>
+        </figure>
+    </div>
+    <div class="grafico2">
+        <figure class="highcharts-figure">
+            <div id="container2"></div>
+        </figure>
+    </div>
+    <div class="grafico3">
+        <h1>GRAFICO 3</h1>
+    </div>
+</div>
+
+<script src="~/js/JsGraficos/GraficoDos.js" defer></script>
+<script src="~/js/JsGraficos/GraficoUno.js"defer></script>

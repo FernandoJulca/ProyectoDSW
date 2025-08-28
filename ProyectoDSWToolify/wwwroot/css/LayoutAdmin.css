@@ -1,0 +1,102 @@
+﻿* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", Arial, sans-serif;
+}
+
+
+.headerAdmin {
+    background-color: #1e293b; 
+    padding: 10px 20px;
+    color: white;
+}
+
+.barraAdmin ul {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+ .barraAdmin ul li {
+     position: relative;
+     cursor: pointer;
+ }
+
+.barraAdmin ul li a {
+    text-decoration: none;
+    color: white;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.barraAdmin ul li a:hover {
+    color: #38bdf8;
+}
+
+     
+.barraAdmin ul li ul {
+    display: none;
+    position: absolute;
+    top: 30px;
+    left: 0;
+    background-color: #334155;
+    border-radius: 6px;
+    padding: 10px 0;
+    min-width: 180px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.barraAdmin ul li:hover ul {
+    display: block;
+}
+
+.barraAdmin ul li ul li {
+    padding: 8px 15px;
+}
+.barraAdmin ul li ul li a {
+        color: #f8fafc;
+        font-size: 14px;
+}
+
+.barraAdmin ul li ul li a:hover {
+        color: #38bdf8;
+    }
+
+.bodyAdmin {
+
+    background-color: #f1f5f9;
+    min-height: calc(100vh - 100px);
+    padding: 20px;
+    justify-content: center; 
+    align-items: center; 
+    min-height: 100vh; 
+    background: #f4f4f9; 
+}
+
+.container header h1 {
+    font-size: 22px;
+    margin-bottom: 20px;
+    color: #1e293b;
+}
+
+.contenidoContainer {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    min-height: 81dvh; 
+    max-height: 90dvh;
+    overflow-y: auto; 
+    border: 5px solid red;
+}
+
+
+.footerAdmin {
+    background-color: #1e293b;
+    color: #cbd5e1;
+    text-align: center;
+    padding: 15px 0;
+    font-size: 14px;
+}

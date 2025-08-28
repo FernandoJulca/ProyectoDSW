@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<title>@ViewData["Title"] - Admin</title>
+	<link rel="stylesheet" href="~/css/LayoutAdmin.css" />
+
+	@RenderSection("Styles", required: false)
+</head>
+<body>
+
+	<header class="headerAdmin">
+		<nav class="barraAdmin">
+			<ul class="">
+				<li><a href="#"></a>DashBoard</li>
+				<li><a href="">Mi perfil</a></li>
+				<li>
+					Listados
+					<ul>
+						<li><a href="#"></a>Listado Proveedor</li>
+						<li><a href="#"></a>Listado Productos</li>
+					</ul>
+				</li>
+				<li>
+					Reportes
+					<ul>
+						<li><a href="#"></a>Reporte 1 </li>
+						<li><a href="#"></a>Reporte 2</li>
+					</ul>
+				</li>
+			</ul>
+		</nav>
+	</header>
+	<main class="bodyAdmin">
+		<div class="container">
+			<header>
+				<h1>Panel de administración</h1>
+			</header>
+
+			<div class="contenidoContainer">
+				@RenderBody()
+			</div>
+		</div>
+	</main>
+	<footer class="footerAdmin">
+		<p>&copy; @DateTime.Now.Year - Toolify</p>
+	</footer>
+
+</body>
+</html>

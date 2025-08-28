@@ -388,6 +388,10 @@ BEGIN
 END
 GO
 
+select * from TB_USUARIO
+go
+
+
 CREATE OR ALTER PROC countRemotasPendientes
     @Estado CHAR(1)
 AS
@@ -409,3 +413,60 @@ BEGIN
 END
 GO
 
+
+
+--SCRPITS GRAFICOS
+
+
+CREATE OR ALTER PROC GraficosDatosProcedure
+@consulta varchar(50)
+as
+begin
+	if @consulta = 'categoriaProducto'
+		begin
+			SELECT 
+				ct.DESCRIPCION,
+			sum(p.STOCK) as totalProdutos
+			FROM TB_PRODUCTO p
+			inner join TB_CATEGORIA ct on p.ID_CATEGORIA = ct.ID_CATEGORIA
+			group by  ct.DESCRIPCION
+			ORDER BY 2 asc
+		end
+   
+   if @consulta = 'proveedorProducto'
+		begin
+			SELECT 
+				pv.RAZON_SOCIAL,
+			sum(p.STOCK) as totalProdutos
+			FROM TB_PRODUCTO p
+			inner join TB_PROVEEDOR pv on p.ID_PROVEEDOR = pv.ID_PROVEEDOR
+			group by  pv.RAZON_SOCIAL
+			ORDER BY 2 asc
+		end
+
+	if @consulta = 'ventaPorMes'
+		begin
+			select 
+			DATENAME(MONTH,vt.FECHA)as Mes,
+			count(*) AS Ventas_totales
+			from TB_VENTA vt
+			where DATEPART(YEAR,vt.FECHA) = 2025
+			GROUP BY DATENAME(MONTH, vt.FECHA), DATEPART(MONTH, vt.FECHA)
+			ORDER BY DATEPART(MONTH, vt.FECHA);
+		end
+
+	if @consulta = 'ventaPorDistrito'
+		begin
+			select 
+			dt.NOMBRE as distrito,
+			count(*) as ventasTotales 
+			from TB_VENTA vt
+			inner join TB_USUARIO us on vt.ID_USUARIO = us.ID_USUARIO
+			inner join TB_DISTRITO dt on us.ID_DISTRITO = dt.ID_DISTRITO
+			group by dt.NOMBRE
+			order by ventasTotales
+		end
+end
+go
+
+exec GraficosDatosProcedure 'ventaPorDistrito'
