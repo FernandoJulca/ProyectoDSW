@@ -1,6 +1,6 @@
-/*SCRIPTS TOOLIFY*/
-USE BD_TOOLIFY
-GO
+	/*SCRIPTS TOOLIFY*/
+	USE BD_TOOLIFY
+	GO
 
 create or alter proc listarProveedores
 as
@@ -10,6 +10,7 @@ begin
 	INNER JOIN TB_DISTRITO dt ON pv.ID_DISTRITO = dt.ID_DISTRITO where pv.ESTADO = 1
 end
 go
+
 
 create or alter proc sp_Distrito
 @tipo varchar(50),

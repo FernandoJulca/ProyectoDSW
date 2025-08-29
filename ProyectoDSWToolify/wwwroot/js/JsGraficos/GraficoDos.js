@@ -40,7 +40,7 @@
                     }
                 },
                 tooltip: {
-                    valueSuffix: '%'
+                    valueSuffix: ' unidades'
                 },
                 plotOptions: {
                     pie: {
@@ -68,7 +68,7 @@
                 },
                 series: [
                     {
-                        name: 'Percentage',
+                        name: 'Productos',
                         colorByPoint: true,
                         data: seriesData
                     }

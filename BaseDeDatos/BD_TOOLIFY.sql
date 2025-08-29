@@ -311,3 +311,6 @@ VALUES
 (6, '2025-12-26', 310.20, 'G', 'R'),
 (7, '2025-12-30', 1200.00, 'P', 'P');
 
+select * from TB_USUARIO
+insert into TB_USUARIO(NOMBRES, APE_MATERNO, APE_PATERNO, CORREO, CLAVE, NRO_DOC, DIRECCION, ID_DISTRITO, TELEFONO, ROL, FECHA_REGISTRO)
+values ('Victor', 'Garcia', 'Narazas','victor123@example.com','clave123','99887766','Surquillo-Lima',1,'928856652',1, GETDATE())

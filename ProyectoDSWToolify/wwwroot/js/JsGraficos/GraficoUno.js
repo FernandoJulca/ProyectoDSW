@@ -18,7 +18,7 @@
                     data: meses.map(mes => {
                         const registro = data.find(d => d.mes === mes && d.tipoVenta === tipo);
                        
-                        return regisztro ? registro.cantidadVentas : 0;
+                        return registro ? registro.cantidadVentas : 0;
                     })
                 };
             });
