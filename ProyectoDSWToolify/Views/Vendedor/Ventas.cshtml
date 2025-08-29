@@ -56,12 +56,14 @@
         </div>
     </div>
 
+    <!-- En tu vista .cshtml, en algún lugar dentro del <body> -->
+    <input type="hidden" id="currentUserId" value="@ViewBag.IdUsuario" />
     <!-- Modal Productos -->
     <div class="modal fade" id="modalProductos" tabindex="-1">
         <div class="modal-dialog modal-lg modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Catálogo de Productos</h5>
+                    <h5 class="modal-title" id="modalProductosLabel">Catálogo de Productos</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
@@ -81,7 +83,7 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="modal-footer">
+                <div id="alert-placeholder">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                 </div>
             </div>
@@ -90,5 +92,5 @@
 </div>
 
 @section Scripts {
-    <script src="~/js/ventas.js"></script>
+    <script src="~/js/VentasVendedor.js"></script>
 }

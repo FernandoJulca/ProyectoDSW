@@ -79,6 +79,32 @@ namespace ProyectoDSWToolify.Controllers
                 return NotFound(ex.Message);
             }
         }
+        public async Task<IActionResult> ListarProductos()
+        {
+            try
+            {
+                var productos = await _vendedorService.ListProductosVendedorAsync();
+                return Json(productos);
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GenerarVentaVendedor([FromBody] VentaViewModel v)
+        {
+            try
+            {
+                var venta = await _ventaService.GenerarVentaVendedor(v);
+                return Json(venta);
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
         #endregion
 
         public IActionResult Index()
@@ -97,7 +123,18 @@ namespace ProyectoDSWToolify.Controllers
 
         public IActionResult Ventas()
         {
+            var usuarioJson = HttpContext.Session.GetString("usuario");
+            if (string.IsNullOrEmpty(usuarioJson))
+            {
+                TempData["ErrorMessage"] = "Necesitas iniciar sesión para acceder a tu perfil.";
+                return RedirectToAction("Login", "UserAuth");
+            }
 
+            var usuario = System.Text.Json.JsonSerializer.Deserialize<Usuario>(usuarioJson);
+
+            int id = usuario.idUsuario;
+
+            ViewBag.IdUsuario = id;
             return View();
         }
 
