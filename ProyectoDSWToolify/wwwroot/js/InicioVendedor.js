@@ -9,8 +9,8 @@
     const correoUsuario = document.getElementById("correoUsuario");
 
     let usuario = {
-        nombre: "Odetari God",
-        correo: "usuario@correo.com",
+        nombre: "Juan",
+        correo: "juan.gonzales@example.com",
         foto: null
     };
 

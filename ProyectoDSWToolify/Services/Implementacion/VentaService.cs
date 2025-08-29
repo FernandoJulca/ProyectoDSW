@@ -33,9 +33,9 @@ namespace ProyectoDSWToolify.Services.Implementacion
                 throw new Exception("Error al confirmar la compra: " + response.ReasonPhrase);
             }
         }
-        public async Task<byte[]> DescargarVentaPdf(int idCliente, int idVenta)
+        public async Task<byte[]> DescargarVentaPdf(int idUsuario, int idVenta)
         {
-            var response = await _httpClient.GetAsync($"venta/ventas/{idCliente}/pdf/{idVenta}");
+            var response = await _httpClient.GetAsync($"venta/ventas/{idUsuario}/pdf/{idVenta}");
 
             if (response.IsSuccessStatusCode)
             {

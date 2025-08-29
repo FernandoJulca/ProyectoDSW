@@ -3,7 +3,9 @@ using Newtonsoft.Json;
 using ProyectoDSWToolify.Models;
 using ProyectoDSWToolify.Models.ViewModels;
 using ProyectoDSWToolify.Services.Contratos;
+
 using ProyectoDSWToolify.Services.Implementacion;
+
 
 namespace ProyectoDSWToolify.Controllers
 {
@@ -50,34 +52,80 @@ namespace ProyectoDSWToolify.Controllers
 
             return Json(metricas);
         }
+
+        public async Task<IActionResult> DescargarVentaPdf(int idUsuario, int idVenta)
+        {
+            try
+            {
+                var pdfBytes = await _ventaService.DescargarVentaPdf(idUsuario, idVenta);
+                return File(pdfBytes, "application/pdf", $"venta_{idVenta}.pdf");
+            }
+            catch (Exception ex)
+            {
+                // Maneja error (por ejemplo, mostrar mensaje)
+                return NotFound(ex.Message);
+            }
+        }
+
+        public async Task<IActionResult> DetalleVenta(int idVenta)
+        {
+            try
+            {
+                var venta = await _vendedorService.ObtenerVentaPorId(idVenta);
+                return Json(venta);
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
         #endregion
 
         public IActionResult Index()
         {
+            /*
+            var usuarioJson = HttpContext.Session.GetString("usuario");
+            if (string.IsNullOrEmpty(usuarioJson))
+            {
+                TempData["ErrorMessage"] = "Necesitas iniciar sesión para acceder a tu perfil.";
+                return RedirectToAction("Login", "UserAuth");
+            }
+            */
             return View();
+            
         }
 
         public IActionResult Ventas()
         {
+
             return View();
         }
 
-        public IActionResult Historial()
+        [HttpGet]
+        public async Task <IActionResult> Historial()
         {
-            /*var usuarioJson = HttpContext.Session.GetString("usuario");
+            var usuarioJson = HttpContext.Session.GetString("usuario");
             if (string.IsNullOrEmpty(usuarioJson))
             {
                 TempData["ErrorMessage"] = "Necesitas iniciar sesión para acceder a tu perfil.";
                 return RedirectToAction("Login", "UserAuth");
             }
 
-            var usuario = JsonSerializer.Deserialize<Usuario>(usuarioJson);
+            var usuario = System.Text.Json.JsonSerializer.Deserialize<Usuario>(usuarioJson);
+
             int id = usuario.idUsuario;
 
             var ventas = await _vendedorService.ObtenerLstVentasAsync(id);
-            */
 
-            return View();
+            var listado = new ListadoHistorialViewModel
+            {
+                idVendedor = id,
+                Nombre = $"{usuario.nombre} {usuario.apePaterno} {usuario.apeMaterno}",
+                UserName = usuario.nombre,
+                HistorialVentas = ventas
+            };
+
+            return View(listado);
         }
 
         public IActionResult Pedidos()

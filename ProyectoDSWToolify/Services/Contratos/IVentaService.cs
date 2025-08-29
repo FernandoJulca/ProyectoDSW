@@ -13,7 +13,7 @@ namespace ProyectoDSWToolify.Services.Contratos
         Task<VentaViewModel> generarVentaVendedor(VentaViewModel v);
 
         //Compartido
-        Task<byte[]> DescargarVentaPdf(int idCliente, int idVenta);
+        Task<byte[]> DescargarVentaPdf(int idUsuario, int idVenta);
 
 
         //Repartidor

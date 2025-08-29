@@ -38,7 +38,7 @@
 							 style="width:80px; height:80px; object-fit:cover;" />
 
 						<div class="flex-grow-1">
-							<h5 class="mb-0" id="nombreUsuario"></h5>
+							<h5 class="mb-0" id="nombreUsuario">@User.Identity.Name</h5>
 							<p class="text-secondary mb-2" id="correoUsuario"></p>
 
 							<button type="button" class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-1 px-3"
@@ -143,11 +143,11 @@
 						<small>Revisar ventas anteriores</small>
 					</div>
 				</a>
-				<a asp-controller="Vendedor" asp-action="Index" class="accion-minimalista d-flex flex-column align-items-center gap-2 p-4 flex-fill">
-					<i class="bi bi-people fs-1"></i>
+				<a asp-controller="Vendedor" asp-action="Pedidos" class="accion-minimalista d-flex flex-column align-items-center gap-2 p-4 flex-fill">
+					<i class="bi bi-box fs-1"></i>
 					<div class="text-center">
-						<div class="fw-medium">Mis Clientes</div>
-						<small>Gestionar contactos</small>
+						<div class="fw-medium">Mis Pedidos</div>
+						<small>Gestionar pedidos</small>
 					</div>
 				</a>
 			</div>
