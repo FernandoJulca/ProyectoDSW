@@ -3,25 +3,20 @@
     cargarVentas();
 });
 
-async function cargarDatosTotales() {
-    try {
-        const [ventas, productos, ingresos] = await Promise.all([
-            fetch("Reporte/totalVentas").then(r => r.json()),
-            fetch("Reporte/totalProductosVendidos").then(r => r.json()),
-            fetch("Reporte/ingresosTotales").then(r => r.json())
-        ]);
 
-        document.getElementById("totalVentas").textContent = ventas;
-        document.getElementById("totalProductos").textContent = productos;
-        document.getElementById("ingresosTotales").textContent = `S/ ${ingresos.toFixed(2)}`;
-    } catch (error) {
-        console.error("Error cargando datos totales:", error);
-    }
-}
+fetch("/Vendedor/DatosTotales", { cache: "no-store" })
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById("totalVentas").textContent = data.totalVentas;
+        document.getElementById("totalProductos").textContent = data.totalProductosVendidos;
+        document.getElementById("ingresosTotales").textContent = `S/ ${data.ingresosTotales.toFixed(2)}`;
+    })
+    .catch(err => console.error("Error al cargar datos totales:", err));
+
 
 async function cargarVentas() {
     try {
-        const ventas = await fetch("/Reporte/ventas").then(r => r.json());
+        const ventas = await fetch("/Vendedor/Historial").then(r => r.json());
         const tbody = document.getElementById("tablaVentas");
         tbody.innerHTML = "";
 

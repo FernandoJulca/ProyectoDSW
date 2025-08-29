@@ -50,13 +50,13 @@
     });
 
     // CONUSMIR ENDPOINT API REST del controller
-    fetch("/Reporte/DatosMensuales")
+    fetch("/Vendedor/DatosMensuales", { cache: "no-store" })
         .then(res => res.json())
         .then(data => {
-            document.getElementById("ventasMensual").textContent = data.ventas;
-            document.getElementById("prodsVendidosMensual").textContent = data.productos;
-            document.getElementById("clisAtendidosMensual").textContent = data.clientes;
-            document.getElementById("ingresosMensuales").textContent = data.ingresos.toFixed(2);
+            document.getElementById("ventasMensual").textContent = data.ventasMensuales;
+            document.getElementById("prodsVendidosMensual").textContent = data.productosMensuales;
+            document.getElementById("clisAtendidosMensual").textContent = data.clientesMensuales;
+            document.getElementById("ingresosMensuales").textContent = data.ingresosMensuales.toFixed(2);
         })
         .catch(err => console.error("Error al cargar datos mensuales:", err));
 });
