@@ -50,6 +50,8 @@ builder.Services.AddScoped<IUserAuth, UserAuthRepository>();
 builder.Services.AddScoped<IGrafico, GraficoRepositorio>();
 builder.Services.AddScoped<IReporte, ReporteRepo>();
 
+builder.Services.AddScoped<IReportes, RepositorioReportes>();
+
 var app = builder.Build();
 
 // ?? Middleware

@@ -581,3 +581,45 @@ go
 
 select * from TB_USUARIO
 exec GraficosDatosProcedure 'ventaPorMesAndTipoVenta'
+go
+
+create or alter proc ListadoVentaFechaAndTipoVenta
+@fechaInicio datetime,
+@fechaFin datetime,
+@tipoVenta CHAR(1) = null
+as
+begin
+	select  v.ID_VENTA, CONCAT(us.NOMBRES, ' ',us.APE_PATERNO) as nombresCompletos,
+			us.DIRECCION, cast (v.FECHA as date) fechaGenerada, v.TOTAL, v.ESTADO, v.TIPO_VENTA
+	from TB_VENTA v 
+	inner join TB_USUARIO us 
+	on v.ID_USUARIO = us.ID_USUARIO
+	where v.FECHA between @fechaInicio AND @fechaFin
+	AND (@tipoVenta IS NULL OR V.TIPO_VENTA = @tipoVenta)
+end
+go
+
+EXEC ListadoVentaFechaAndTipoVenta '2025-01-12','2025-03-01'
+SELECT * FROM TB_VENTA
+go
+
+
+CREATE OR ALTER PROC ListarProductosPorCategoria
+    @idCategoria INT,
+    @orden VARCHAR(4) = 'ASC'
+AS
+BEGIN
+    SELECT p.ID_PRODUCTO,p.NOMBRE, p.DESCRIPCION, pd.RAZON_SOCIAL,c.DESCRIPCION,p.PRECIO,p.STOCK,p.FECHA_REGISTRO 
+    FROM TB_PRODUCTO p
+    INNER JOIN TB_CATEGORIA c ON p.ID_CATEGORIA = c.ID_CATEGORIA
+	inner join TB_PROVEEDOR pd  on  p.ID_PROVEEDOR = pd.ID_PROVEEDOR
+    WHERE c.ID_CATEGORIA = @idCategoria
+    ORDER BY
+        CASE WHEN @orden = 'ASC' THEN p.STOCK END ASC,
+        CASE WHEN @orden = 'DESC' THEN p.STOCK END DESC;
+END
+GO
+
+exec ListarProductosPorCategoria 3,'DESC'
+
+
