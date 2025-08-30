@@ -584,8 +584,8 @@ exec GraficosDatosProcedure 'ventaPorMesAndTipoVenta'
 go
 
 create or alter proc ListadoVentaFechaAndTipoVenta
-@fechaInicio datetime,
-@fechaFin datetime,
+@fechaInicio datetime = null,
+@fechaFin datetime = null,
 @tipoVenta CHAR(1) = null
 as
 begin
@@ -594,18 +594,19 @@ begin
 	from TB_VENTA v 
 	inner join TB_USUARIO us 
 	on v.ID_USUARIO = us.ID_USUARIO
-	where v.FECHA between @fechaInicio AND @fechaFin
-	AND (@tipoVenta IS NULL OR V.TIPO_VENTA = @tipoVenta)
+	where (@fechaInicio IS NULL OR v.FECHA >= @fechaInicio)
+		AND (@fechaFin IS NULL OR v.FECHA <= @fechaFin)
+		AND (@tipoVenta IS NULL OR V.TIPO_VENTA = @tipoVenta)
 end
 go
 
-EXEC ListadoVentaFechaAndTipoVenta '2025-01-12','2025-03-01'
-SELECT * FROM TB_VENTA
+EXEC ListadoVentaFechaAndTipoVenta 
+SELECT * FROM TB_VENTA where ID_VENTA = 41
 go
 
 
 CREATE OR ALTER PROC ListarProductosPorCategoria
-    @idCategoria INT,
+    @idCategoria INT = null,
     @orden VARCHAR(4) = 'ASC'
 AS
 BEGIN
@@ -613,13 +614,13 @@ BEGIN
     FROM TB_PRODUCTO p
     INNER JOIN TB_CATEGORIA c ON p.ID_CATEGORIA = c.ID_CATEGORIA
 	inner join TB_PROVEEDOR pd  on  p.ID_PROVEEDOR = pd.ID_PROVEEDOR
-    WHERE c.ID_CATEGORIA = @idCategoria
+    WHERE (@idCategoria IS NULL OR c.ID_CATEGORIA = @idCategoria)
     ORDER BY
         CASE WHEN @orden = 'ASC' THEN p.STOCK END ASC,
         CASE WHEN @orden = 'DESC' THEN p.STOCK END DESC;
 END
 GO
 
-exec ListarProductosPorCategoria 3,'DESC'
+exec ListarProductosPorCategoria 
 
 

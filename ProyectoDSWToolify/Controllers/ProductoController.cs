@@ -254,7 +254,7 @@ namespace ProyectoDSWToolify.Controllers
                 if (listado.Count != 0)
                 {
                     TempData["ExitoFiltros"] = mensaje;
-                }
+                }   
                 else
                 {
                     listado = ListaCompleta().Result;

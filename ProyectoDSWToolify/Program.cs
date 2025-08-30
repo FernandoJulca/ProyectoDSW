@@ -72,6 +72,6 @@ app.UseAuthorization();
 // 👇 MVC routing
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Cliente}/{action=Index}/{id?}");
+    pattern: "{controller=Admin}/{action=Index}/{id?}");
 
 app.Run();

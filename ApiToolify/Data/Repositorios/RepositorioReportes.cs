@@ -1,4 +1,5 @@
-﻿using ApiToolify.Data.Contratos;
+﻿using System.Data;
+using ApiToolify.Data.Contratos;
 using ApiToolify.Models.DTO;
 using Microsoft.Data.SqlClient;
 
@@ -13,10 +14,11 @@ namespace ApiToolify.Data.Repositorios
             config = configuration;
             cadenaConexion = config["ConnectionStrings:DB"];
         }
-        public List<ListadoVentaFechaAndTipoVentaDTO> ListadoPorMesAndTipoVenta(DateTime fechaInicio, DateTime fechaFin, string? tipoVenta )
+        public List<ListadoVentaFechaAndTipoVentaDTO> ListadoPorMesAndTipoVenta(DateTime? fechaInicio, DateTime? fechaFin, string? tipoVenta)
         {
             List<ListadoVentaFechaAndTipoVentaDTO> listado = new List<ListadoVentaFechaAndTipoVentaDTO>();
-            try {
+            try
+            {
                 using (SqlConnection cn = new SqlConnection(cadenaConexion))
                 {
                     cn.Open();
@@ -24,13 +26,23 @@ namespace ApiToolify.Data.Repositorios
                     {
                         cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
+                       
                         cmd.Parameters.AddWithValue("@fechaInicio", fechaInicio);
                         cmd.Parameters.AddWithValue("@fechaFin", fechaFin);
                         cmd.Parameters.AddWithValue("@tipoVenta", tipoVenta);
 
-                        using (SqlDataReader r = cmd.ExecuteReader()) {
-                            if (r.HasRows) {
-                                while (r.Read()) {
+
+                        System.Diagnostics.Debug.WriteLine("------------INICIANDO EL METODO ListadoPorMesAndTipoVenta API REPOSITORIO -----------------");
+                        System.Diagnostics.Debug.WriteLine("fecha INICIO obetnida API  " + fechaInicio);
+                        System.Diagnostics.Debug.WriteLine("Fecha FIN obtenida API: " + fechaFin);
+                        System.Diagnostics.Debug.WriteLine("TIPO VENTA  obtenida API: " + tipoVenta);
+                        System.Diagnostics.Debug.WriteLine("------------FIN EL METODO ListadoPorMesAndTipoVenta API REPOSITORIO -----------------");
+                        using (SqlDataReader r = cmd.ExecuteReader())
+                        {
+                            if (r.HasRows)
+                            {
+                                while (r.Read())
+                                {
                                     listado.Add(new ListadoVentaFechaAndTipoVentaDTO()
                                     {
                                         idVenta = r.IsDBNull(0) ? 0 : r.GetInt32(0),
@@ -48,14 +60,16 @@ namespace ApiToolify.Data.Repositorios
 
                 }
                 return listado;
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 System.Diagnostics.Debug.WriteLine("Error en CategoriaProducto: " + ex.Message);
                 throw;
             }
-          
+
         }
 
-        public List<ListarProductosPorCategoriaDTO> ListarProductosPorCategoria(int idCategoria, string? orden)
+        public List<ListarProductosPorCategoriaDTO> ListarProductosPorCategoria(int? idCategoria, string? orden)
         {
             List<ListarProductosPorCategoriaDTO> listado = new List<ListarProductosPorCategoriaDTO>();
             try
@@ -69,7 +83,7 @@ namespace ApiToolify.Data.Repositorios
 
                         cmd.Parameters.AddWithValue("@idCategoria", idCategoria);
                         cmd.Parameters.AddWithValue("@orden", orden);
-                      
+
 
                         using (SqlDataReader r = cmd.ExecuteReader())
                         {
