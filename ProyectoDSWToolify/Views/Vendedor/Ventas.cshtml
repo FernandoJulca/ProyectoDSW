@@ -7,6 +7,9 @@
     <div class="min-vh-100 bg-light p-4">
         <div class="container-xl mx-auto">
             <!-- Encabezado -->
+            <div id="alert-placeholder">
+            </div>
+
             <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-lg-between gap-4">
                 <div>
                     <h1 class="fs-3 fw-bold text-dark d-flex align-items-center gap-2">
@@ -56,13 +59,20 @@
         </div>
     </div>
 
+    <!-- En tu vista .cshtml, en algún lugar dentro del <body> -->
+    <input type="hidden" id="currentUserId" value="@ViewBag.IdUsuario" />
+
     <!-- Modal Productos -->
     <div class="modal fade" id="modalProductos" tabindex="-1">
         <div class="modal-dialog modal-lg modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Catálogo de Productos</h5>
+                    <h5 class="modal-title" id="modalProductosLabel">Catálogo de Productos</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="d-flex flex-column flex-md-row gap-2 mb-3 ">
+                    <!-- Barra de búsqueda -->
+                    <input type="text" id="txtBusqueda" class="form-control" placeholder="Buscar producto...">
                 </div>
                 <div class="modal-body">
                     <table class="table table-hover">
@@ -81,14 +91,12 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                </div>
+
             </div>
         </div>
     </div>
 </div>
 
 @section Scripts {
-    <script src="~/js/ventas.js"></script>
+    <script src="~/js/VentasVendedor.js"></script>
 }

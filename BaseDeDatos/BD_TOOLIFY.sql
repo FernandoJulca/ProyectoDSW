@@ -79,7 +79,7 @@ CREATE TABLE TB_VENTA (
     FECHA DATETIME DEFAULT GETDATE(),
     TOTAL DECIMAL(11,2),
     ESTADO CHAR(1),
-    CONSTRAINT EST_CHECK CHECK (ESTADO IN ('G','P','C','T', 'E')), -- Generado, Pendiente, Cancelado
+    CONSTRAINT EST_CHECK CHECK (ESTADO IN ('G','P','C','T','E')),-- Generado, Pendiente, Cancelado
     TIPO_VENTA CHAR(1) DEFAULT 'P', -- 'P' (Presencial), 'R' (Remota)
     FOREIGN KEY (ID_USUARIO) REFERENCES TB_USUARIO(ID_USUARIO)
 );
@@ -210,7 +210,7 @@ INSERT INTO TB_PRODUCTO (NOMBRE, DESCRIPCION, ID_PROVEEDOR, ID_CATEGORIA, PRECIO
 ('Tanque Agua Pressurizado 120L', 'Tanque con bomba', 11, 8, 780.00, 15, NULL),
 ('Tanque Agua Pressurizado 220L', 'Tanque con bomba', 11, 8, 980.00, 12, NULL),
 ('Porcelanato Gris Mate 60x120cm', 'Porcelanato gris mate', 10, 9, 160.00, 40, NULL),
-('Porcelanato Blanco Brillo', 'Porcelanato blanco brillo 60x60', 10, 9, 150.00, 45, NULL),
+
 ('Piso Cerámico 60x60cm', 'Cerámica interior lisa', 10, 10, 65.00, 100, NULL);
 
 --datos prueba para las ventas 
@@ -311,6 +311,9 @@ VALUES
 (6, '2025-12-26', 310.20, 'G', 'R'),
 (7, '2025-12-30', 1200.00, 'P', 'P');
 
-select * from TB_USUARIO
+select * from TB_USUARIO;
 insert into TB_USUARIO(NOMBRES, APE_MATERNO, APE_PATERNO, CORREO, CLAVE, NRO_DOC, DIRECCION, ID_DISTRITO, TELEFONO, ROL, FECHA_REGISTRO)
 values ('Victor', 'Garcia', 'Narazas','victor123@example.com','clave123','99887766','Surquillo-Lima',1,'928856652',1, GETDATE())
+
+('Piso Cerámico 60x60cm', 'Cerámica interior lisa', 10, 10, 65.00, 100, NULL);
+

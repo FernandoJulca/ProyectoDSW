@@ -1,50 +1,104 @@
 ﻿document.addEventListener("DOMContentLoaded", () => {
-    cargarDatosTotales();
-    cargarVentas();
+
 });
 
-async function cargarDatosTotales() {
-    try {
-        const [ventas, productos, ingresos] = await Promise.all([
-            fetch("Reporte/totalVentas").then(r => r.json()),
-            fetch("Reporte/totalProductosVendidos").then(r => r.json()),
-            fetch("Reporte/ingresosTotales").then(r => r.json())
-        ]);
+const botonesDetalle = document.querySelectorAll('.btn-detalle-venta');
+const modalBody = document.querySelector('#detalleVentaModal .modal-body');
+const modalTitle = document.querySelector('#detalleVentaModal .modal-title');
 
-        document.getElementById("totalVentas").textContent = ventas;
-        document.getElementById("totalProductos").textContent = productos;
-        document.getElementById("ingresosTotales").textContent = `S/ ${ingresos.toFixed(2)}`;
-    } catch (error) {
-        console.error("Error cargando datos totales:", error);
-    }
-}
+fetch("/Vendedor/DatosTotales", { cache: "no-store" })
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById("totalVentas").textContent = data.totalVentas;
+        document.getElementById("totalProductos").textContent = data.totalProductosVendidos;
+        document.getElementById("ingresosTotales").textContent = `S/ ${data.ingresosTotales.toFixed(2)}`;
+    })
+    .catch(err => console.error("Error al cargar datos totales:", err));
 
-async function cargarVentas() {
-    try {
-        const ventas = await fetch("/Reporte/ventas").then(r => r.json());
-        const tbody = document.getElementById("tablaVentas");
-        tbody.innerHTML = "";
+botonesDetalle.forEach(boton => {
+    boton.addEventListener('click', function () {
 
-        ventas.forEach(v => {
-            const tr = document.createElement("tr");
-            tr.innerHTML = `
-                <td class="font-monospace">#${v.id}</td>
-                <td>${new Date(v.fecha).toLocaleDateString()}</td>
-                <td class="fw-medium">${v.cliente}</td>
-                <td>${v.vendedor}</td>
-                <td><span class="badge bg-light text-dark">${v.productos} productos</span></td>
-                <td class="fw-bold">S/. ${v.total.toFixed(2)}</td>
-                <td><span class="badge ${v.estado === "Completada" ? "bg-success" : "bg-warning"} text-white">${v.estado}</span></td>
-                <td>
-                    <button class="btn btn-outline-secondary btn-sm me-1"><i class="bi bi-eye"></i></button>
-                    <button class="btn btn-outline-secondary btn-sm"><i class="bi bi-download"></i></button>
-                </td>
-            `;
-            tbody.appendChild(tr);
-        });
+        const idVenta = this.getAttribute('data-idventa');
 
-        document.getElementById("cantidadVentas").textContent = `${ventas.length} resultados`;
-    } catch (error) {
-        console.error("Error cargando ventas:", error);
-    }
-}
+        modalBody.innerHTML = '<p class="text-center text-muted">Cargando detalles de la venta...</p>';
+        modalTitle.textContent = 'Detalle de Venta...';
+
+        fetch(`/Vendedor/DetalleVenta?idVenta=${idVenta}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error al obtener los datos de la venta.');
+                }
+                return response.json();
+            })
+            .then(data => {
+                modalTitle.textContent = `Detalle de Venta #${data.idVenta}`;
+
+                modalBody.innerHTML = '';
+
+                const estadoTexto = data.estado === "G" ? "Generado" :
+                    data.estado === "T" ? "Transportado" :
+                        data.estado === "E" ? "Entregado" :
+                            data.estado === "P" ? "Pendiente" :
+                                data.estado === "C" ? "Cancelado" :
+                                    "Desconocido";
+
+                const estadoClase = data.estado === "G" ? "bg-warning" :
+                    data.estado === "T" ? "bg-info" :
+                        data.estado === "E" ? "bg-success" :
+                            data.estado === "C" ? "bg-danger" :
+                                "bg-secondary";
+
+                const htmlContent = `
+                        <p><strong>Vendedor:</strong> ${data.usuario.nombre}</p>
+                        <p><strong>Documento:</strong> ${data.usuario.nroDoc}</p>
+                        <p><strong>Fecha:</strong> ${new Date(data.fecha).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</p>
+                        <p><strong>Total:</strong> S/. ${data.total.toFixed(2)}</p>
+                        <p>
+                            <strong>Estado:</strong>
+                            <span class="badge ${estadoClase} text-white">${estadoTexto}</span>
+                        </p>
+                        <hr>
+                        <h6>Productos</h6>
+                        <table class="table table-sm table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Producto</th>
+                                    <th>Cantidad</th>
+                                    <th>Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody id="detalles-productos">
+                                <!-- Los detalles de los productos se insertarán aquí dinámicamente -->
+                            </tbody>
+                        </table>
+                    `;
+
+                modalBody.innerHTML = htmlContent;
+
+                const tbody = document.getElementById('detalles-productos');
+                if (data.detalles && data.detalles.length > 0) {
+                    data.detalles.forEach(det => {
+                        const row = document.createElement('tr');
+
+                        row.innerHTML = `
+                                <td>${det.producto.nombre}</td>
+                                <td>${det.cantidad}</td>
+                                <td>S/. ${det.subTotal.toFixed(2)}</td>
+                            `;
+                        tbody.appendChild(row);
+                    });
+                } else {
+
+                    const row = document.createElement('tr');
+                    row.innerHTML = `<td colspan="3" class="text-muted text-center">No hay detalles de productos para esta venta.</td>`;
+                    tbody.appendChild(row);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+
+                modalBody.innerHTML = `<p class="text-center text-danger">Ocurrió un error: ${error.message}</p>`;
+            });
+    });
+});
+

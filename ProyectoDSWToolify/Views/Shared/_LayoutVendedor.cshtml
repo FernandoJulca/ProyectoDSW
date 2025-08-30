@@ -74,6 +74,7 @@
 							Historial
 						</a>
 					</li>
+					<!--
 					<li class="nav-item">
 						<a class="nav-link @(ViewData["Title"]?.ToString()=="Pedidos" ? "activo" : "")" asp-controller="Vendedor" asp-action="Pedidos">
 							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -84,6 +85,7 @@
 							Pedidos
 						</a>
 					</li>
+					-->
 				</ul>
 			</div>
 
@@ -97,7 +99,7 @@
 					</button>
 					<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownCuenta">
 						<li>
-							<form method="post" asp-controller="Cuenta" asp-action="Logout">
+							<form method="post" asp-controller="UserAuth" asp-action="Logout">
 								<button class="dropdown-item d-flex align-items-center gap-2 btn-ancho" type="submit">
 									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor"
 										 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
