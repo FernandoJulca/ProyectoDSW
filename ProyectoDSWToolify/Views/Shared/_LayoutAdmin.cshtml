@@ -110,8 +110,8 @@
 						<div class="profile_name">@User.Identity.Name @User.FindFirst("Apellido")?.Value</div>
 					<div class="job">Administrador</div>
 				</div>
-					<form method="post" asp-controller="Cuenta" asp-action="Logout">
-						<i class='bx  bx-door-open'></i>
+					<form method="post" asp-controller="UserAuth" asp-action="Logout">
+						<button type="submit"><i class='bx  bx-door-open'></i></button>
 					</form>
 				
 	</div>
