@@ -3,13 +3,8 @@
     let seleccionados = [];
     let carrito = [];
 
-<<<<<<< HEAD
-    const apiUrl = "/api/Producto"; // cambia según tu endpoint
-    const apiVentaUrl = "/api/venta";
-=======
     const apiUrl = "/Vendedor/ListarProductos";
     const apiVentaUrl = "/Vendedor/GenerarVentaVendedor";
->>>>>>> 9f0a12c96a2f0e6987545508b7cf69b2c3bf0f76
 
     const tablaProductos = document.getElementById("tablaProductos");
     const contenedorSeleccionados = document.getElementById("contenedorSeleccionados");
