@@ -109,14 +109,14 @@ namespace ProyectoDSWToolify.Controllers
 
         public IActionResult Index()
         {
-            /*
+            
             var usuarioJson = HttpContext.Session.GetString("usuario");
             if (string.IsNullOrEmpty(usuarioJson))
             {
                 TempData["ErrorMessage"] = "Necesitas iniciar sesión para acceder a tu perfil.";
                 return RedirectToAction("Login", "UserAuth");
             }
-            */
+            
             return View();
             
         }
