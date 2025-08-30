@@ -73,7 +73,7 @@ function actualizarContadorCarrito() {
         .then(response => response.json())
         .then(data => {
             const contadorElems = document.querySelectorAll('.top-counter');
-            const totalCantidad = data.reduce((sum, item) => sum + item.cantidad, 0);
+            const totalCantidad = data.length;
             contadorElems.forEach(elem => {
                 elem.textContent = totalCantidad;
             });
