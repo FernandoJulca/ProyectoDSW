@@ -47,7 +47,10 @@ builder.Services.AddScoped<IProducto, ProductoRepo>();
 builder.Services.AddScoped<IUsuario, UsuarioRepo>();
 builder.Services.AddScoped<IVenta, VentaRepo>();
 builder.Services.AddScoped<IUserAuth, UserAuthRepository>();
+builder.Services.AddScoped<IGrafico, GraficoRepositorio>();
 builder.Services.AddScoped<IReporte, ReporteRepo>();
+
+builder.Services.AddScoped<IReportes, RepositorioReportes>();
 
 var app = builder.Build();
 

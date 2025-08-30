@@ -4,6 +4,7 @@
 <link rel="stylesheet" href="~/css/EstilosChay.css"/>
 @{
     ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
 <h1>Index</h1>
@@ -137,34 +138,3 @@
 }
     </tbody>
 </table>
-
-
-
-
-<!--<div class="section-chat">
-    <div cite="headerChat"> </div>
-    <div class="bodyChat"> </div>
-    <div class="footerChat">
-        <input id="idMensajeEnviar" type="number" class="numero" placeholder="A quien deseas enviar mensaje"/>
-        <input id="txtMensaje" type="text" class="mensajes" placeholder="Escribe..." />
-        <button onclick="enviarMensaje(parseInt(document.getElementById('idMensajeEnviar').value), document.getElementById('txtMensaje').value)">Enviar</button>
-    </div>
-</div>
--->
-<div class="chatsContainer"> 
-<div class="headerChat"> 
-    <div class="title">
-        <h3>Chat de mensajes</h3>
-    </div>
-</div>
-<div class="bodyChat"> 
-
-</div>
-<div class="footerChat">
-    <input id="idMensajeEnviar" type="number" class="numero" placeholder="A quien deseas enviar mensaje" />
-    <input id="txtMensaje" type="text" class="mensajes" placeholder="Escribe..." />
-    <button onclick="enviarMensaje()">Enviar</button>
-</div>
-</div>
-
-<script src="~/js/ChatHub.js"></script>

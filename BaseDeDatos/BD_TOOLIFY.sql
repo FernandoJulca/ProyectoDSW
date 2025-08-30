@@ -210,5 +210,110 @@ INSERT INTO TB_PRODUCTO (NOMBRE, DESCRIPCION, ID_PROVEEDOR, ID_CATEGORIA, PRECIO
 ('Tanque Agua Pressurizado 120L', 'Tanque con bomba', 11, 8, 780.00, 15, NULL),
 ('Tanque Agua Pressurizado 220L', 'Tanque con bomba', 11, 8, 980.00, 12, NULL),
 ('Porcelanato Gris Mate 60x120cm', 'Porcelanato gris mate', 10, 9, 160.00, 40, NULL),
-('Porcelanato Blanco Brillo', 'Porcelanato blanco brillo 60x60', 10, 9, 150.00, 45, NULL),
+
 ('Piso Cerámico 60x60cm', 'Cerámica interior lisa', 10, 10, 65.00, 100, NULL);
+
+--datos prueba para las ventas 
+
+INSERT INTO TB_USUARIO 
+(NOMBRES, APE_PATERNO, APE_MATERNO, CORREO, CLAVE, NRO_DOC, DIRECCION, ID_DISTRITO, TELEFONO, ROL)
+VALUES
+('Lucía', 'Morales', 'Castillo', 'lucia.morales@gmail.com', 'abc123', '33445566', 'Av. San Martín 101', 1, '921345678', 2),
+('Diego', 'Suárez', 'Rojas', 'diego.suarez@gmail.com', 'abc123', '44556677', 'Calle Central 202', 2, '934567890', 2),
+('Andrea', 'Vega', 'Campos', 'andrea.vega@gmail.com', 'abc123', '55667788', 'Jr. Primavera 303', 3, '945678901', 2);
+
+select * from TB_USUARIO where ROL = 2
+go
+
+INSERT INTO TB_VENTA (ID_USUARIO, FECHA, TOTAL, ESTADO, TIPO_VENTA)
+VALUES
+-- ENERO (3 registros)
+(2, '2025-01-12', 220.50, 'P', 'P'),
+(5, '2025-01-25', 310.75, 'G', 'R'),
+(6, '2025-01-30', 180.00, 'C', 'P'),
+
+-- FEBRERO (3 registros)
+(7, '2025-02-05', 450.20, 'P', 'R'),
+(2, '2025-02-14', 390.00, 'G', 'P'),
+(5, '2025-02-28', 600.10, 'C', 'R'),
+
+-- MARZO (4 registros)
+(6, '2025-03-03', 270.50, 'G', 'P'),
+(7, '2025-03-11', 150.00, 'P', 'R'),
+(2, '2025-03-20', 340.40, 'C', 'P'),
+(5, '2025-03-27', 710.30, 'P', 'R'),
+
+-- ABRIL (7 registros)
+(6, '2025-04-02', 560.15, 'G', 'P'),
+(7, '2025-04-05', 890.00, 'P', 'R'),
+(2, '2025-04-10', 420.75, 'C', 'P'),
+(5, '2025-04-14', 310.20, 'G', 'R'),
+(6, '2025-04-18', 799.90, 'P', 'P'),
+(7, '2025-04-22', 260.40, 'C', 'R'),
+(2, '2025-04-28', 675.50, 'G', 'P'),
+
+-- MAYO (7 registros)
+(5, '2025-05-03', 500.25, 'P', 'P'),
+(6, '2025-05-07', 910.10, 'G', 'R'),
+(7, '2025-05-12', 350.00, 'C', 'P'),
+(2, '2025-05-15', 470.85, 'P', 'R'),
+(5, '2025-05-19', 289.60, 'G', 'P'),
+(6, '2025-05-23', 630.00, 'C', 'R'),
+(7, '2025-05-28', 780.45, 'P', 'P'),
+
+-- JUNIO (6 registros)
+(2, '2025-06-01', 245.90, 'G', 'R'),
+(5, '2025-06-06', 550.75, 'P', 'P'),
+(6, '2025-06-10', 325.40, 'C', 'R'),
+(7, '2025-06-15', 880.00, 'G', 'P'),
+(2, '2025-06-20', 710.25, 'P', 'R'),
+(5, '2025-06-26', 295.50, 'C', 'P'),
+
+-- JULIO (6 registros)
+(6, '2025-07-02', 420.00, 'G', 'P'),
+(7, '2025-07-06', 610.30, 'P', 'R'),
+(2, '2025-07-11', 370.75, 'C', 'P'),
+(5, '2025-07-16', 805.50, 'P', 'R'),
+(6, '2025-07-21', 260.20, 'G', 'P'),
+(7, '2025-07-29', 910.80, 'C', 'R'),
+
+-- AGOSTO (6 registros)
+(2, '2025-08-03', 235.20, 'G', 'P'),
+(5, '2025-08-08', 890.10, 'P', 'R'),
+(6, '2025-08-13', 430.00, 'C', 'P'),
+(7, '2025-08-18', 720.60, 'G', 'R'),
+(2, '2025-08-22', 580.25, 'P', 'P'),
+(5, '2025-08-27', 315.90, 'C', 'R'),
+
+-- SEPTIEMBRE (3 registros)
+(6, '2025-09-05', 220.40, 'G', 'P'),
+(7, '2025-09-12', 455.75, 'P', 'R'),
+(2, '2025-09-20', 300.00, 'C', 'P'),
+
+-- OCTUBRE (3 registros)
+(5, '2025-10-04', 615.90, 'G', 'R'),
+(6, '2025-10-11', 280.00, 'P', 'P'),
+(7, '2025-10-28', 750.30, 'C', 'R'),
+
+-- NOVIEMBRE (3 registros)
+(2, '2025-11-03', 490.20, 'G', 'P'),
+(5, '2025-11-15', 350.00, 'P', 'R'),
+(6, '2025-11-26', 810.10, 'C', 'P'),
+
+-- DICIEMBRE (9 registros)
+(7, '2025-12-01', 999.90, 'G', 'P'),
+(2, '2025-12-04', 750.00, 'P', 'R'),
+(5, '2025-12-07', 540.25, 'C', 'P'),
+(6, '2025-12-10', 860.10, 'G', 'R'),
+(7, '2025-12-14', 420.75, 'P', 'P'),
+(2, '2025-12-18', 670.40, 'C', 'R'),
+(5, '2025-12-22', 930.00, 'P', 'P'),
+(6, '2025-12-26', 310.20, 'G', 'R'),
+(7, '2025-12-30', 1200.00, 'P', 'P');
+
+select * from TB_USUARIO;
+insert into TB_USUARIO(NOMBRES, APE_MATERNO, APE_PATERNO, CORREO, CLAVE, NRO_DOC, DIRECCION, ID_DISTRITO, TELEFONO, ROL, FECHA_REGISTRO)
+values ('Victor', 'Garcia', 'Narazas','victor123@example.com','clave123','99887766','Surquillo-Lima',1,'928856652',1, GETDATE())
+
+('Piso Cerámico 60x60cm', 'Cerámica interior lisa', 10, 10, 65.00, 100, NULL);
+

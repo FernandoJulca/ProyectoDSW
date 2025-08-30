@@ -22,7 +22,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     {
         options.LoginPath = "/UserAuth/Login";
         options.LogoutPath = "/Producto/Index";
-        options.AccessDeniedPath = "/AccessDenied/Error";
+        options.AccessDeniedPath = "/AccesoDenegado/Error";
         options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
         options.SlidingExpiration = true;
         options.Cookie.SameSite = SameSiteMode.None;

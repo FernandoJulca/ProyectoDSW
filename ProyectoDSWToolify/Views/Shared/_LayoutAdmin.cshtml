@@ -1,0 +1,163 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<title>@ViewData["Title"] - Admin</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+	<link href='https://cdn.boxicons.com/fonts/basic/boxicons.min.css' rel='stylesheet'>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/izitoast/dist/css/iziToast.min.css">
+	<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+
+	<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+	<link rel="stylesheet" href="~/ProyectoDSWToolify.styles.css" asp-append-version="true" />
+
+	<link rel="stylesheet" href="~/css/LayoutAdmin.css" asp-append-version="true" />
+
+	@RenderSection("Styles", required: false)
+</head>
+<body>
+	<div class="sidebar">
+		<div class="logo-details">
+			<i class='bx  bx-apartment'></i>
+			<span class="logo_name">
+				Toolify
+			</span>
+		</div>
+		<ul class="nav-links">
+			<li>
+				<a asp-controller="Admin" asp-action="Index" class="link_name">
+					<i class='bx  bx-grid-column-right'></i>
+					<span class="link_name">
+						DashBoard
+					</span>
+				</a>
+				<ul class="sub-menu blank">
+					<li>
+						<a href="#" class="link_name">Listado Proveedores</a>
+					</li>
+
+				</ul>
+			</li>
+
+			<li>
+				<a href="#">
+					<i class='bx  bx-contact-book'></i>
+					<span class="link_name">Mi Perfil</span>
+				</a>
+			</li>
+
+			<li>
+				<div class="iocn-link">
+					<a href="#">
+						<i class='bx  bx-form'></i>
+						<span class="link_name">Listados</span>
+					</a>
+					<i class='bx bx-chevron-down arrow'></i>
+				</div>
+				<ul class="sub-menu">
+					<li>
+						<a asp-controller="Proveedor" asp-action="Index" class="link_name">Listado Proveedores</a>
+					</li>
+					<li>
+						<a asp-controller="Producto" asp-action="Index" class="link_name">Listado Productos</a>
+					</li>
+				</ul>
+			</li>
+
+			<li>
+				<div class="iocn-link">
+					<a href="#">
+						<i class='bx  bx-form'></i>
+						<span class="link_name">Reportes</span>
+					</a>
+					<i class='bx bx-chevron-down arrow'></i>
+				</div>
+				<ul class="sub-menu">
+					<li>
+						<a asp-controller="Admin" asp-action="Reporte1" class="link_name">Reporte 1</a>
+
+					</li>
+					<li>
+						<a asp-controller="Admin" asp-action="Reporte2" class="link_name">Reporte 2</a>
+					</li>
+				</ul>
+			</li>
+
+			<li>
+				<a href="#">
+					<i class='bx  bx-cog'></i>
+					<span class="link_name">
+						Configuracion
+					</span>
+				</a>
+				<ul class="sub-menu blank">
+					<li>
+						<a href="#" class="link_name">Configuracion</a>
+					</li>
+				</ul>
+			</li>
+			<li>
+			<div class="profile-details">
+				<div class="profile-content">
+					<img src="~/uploads/ft.png" alt="profile" />
+				</div>
+			
+				<div class="name-job">
+						<div class="profile_name">@User.Identity.Name @User.FindFirst("Apellido")?.Value</div>
+					<div class="job">Administrador</div>
+				</div>
+					<form method="post" asp-controller="UserAuth" asp-action="Logout">
+						<button type="submit"><i class='bx  bx-door-open'></i></button>
+					</form>
+				
+	</div>
+	</li>
+	</ul>
+	</div>
+
+	<section class="home-section">
+		<div class="home-content">
+			<i class='bx  bx-menu'></i>
+			<span class="text">Barra Desplegable</span>
+		</div>
+		<main class="bodyAdmin">
+			<div class="container">
+				<header>
+					<h1>Panel de administración</h1>
+				</header>
+
+				<div class="contenidoContainer">
+					@RenderBody()
+				</div>
+			</div>
+		</main>
+	</section>
+
+
+
+
+	<script>
+		let arrow = document.querySelectorAll(".arrow");
+		console.log(arrow);
+		for( var i = 0; i<arrow.length; i++){
+			arrow[i].addEventListener("click",(e)=>{
+		let arrowParent = e.target.parentElement.parentElement;
+		console.log(arrowParent);
+		arrowParent.classList.toggle("showMenu")
+			});
+		}
+		let sidebar = document.querySelector(".sidebar");
+		let sidebarBtn = document.querySelector(".bx-menu");
+
+		sidebarBtn.addEventListener("click", ()=>{
+			sidebar.classList.toggle("close")
+
+		})
+				console.log(sidebarBtn);
+	</script>
+</body>
+</html>

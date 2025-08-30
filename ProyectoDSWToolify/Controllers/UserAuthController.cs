@@ -67,6 +67,7 @@ namespace ProyectoDSWToolify.Controllers
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name , usuario.nombre),
+                new Claim ("Apellido", usuario.apePaterno),
                 new Claim("Correo" , usuario.correo),
                 new Claim("UserId", usuario.idUsuario.ToString())
             };

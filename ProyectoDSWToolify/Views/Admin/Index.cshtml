@@ -1,0 +1,55 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/IndexAdministrador.css" />
+}
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/non-cartesian-zoom.js"></script>
+<script src="https://code.highcharts.com/modules/mouse-wheel-zoom.js"></script>
+<script src="https://code.highcharts.com/themes/adaptive.js"></script>
+<script src="https://code.highcharts.com/modules/series-label.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+<script src="https://code.highcharts.com/modules/accessibility.js"></script>
+<script src="https://code.highcharts.com/modules/variable-pie.js"></script>
+
+
+
+<div class="containerGraficos">
+    <div  class="grafico1">
+        <figure class="highcharts-figure">
+            <div id="container1"></div>
+        </figure>
+    </div>
+    <div class="grafico2">
+        <figure class="highcharts-figure">
+            <div id="container2"></div>
+        </figure>
+    </div>
+    <div class="grafico3">
+        <figure class="highcharts-figure">
+            <div id="container3"></div>
+        </figure>
+    </div>
+    <div class="grafico4">
+        <figure class="highcharts-figure">
+            <div id="container4"></div>
+        </figure>
+    </div>
+    <div class="grafico5">
+        <figure class="highcharts-figure">
+            <div id="container5"></div>
+        </figure>
+    </div>
+
+
+</div>
+
+<script src="~/js/JsGraficos/GraficoDos.js" defer></script>
+<script src="~/js/JsGraficos/GraficoUno.js"defer></script>
+<script src="~/js/JsGraficos/Grafico3.js" defer></script>
+<script src="~/js/JsGraficos/GraficoCinco.js" defer></script>

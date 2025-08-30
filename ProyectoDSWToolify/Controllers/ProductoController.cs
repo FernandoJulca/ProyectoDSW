@@ -2,6 +2,7 @@
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Azure;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -12,6 +13,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ProyectoDSWToolify.Controllers
 {
+    [Authorize(Roles = "A")]
     public class ProductoController : Controller
     {
 
@@ -252,7 +254,7 @@ namespace ProyectoDSWToolify.Controllers
                 if (listado.Count != 0)
                 {
                     TempData["ExitoFiltros"] = mensaje;
-                }
+                }   
                 else
                 {
                     listado = ListaCompleta().Result;

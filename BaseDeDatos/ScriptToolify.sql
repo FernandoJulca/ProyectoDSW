@@ -1,6 +1,6 @@
-/*SCRIPTS TOOLIFY*/
-USE BD_TOOLIFY
-GO
+	/*SCRIPTS TOOLIFY*/
+	USE BD_TOOLIFY
+	GO
 
 create or alter proc listarProveedores
 as
@@ -10,6 +10,7 @@ begin
 	INNER JOIN TB_DISTRITO dt ON pv.ID_DISTRITO = dt.ID_DISTRITO where pv.ESTADO = 1
 end
 go
+
 
 create or alter proc sp_Distrito
 @tipo varchar(50),
@@ -481,7 +482,144 @@ BEGIN
 END
 GO
 
+
+select * from TB_USUARIO
+go
+
+
+CREATE OR ALTER PROC countRemotasPendientes
+    @Estado CHAR(1)
+AS
+BEGIN
+    IF @Estado = 'E'
+    BEGIN
+        SELECT COUNT(*) AS totalPendientes
+        FROM TB_VENTA
+        WHERE TIPO_VENTA = 'R'
+          AND ESTADO = @Estado
+    END
+    ELSE IF @Estado = 'P'
+    BEGIN
+        SELECT COUNT(*) AS totalPendientes
+        FROM TB_VENTA
+        WHERE TIPO_VENTA = 'R'
+          AND ESTADO = @Estado;
+    END
+END
+GO
+
 -- FIN PROCS DE VENDEDOR --
+
+-- SCRPITS GRAFICOS --
+CREATE OR ALTER PROC GraficosDatosProcedure
+@consulta varchar(50)
+as
+begin
+	if @consulta = 'categoriaProducto'
+		begin
+			SELECT 
+				ct.DESCRIPCION,
+			sum(p.STOCK) as totalProdutos
+			FROM TB_PRODUCTO p
+			inner join TB_CATEGORIA ct on p.ID_CATEGORIA = ct.ID_CATEGORIA
+			group by  ct.DESCRIPCION
+			ORDER BY 2 asc
+		end
+   
+   if @consulta = 'proveedorProducto'
+		begin
+			SELECT 
+				pv.RAZON_SOCIAL,
+			sum(p.STOCK) as totalProdutos
+			FROM TB_PRODUCTO p
+			inner join TB_PROVEEDOR pv on p.ID_PROVEEDOR = pv.ID_PROVEEDOR
+			group by  pv.RAZON_SOCIAL
+			ORDER BY 2 asc
+		end
+
+	if @consulta = 'ventaPorMes'
+		begin
+			select 
+			DATENAME(MONTH,vt.FECHA)as Mes,
+			count(*) AS Ventas_totales
+			from TB_VENTA vt
+			where DATEPART(YEAR,vt.FECHA) = 2025
+			GROUP BY DATENAME(MONTH, vt.FECHA), DATEPART(MONTH, vt.FECHA)
+			ORDER BY DATEPART(MONTH, vt.FECHA);
+		end
+
+	if @consulta = 'ventaPorMesAndTipoVenta'
+		begin
+			select  
+				DATENAME(MONTH,FECHA) as mes,
+				TIPO_VENTA as tipoVenta,
+				COUNT(*) as cantidadVentas
+			from TB_VENTA
+			where datepart(year,FECHA) = 2025
+			group by DATENAME(MONTH,FECHA),TIPO_VENTA,DATEPART(MONTH,FECHA)
+			order by DATEPART(MONTH,FECHA) 
+		end
+
+	if @consulta = 'ventaPorDistrito'
+		begin
+			select 
+			dt.NOMBRE as distrito,
+			count(*) as ventasTotales 
+			from TB_VENTA vt
+			inner join TB_USUARIO us on vt.ID_USUARIO = us.ID_USUARIO
+			inner join TB_DISTRITO dt on us.ID_DISTRITO = dt.ID_DISTRITO
+			group by dt.NOMBRE
+			order by ventasTotales
+		end
+end
+go
+
+
+select * from TB_USUARIO
+exec GraficosDatosProcedure 'ventaPorMesAndTipoVenta'
+go
+
+create or alter proc ListadoVentaFechaAndTipoVenta
+@fechaInicio datetime = null,
+@fechaFin datetime = null,
+@tipoVenta CHAR(1) = null
+as
+begin
+	select  v.ID_VENTA, CONCAT(us.NOMBRES, ' ',us.APE_PATERNO) as nombresCompletos,
+			us.DIRECCION, cast (v.FECHA as date) fechaGenerada, v.TOTAL, v.ESTADO, v.TIPO_VENTA
+	from TB_VENTA v 
+	inner join TB_USUARIO us 
+	on v.ID_USUARIO = us.ID_USUARIO
+	where (@fechaInicio IS NULL OR v.FECHA >= @fechaInicio)
+		AND (@fechaFin IS NULL OR v.FECHA <= @fechaFin)
+		AND (@tipoVenta IS NULL OR V.TIPO_VENTA = @tipoVenta)
+end
+go
+
+EXEC ListadoVentaFechaAndTipoVenta 
+SELECT * FROM TB_VENTA where ID_VENTA = 41
+go
+
+
+CREATE OR ALTER PROC ListarProductosPorCategoria
+    @idCategoria INT = null,
+    @orden VARCHAR(4) = 'ASC'
+AS
+BEGIN
+    SELECT p.ID_PRODUCTO,p.NOMBRE, p.DESCRIPCION, pd.RAZON_SOCIAL,c.DESCRIPCION,p.PRECIO,p.STOCK,p.FECHA_REGISTRO 
+    FROM TB_PRODUCTO p
+    INNER JOIN TB_CATEGORIA c ON p.ID_CATEGORIA = c.ID_CATEGORIA
+	inner join TB_PROVEEDOR pd  on  p.ID_PROVEEDOR = pd.ID_PROVEEDOR
+    WHERE (@idCategoria IS NULL OR c.ID_CATEGORIA = @idCategoria)
+    ORDER BY
+        CASE WHEN @orden = 'ASC' THEN p.STOCK END ASC,
+        CASE WHEN @orden = 'DESC' THEN p.STOCK END DESC;
+END
+GO
+
+exec ListarProductosPorCategoria 
+go
+
 
 /**Repartidor**/
 CREATE OR ALTER PROC listarVentasRemotasPendientes
@@ -540,3 +678,4 @@ BEGIN
     END
 END
 GO
+
