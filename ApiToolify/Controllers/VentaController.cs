@@ -108,6 +108,9 @@ namespace ApiToolify.Controllers
                 string estadoTexto = venta.tipoVenta == "P" ? "Presencial" :
                                      venta.tipoVenta == "R" ? "Remota" : "Estado desconocido";
 
+                string tipoRol = venta.usuario.rol.descripcion == "V" ? "Vendedor" :
+                                venta.usuario.rol.descripcion == "C" ? "Cliente" : "Rol desconocido";
+
                 var tituloEmpresa = new Paragraph("Toolify", empresaFont)
                 {
                     Alignment = Element.ALIGN_CENTER,
@@ -124,7 +127,7 @@ namespace ApiToolify.Controllers
                 doc.Add(new Paragraph(" "));
 
                 doc.Add(new Paragraph($"Venta ID: {venta.idVenta}", tituloFont));
-                doc.Add(new Paragraph($"Cliente: {venta.usuario.nombre} {venta.usuario.apePaterno} {venta.usuario.apeMaterno}", textoFont));
+                doc.Add(new Paragraph($"{tipoRol}: {venta.usuario.nombre} {venta.usuario.apePaterno} {venta.usuario.apeMaterno}", textoFont));
                 doc.Add(new Paragraph($"Dirección: {venta.usuario.direccion}", textoFont));
                 doc.Add(new Paragraph($"Fecha: {venta.fecha:dd/MM/yyyy HH:mm}", textoFont));
                 doc.Add(new Paragraph($"Tipo de venta: {estadoTexto}", textoFont));

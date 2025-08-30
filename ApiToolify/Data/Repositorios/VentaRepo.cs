@@ -201,7 +201,12 @@ namespace ProyectoDSWToolify.Data.Repositorios
                                 nombre = reader.GetString(reader.GetOrdinal("NOMBRE_USUARIO")),
                                 apePaterno = reader.GetString(reader.GetOrdinal("APE_PATERNO")),
                                 apeMaterno = reader.GetString(reader.GetOrdinal("APE_MATERNO")),
-                                direccion = reader.GetString(reader.GetOrdinal("DIRECCION"))
+                                direccion = reader.GetString(reader.GetOrdinal("DIRECCION")),
+                                rol = new Rol
+                                {
+                                    idRol = Convert.ToInt32(reader["ID_ROL"]),
+                                    descripcion = reader.GetString(reader.GetOrdinal("DESCRIPCION"))
+                                }
                             };
 
                             if (reader["ID_PRODUCTO"] != DBNull.Value)
