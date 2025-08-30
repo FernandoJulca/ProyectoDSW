@@ -39,7 +39,8 @@
     }
 }
 <form asp-action="Reporte1" method="get">
-    <div>
+    <div class="row g-3 align-items-end">
+        <div class="col-md-3">
         <label for="fechaInicio">Fecha Inicio</label>
         <input type="date"
                id="fechaInicio"
@@ -47,7 +48,7 @@
                value="" />
     </div>
 
-    <div>
+        <div class="col-md-3">
         <label for="fechaFin">Fecha Fin</label>
         <input type="date"
                id="fechaFin"
@@ -55,7 +56,7 @@
                value="" />
     </div>
 
-    <div>
+        <div class="col-md-3">
         <label for="tipo">Tipo De Venta</label>
         <select name="tipo" id="" class="form-control">
             <option value="">--SELECCIONE--</option>
@@ -63,8 +64,30 @@
             <option value="R">Remota</option>
         </select>
     </div>
+        <div class="col-md-3 d-flex flex-column flex-md-row gap-2">
+            <button type="submit" class="btn btn-primary w-100 w-md-auto">
+                <i class="fa-solid fa-magnifying-glass me-1"></i> Buscar
+            </button>
 
-    <button type="submit" class="btn btn-primary">Buscar</button>
+            <a asp-action="Reporte1"
+               asp-route-fechaInicio="@Context.Request.Query["fechaInicio"]"
+               asp-route-fechaFin="@Context.Request.Query["fechaFin"]"
+               asp-route-tipo="@Context.Request.Query["tipo"]"
+               asp-route-export="excel"
+               class="btn btn-success w-100 w-md-auto">
+                <i class="fa-solid fa-file-excel me-1"></i> Excel
+            </a>
+
+            <a asp-action="Reporte1"
+               asp-route-fechaInicio="@Context.Request.Query["fechaInicio"]"
+               asp-route-fechaFin="@Context.Request.Query["fechaFin"]"
+               asp-route-tipo="@Context.Request.Query["tipo"]"
+               asp-route-export="pdf"
+               class="btn btn-danger w-100 w-md-auto">
+                <i class="fa-regular fa-file-pdf me-1"></i> PDF
+            </a>
+        </div>
+    </div>
 </form>
 <table class="table">
     <thead>
