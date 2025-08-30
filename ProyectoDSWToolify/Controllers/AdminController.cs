@@ -1,4 +1,5 @@
-﻿using Azure;
+﻿using System.Security.Claims;
+using Azure;
 using ClosedXML.Excel;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
@@ -82,7 +83,36 @@ namespace ProyectoDSWToolify.Controllers
 
         public IActionResult Index()
         {
+            DateTime fechaActual = DateTime.Now;    
+            var nombre = User.FindFirst(ClaimTypes.Name)?.Value;
+            var apellido = User.FindFirst("Apellido")?.Value;
+            var rol = User.FindFirst(ClaimTypes.Role)?.Value;
+            var diaSemanaNombre = fechaActual.ToString("dddd", new System.Globalization.CultureInfo("es-ES"));
+
+
+            List<String> mensaje = new List<string>()
+                {
+                    $"Bienvenido {nombre} ¿Que deseas hacer {diaSemanaNombre}?",
+                    $"Hola {nombre} {apellido} ¿Como te encuentras este {diaSemanaNombre}?",
+                    $"Sr. {apellido}, bienvenido a Toolify.",
+                    $"Feliz ¡{diaSemanaNombre}! {nombre} "
+                };
+            string mensajeAleatorio = obtenerMensajeAleatorio(mensaje);
+
+            TempData["Mensaje"] = mensajeAleatorio;
             return View();
+        }
+
+        public string obtenerMensajeAleatorio(List<string> mensaje) {
+            if (mensaje == null || mensaje.Count == 0)
+            {
+                return "No hay mensajes disponibles.";
+            }
+
+            Random rdm = new Random();
+            int indice = rdm.Next(0, mensaje.Count);
+
+            return mensaje[indice];
         }
 
         [HttpGet]
@@ -306,9 +336,97 @@ namespace ProyectoDSWToolify.Controllers
             #endregion
 
             #region ExportToExcel
+            if (Request.Query.ContainsKey("export") && Request.Query["export"] == "excel")
+            {
+                using (var workbook = new XLWorkbook())
+                {
+                    var worksheet = workbook.Worksheets.Add("Productos");
+
+                    var headerRange = worksheet.Range("A1:H1");
+                    headerRange.Style.Fill.BackgroundColor = XLColor.DarkBlue;
+                    headerRange.Style.Font.FontColor = XLColor.White;
+                    headerRange.Style.Font.Bold = true;
+
+                    worksheet.Cell(1, 1).Value = "ID Producto";
+                    worksheet.Cell(1, 2).Value = "Nombre";
+                    worksheet.Cell(1, 3).Value = "Descripcion";
+                    worksheet.Cell(1, 4).Value = "Proveedor";
+                    worksheet.Cell(1, 5).Value = "Categoria";
+                    worksheet.Cell(1, 6).Value = "Precio";
+                    worksheet.Cell(1, 7).Value = "Stock";
+                    worksheet.Cell(1, 8).Value = "fechaRegistro";
+
+                    int fila = 2;
+                    foreach (var producto in listadp)
+                    {
+                        worksheet.Cell(fila, 1).Value = producto.idProducto;
+                        worksheet.Cell(fila, 2).Value = producto.nombre;
+                        worksheet.Cell(fila, 3).Value = producto.descripcion;
+                        worksheet.Cell(fila, 4).Value = producto.proveedor;
+                        worksheet.Cell(fila, 5).Value = producto.categoria;
+                        worksheet.Cell(fila, 6).Value = producto.precio;
+                        worksheet.Cell(fila, 7).Value = producto.stock;
+                        worksheet.Cell(fila, 8).Value = producto.fechaRegistro.ToString("yyyy-MM-dd");
+                        fila++;
+                    }
+
+                    using (var stream = new MemoryStream())
+                    {
+                        workbook.SaveAs(stream);
+                        var content = stream.ToArray();
+                        return File(content,
+                            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                            $"ReporteVentas_{DateTime.Now:yyyyMMdd}.xlsx");
+                    }
+                }
+            }
             #endregion
 
             #region ExportToPdf
+            if (Request.Query.ContainsKey("export") && Request.Query["export"] == "pdf")
+            {
+                using (var ms = new MemoryStream())
+                {
+                    var document = new Document(PageSize.A4, 25, 25, 30, 30);
+                    PdfWriter.GetInstance(document, ms);
+                    document.Open();
+
+
+                    var titulo = new Paragraph("Reportes de Ventas ") { Alignment = Element.ALIGN_CENTER, SpacingAfter = 20f };
+                    document.Add(titulo);
+
+                    PdfPTable table = new PdfPTable(8) { WidthPercentage = 100 };
+                        table.SetWidths(new float[] { 10f, 20f, 20f, 15f, 10f, 10f, 15f,20f });
+
+                    var headers = new[] { "ID", "Nombre", "Descripcion", "Proveedor", "Categoria", "Precio", "Stock", "fechaRegistro" };
+                    foreach (var h in headers)
+                    {
+                        PdfPCell cell = new PdfPCell(new Phrase(h))
+                        {
+                            BackgroundColor = BaseColor.LIGHT_GRAY,
+                            HorizontalAlignment = Element.ALIGN_CENTER
+                        };
+                        table.AddCell(cell);
+                    }
+
+
+                    foreach (var venta in listadp)
+                    {
+                        table.AddCell(venta.idProducto.ToString());
+                        table.AddCell(venta.nombre ?? "");
+                        table.AddCell(venta.descripcion ?? "");
+                        table.AddCell(venta.proveedor);
+                        table.AddCell(venta.categoria);
+                        table.AddCell(venta.precio.ToString() ?? "");
+                        table.AddCell(venta.stock.ToString() ?? "");
+                        table.AddCell(venta.fechaRegistro.ToString("yyyy-MM-dd") ?? "");
+                    }
+                    document.Add(table);
+                    document.Close();
+                    return File(ms.ToArray(), "application/pdf", $"ReporteVentas_{DateTime.Now:yyyyMMdd}.pdf");
+                }
+            }
+
             #endregion
 
 
