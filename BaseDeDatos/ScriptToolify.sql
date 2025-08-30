@@ -483,3 +483,60 @@ GO
 
 -- FIN PROCS DE VENDEDOR --
 
+/**Repartidor**/
+CREATE OR ALTER PROC listarVentasRemotasPendientes
+    @filtrarEstado CHAR(1) = NULL
+AS
+BEGIN
+    SELECT 
+        V.ID_VENTA,
+        V.FECHA,
+        V.TOTAL,
+        V.ESTADO,
+        V.TIPO_VENTA,
+        U.ID_USUARIO,
+        U.NOMBRES,
+        U.APE_PATERNO,
+        U.APE_MATERNO,
+        U.DIRECCION
+    FROM TB_VENTA V
+    INNER JOIN TB_USUARIO U ON V.ID_USUARIO = U.ID_USUARIO
+    WHERE V.TIPO_VENTA = 'R'
+    AND (
+        (@filtrarEstado IS NULL AND (V.ESTADO = 'P' OR V.ESTADO = 'T'))
+        OR (V.ESTADO = @filtrarEstado)
+    )
+END
+GO
+
+CREATE OR ALTER PROCEDURE cambiarEstadoVenta
+    @ID_VENTA INT,
+    @ESTADO CHAR(1)
+AS
+BEGIN
+    UPDATE TB_VENTA
+    SET ESTADO = @ESTADO
+    WHERE ID_VENTA = @ID_VENTA;
+END
+GO
+
+CREATE OR ALTER PROC countRemotasPendientes
+    @Estado CHAR(1)
+AS
+BEGIN
+    IF @Estado = 'E'
+    BEGIN
+        SELECT COUNT(*) AS totalPendientes
+        FROM TB_VENTA
+        WHERE TIPO_VENTA = 'R'
+          AND ESTADO = @Estado
+    END
+    ELSE IF @Estado = 'P'
+    BEGIN
+        SELECT COUNT(*) AS totalPendientes
+        FROM TB_VENTA
+        WHERE TIPO_VENTA = 'R'
+          AND ESTADO = @Estado;
+    END
+END
+GO

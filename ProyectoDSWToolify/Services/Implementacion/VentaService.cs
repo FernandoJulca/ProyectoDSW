@@ -33,9 +33,9 @@ namespace ProyectoDSWToolify.Services.Implementacion
                 throw new Exception("Error al confirmar la compra: " + response.ReasonPhrase);
             }
         }
-        public async Task<byte[]> DescargarVentaPdf(int idCliente, int idVenta)
+        public async Task<byte[]> DescargarVentaPdf(int idUsuario, int idVenta)
         {
-            var response = await _httpClient.GetAsync($"venta/ventas/{idCliente}/pdf/{idVenta}");
+            var response = await _httpClient.GetAsync($"venta/ventas/{idUsuario}/pdf/{idVenta}");
 
             if (response.IsSuccessStatusCode)
             {
@@ -134,22 +134,24 @@ namespace ProyectoDSWToolify.Services.Implementacion
             return lista.FirstOrDefault(v => v.idVenta == idVenta);
         }
 
-        public async Task<VentaViewModel> generarVentaVendedor(VentaViewModel v)
+        public async Task<VentaViewModel> GenerarVentaVendedor(VentaViewModel v)
         {
             var json = JsonConvert.SerializeObject(v);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var response = await _httpClient.PostAsync("venta/venta-generadaa", content);
+            var response = await _httpClient.PostAsync("venta/venta-generada", content);
 
             if (response.IsSuccessStatusCode)
             {
                 var responseJson = await response.Content.ReadAsStringAsync();
-                var ventaConfirmada = JsonConvert.DeserializeObject<VentaViewModel>(responseJson);
-                return ventaConfirmada;
+                var respuestaApi = JsonConvert.DeserializeObject<RespuestaVentaApi>(responseJson);
+
+                return new VentaViewModel { idVenta = respuestaApi.idVenta };
             }
             else
             {
-                throw new Exception("Error al confirmar la compra: " + response.ReasonPhrase);
+                var errorContent = await response.Content.ReadAsStringAsync();
+                throw new Exception($"Error al confirmar la compra: {response.ReasonPhrase}. Detalles: {errorContent}");
             }
         }
     }
