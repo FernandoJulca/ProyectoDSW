@@ -131,3 +131,17 @@
 }
     </tbody>
 </table>
+<div class="text-center mt-3">
+    @for (int pag = 1; pag <= ViewBag.numeroPag; pag++)
+
+    {
+        bool pagActual = (ViewBag.pagActual == pag);
+        <a asp-action="Reporte2"
+           asp-controller="Admin"
+           asp-route-pag="@pag"
+           class="btn @(pagActual ? "btn-danger" : "btn-outline-secondary")"
+           style="@(pagActual ? "pointer-events: none; background-color: darkred" : null)">
+            @pag
+        </a>
+    }
+</div>

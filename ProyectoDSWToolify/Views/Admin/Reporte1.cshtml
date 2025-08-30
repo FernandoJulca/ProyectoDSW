@@ -4,10 +4,40 @@
     ViewData["Title"] = "Reporte1";
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
-
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/izitoast/dist/css/iziToast.min.css">
+<script src="https://cdn.jsdelivr.net/npm/izitoast/dist/js/iziToast.min.js"></script>
 <h1>Reporte1</h1>
 
-
+@{
+    if (TempData["ExitoListado"] != null)
+    {
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                iziToast.success({
+                    title: 'Éxito',
+                    message: '@TempData["ExitoListado"]',
+                    position: 'topRight',
+                    transitionIn: 'fadeInUp',
+                    transitionOut: 'fadeOut',
+                });
+            });
+        </script>
+    }
+    if (TempData["ErrorListado"] != null)
+    {
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                iziToast.warning({
+                    title: 'Error',
+                    message: '@TempData["ErrorListado"]',
+                    position: 'topRight',
+                    transitionIn: 'fadeInUp',
+                    transitionOut: 'fadeOut',
+                });
+            });
+        </script>
+    }
+}
 <form asp-action="Reporte1" method="get">
     <div>
         <label for="fechaInicio">Fecha Inicio</label>
@@ -92,3 +122,17 @@
 }
     </tbody>
 </table>
+<div class="text-center mt-3">
+    @for (int pag = 1; pag <= ViewBag.numeroPag; pag++)
+
+    {
+        bool pagActual = (ViewBag.pagActual == pag);
+        <a asp-action="Reporte1"
+           asp-controller="Admin"
+           asp-route-pag="@pag"
+           class="btn @(pagActual ? "btn-danger" : "btn-outline-secondary")"
+           style="@(pagActual ? "pointer-events: none; background-color: darkred" : null)">
+            @pag
+        </a>
+    }
+</div>

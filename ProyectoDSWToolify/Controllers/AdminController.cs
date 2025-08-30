@@ -7,7 +7,7 @@ using ProyectoDSWToolify.Models.ViewModels;
 
 namespace ProyectoDSWToolify.Controllers
 {
-    //[Authorize(Roles = "A")]
+    [Authorize(Roles = "A")]
     public class AdminController : Controller
     {
         private readonly IConfiguration _configuration;
@@ -56,8 +56,6 @@ namespace ProyectoDSWToolify.Controllers
             }
             return listado;
         }
-        #endregion
-
         private async Task<List<Categoria>> ListaCategoria()
         {
             var listaCategoria = new List<Categoria>();
@@ -73,6 +71,9 @@ namespace ProyectoDSWToolify.Controllers
             }
             return listaCategoria;
         }
+        #endregion
+
+
 
 
         public IActionResult Index()
@@ -81,23 +82,41 @@ namespace ProyectoDSWToolify.Controllers
         }
 
         [HttpGet]
-        public IActionResult Reporte1(DateTime? fechaInicio , DateTime? fechaFin, string? tipo /*,int pag = 1*/) {
+        public IActionResult Reporte1(DateTime? fechaInicio , DateTime? fechaFin, string? tipo ,int pag = 1) {
 
 
             var listado = ListadoVentaFechaAndTipoVenta(fechaInicio,fechaFin,tipo).Result;
 
-            /*var paginasTotales = listado.Count;
-            var paginasMax = 9;
+            var FechaInicioParseado = fechaInicio?.ToString("yyyy-MM-dd");
+            var FechaFinParseado = fechaFin?.ToString("yyyy-MM-dd");
+
+
+            if (!listado.Any())
+            {
+                TempData["ErrorListado"] = ($"No hay Ventas para el rango de fecha {FechaInicioParseado}/{FechaFinParseado}");
+                listado = ListadoVentaFechaAndTipoVenta(null, null, null).Result;
+            }
+            else {
+                string mensaje = ($" desde {(fechaInicio.HasValue && fechaFin.HasValue ? $"{FechaInicioParseado}/{FechaFinParseado}":"")}");
+
+                var mensajeAlert = ($"Filtrando ventas {mensaje} ");
+                if (!string.IsNullOrEmpty(tipo)) {
+                    mensajeAlert += $" tipo de venta {tipo}";
+                }
+                TempData["ExitoListado"] = mensajeAlert;
+            }
+            var paginasTotales = listado.Count;
+            var paginasMax = 10;
             var numeroPag = (int)Math.Ceiling((double)paginasTotales / paginasMax);
             ViewBag.pagActual = pag;
             ViewBag.numeroPag = numeroPag;
             var skip = (pag - 1) * paginasMax;
-            */
 
-            return View(listado);
+
+            return View(listado.Skip(skip).Take(paginasMax));
         }
 
-        public IActionResult Reporte2(int? idCategoria, string? orden) 
+        public IActionResult Reporte2(int? idCategoria, string? orden, int pag = 1) 
         {
             var categorias = ListaCategoria().Result;
             ViewBag.Categorias = new SelectList(ListaCategoria().Result, "idCategoria", "descripcion", idCategoria);
@@ -112,8 +131,16 @@ namespace ProyectoDSWToolify.Controllers
             }
 
             TempData["ExitoListado"] = ($"Mostrando {listadp.Count} productos Cat. {nombreCategoria}");
+            
+            var paginasTotales = listadp.Count;
+            var paginasMax = 10;
+            var numeroPag = (int)Math.Ceiling((double)paginasTotales / paginasMax);
+            ViewBag.pagActual = pag;
+            ViewBag.numeroPag = numeroPag;
+            var skip = (pag - 1) * paginasMax;
 
-            return View(listadp);
+
+            return View(listadp.Skip(skip).Take(paginasMax));
         }
     }
 }
