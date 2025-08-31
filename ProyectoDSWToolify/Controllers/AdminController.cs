@@ -31,7 +31,8 @@ namespace ProyectoDSWToolify.Controllers
             {
                 httpCliente.BaseAddress = new Uri(_configuration["Services:URL_API"]);
                 var Url = $"reportes/ListadoPorMesAndTipoVenta?fechaInicio={fechaInicio:yyyy-MM-dd}&fechaFin={fechaFin:yyyy-MM-dd}";
-                if (!string.IsNullOrEmpty(tipo)) { 
+                if (!string.IsNullOrEmpty(tipo))
+                {
                     Url += $"&tipo={tipo}";
                 }
                 var msg = await httpCliente.GetAsync(Url);
@@ -43,7 +44,7 @@ namespace ProyectoDSWToolify.Controllers
         }
 
         private async Task<List<ListarProductosPorCategoriaDTO>> ListarProductosPorCategoria(
-          int? idCategoria, string?orden )
+          int? idCategoria, string? orden)
         {
             var listado = new List<ListarProductosPorCategoriaDTO>();
             using (var httpCliente = new HttpClient())
@@ -79,11 +80,11 @@ namespace ProyectoDSWToolify.Controllers
         #endregion
 
 
-        
+
 
         public IActionResult Index()
         {
-            DateTime fechaActual = DateTime.Now;    
+            DateTime fechaActual = DateTime.Now;
             var nombre = User.FindFirst(ClaimTypes.Name)?.Value;
             var apellido = User.FindFirst("Apellido")?.Value;
             var rol = User.FindFirst(ClaimTypes.Role)?.Value;
@@ -103,7 +104,8 @@ namespace ProyectoDSWToolify.Controllers
             return View();
         }
 
-        public string obtenerMensajeAleatorio(List<string> mensaje) {
+        public string obtenerMensajeAleatorio(List<string> mensaje)
+        {
             if (mensaje == null || mensaje.Count == 0)
             {
                 return "No hay mensajes disponibles.";
@@ -116,10 +118,11 @@ namespace ProyectoDSWToolify.Controllers
         }
 
         [HttpGet]
-        public IActionResult Reporte1(DateTime? fechaInicio , DateTime? fechaFin, string? tipo ,int pag = 1) {
+        public IActionResult Reporte1(DateTime? fechaInicio, DateTime? fechaFin, string? tipo, int pag = 1)
+        {
 
             #region FILTROS
-            var listado = ListadoVentaFechaAndTipoVenta(fechaInicio,fechaFin,tipo).Result;
+            var listado = ListadoVentaFechaAndTipoVenta(fechaInicio, fechaFin, tipo).Result;
 
             var FechaInicioParseado = fechaInicio?.ToString("yyyy-MM-dd");
             var FechaFinParseado = fechaFin?.ToString("yyyy-MM-dd");
@@ -130,11 +133,13 @@ namespace ProyectoDSWToolify.Controllers
                 TempData["ErrorListado"] = ($"No hay Ventas para el rango de fecha {FechaInicioParseado}/{FechaFinParseado}");
                 listado = ListadoVentaFechaAndTipoVenta(null, null, null).Result;
             }
-            else {
-                string mensaje = ($" desde {(fechaInicio.HasValue && fechaFin.HasValue ? $"{FechaInicioParseado}/{FechaFinParseado}":"")}");
+            else
+            {
+                string mensaje = ($" desde {(fechaInicio.HasValue && fechaFin.HasValue ? $"{FechaInicioParseado}/{FechaFinParseado}" : "")}");
 
                 var mensajeAlert = ($"Filtrando ventas {mensaje} ");
-                if (!string.IsNullOrEmpty(tipo)) {
+                if (!string.IsNullOrEmpty(tipo))
+                {
                     mensajeAlert += $" tipo de venta {tipo}";
                 }
                 TempData["ExitoListado"] = mensajeAlert;
@@ -168,11 +173,12 @@ namespace ProyectoDSWToolify.Controllers
                         worksheet.Cell(fila, 3).Value = venta.nombresCompletos;
                         worksheet.Cell(fila, 4).Value = venta.direccion;
                         worksheet.Cell(fila, 5).Value = venta.total;
-                      
+
 
                         string estado = "";
                         var celdaEstado = worksheet.Cell(fila, 6);
-                        switch (venta.estado.ToString()) {
+                        switch (venta.estado.ToString())
+                        {
                             case "G":
                                 estado = "Generado";
                                 celdaEstado.Style.Fill.BackgroundColor = XLColor.FromArgb(255, 235, 59);
@@ -185,12 +191,12 @@ namespace ProyectoDSWToolify.Controllers
                                 celdaEstado.Style.Font.FontColor = XLColor.White;
                                 break;
                             case "C":
-                                estado= "Cancelado";
-                                celdaEstado.Style.Fill.BackgroundColor = XLColor.FromArgb(244, 67, 54); 
+                                estado = "Cancelado";
+                                celdaEstado.Style.Fill.BackgroundColor = XLColor.FromArgb(244, 67, 54);
                                 celdaEstado.Style.Font.FontColor = XLColor.White;
                                 break;
                             case "T":
-                                estado= "Transportando";
+                                estado = "Transportando";
                                 celdaEstado.Style.Fill.BackgroundColor = XLColor.FromArgb(33, 150, 243);
                                 celdaEstado.Style.Font.FontColor = XLColor.White;
                                 break;
@@ -227,29 +233,31 @@ namespace ProyectoDSWToolify.Controllers
             #endregion
 
             #region ExportToPdf
-            if (Request.Query.ContainsKey("export") && Request.Query["export"] == "pdf") { 
-                using (var ms = new MemoryStream()) {
-                var document = new Document(PageSize.A4, 25, 25, 30, 30);
-                PdfWriter.GetInstance(document, ms);
-                document.Open();
-                
-
-                var titulo = new Paragraph("Reportes de Ventas ") { Alignment = Element.ALIGN_CENTER, SpacingAfter = 20f };
-                document.Add(titulo);
-
-                PdfPTable table = new PdfPTable(7) { WidthPercentage = 100 };
-                table.SetWidths(new float[] { 10f, 20f, 20f, 15f, 10f, 10f, 15f });
-
-                var headers = new[] { "ID", "Cliente", "Dirección", "Fecha", "Total", "Estado", "Tipo" };
-                foreach (var h in headers)
+            if (Request.Query.ContainsKey("export") && Request.Query["export"] == "pdf")
+            {
+                using (var ms = new MemoryStream())
                 {
-                    PdfPCell cell = new PdfPCell(new Phrase(h))
+                    var document = new Document(PageSize.A4, 25, 25, 30, 30);
+                    PdfWriter.GetInstance(document, ms);
+                    document.Open();
+
+
+                    var titulo = new Paragraph("Reportes de Ventas ") { Alignment = Element.ALIGN_CENTER, SpacingAfter = 20f };
+                    document.Add(titulo);
+
+                    PdfPTable table = new PdfPTable(7) { WidthPercentage = 100 };
+                    table.SetWidths(new float[] { 10f, 20f, 20f, 15f, 10f, 10f, 15f });
+
+                    var headers = new[] { "ID", "Cliente", "Dirección", "Fecha", "Total", "Estado", "Tipo" };
+                    foreach (var h in headers)
                     {
-                        BackgroundColor = BaseColor.LIGHT_GRAY,
-                        HorizontalAlignment = Element.ALIGN_CENTER
-                    };
-                    table.AddCell(cell);
-                }
+                        PdfPCell cell = new PdfPCell(new Phrase(h))
+                        {
+                            BackgroundColor = BaseColor.LIGHT_GRAY,
+                            HorizontalAlignment = Element.ALIGN_CENTER
+                        };
+                        table.AddCell(cell);
+                    }
 
 
                     foreach (var venta in listado)
@@ -297,7 +305,7 @@ namespace ProyectoDSWToolify.Controllers
                         string tipoTexto = venta.tipoVenta == "P" ? "Presencial" : "Remota";
                         table.AddCell(new PdfPCell(new Phrase(tipoTexto)));
 
-                       
+
                     }
                     document.Add(table);
                     document.Close();
@@ -317,7 +325,7 @@ namespace ProyectoDSWToolify.Controllers
             return View(listado.Skip(skip).Take(paginasMax));
         }
 
-        public IActionResult Reporte2(int? idCategoria, string? orden, int pag = 1) 
+        public IActionResult Reporte2(int? idCategoria, string? orden, int pag = 1)
         {
             #region FILTROS
             var categorias = ListaCategoria().Result;
@@ -327,7 +335,8 @@ namespace ProyectoDSWToolify.Controllers
             var nombreCategoria = categorias.FirstOrDefault(x => x.idCategoria == idCategoria)?.descripcion;
             var listadp = ListarProductosPorCategoria(idCategoria, orden).Result;
 
-            if (!listadp.Any()) {
+            if (!listadp.Any())
+            {
                 TempData["ErrorListado"] = ($"No hay productos para la cat. {nombreCategoria}");
                 listadp = ListarProductosPorCategoria(null, null).Result;
             }
@@ -396,7 +405,7 @@ namespace ProyectoDSWToolify.Controllers
                     document.Add(titulo);
 
                     PdfPTable table = new PdfPTable(8) { WidthPercentage = 100 };
-                        table.SetWidths(new float[] { 10f, 20f, 20f, 15f, 10f, 10f, 15f,20f });
+                    table.SetWidths(new float[] { 10f, 20f, 20f, 15f, 10f, 10f, 15f, 20f });
 
                     var headers = new[] { "ID", "Nombre", "Descripcion", "Proveedor", "Categoria", "Precio", "Stock", "fechaRegistro" };
                     foreach (var h in headers)

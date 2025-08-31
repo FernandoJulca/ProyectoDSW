@@ -63,20 +63,21 @@
             </button>
 
             <a asp-action="Reporte2"
-               asp-route-categoria="@Context.Request.Query["idCategoria"]"
+               asp-route-idCategoria="@Context.Request.Query["idCategoria"]"
                asp-route-orden="@Context.Request.Query["orden"]"
                asp-route-export="excel"
                class="btn btn-success w-100 w-md-auto">
-                <i class="fa-solid fa-file-excel me-1  fa-beat"></i> Download Excel
+                <i class="fa-solid fa-file-excel me-1 fa-beat"></i> Download Excel
             </a>
 
             <a asp-action="Reporte2"
-               asp-route-categoria="@Context.Request.Query["idCategoria"]"
+               asp-route-idCategoria="@Context.Request.Query["idCategoria"]"
                asp-route-orden="@Context.Request.Query["orden"]"
                asp-route-export="pdf"
-               class="btn btn-danger w-100 w-md-auto ">
+               class="btn btn-danger w-100 w-md-auto">
                 <i class="fa-regular fa-file-pdf me-1 fa-beat"></i> Download PDF
             </a>
+
         </div>
 
    
