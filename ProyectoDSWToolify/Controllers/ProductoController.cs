@@ -294,7 +294,7 @@ namespace ProyectoDSWToolify.Controllers
         public async Task<IActionResult> Create(Producto producto)
         {
             var proveedorRegistrado = await RegistrarProducto(producto);
-            TempData["ExitoCreate"] = ($"Se Registro el producto {proveedorRegistrado.descripcion} codigo:{proveedorRegistrado.idProducto}");
+                TempData["ExitoCreate"] = ($"Se Registro el producto {proveedorRegistrado.descripcion} codigo:{proveedorRegistrado.idProducto}");
 
             return RedirectToAction("Index");
         }

@@ -38,16 +38,18 @@
         </script>
     }
 }
+
+
+
 <form asp-action="Reporte2" method="get">
-    <div class="row">
-        
-        <div class="col-md-5">
+    <div class="row g-3 align-items-end">
+        <div class="col-md-3">
             <label>Proveedores</label>
             <select name="idCategoria" class="form-control" asp-items="@ViewBag.Categorias">
                 <option value="0">--Seleccione--</option>
             </select>
         </div>
-        <div class="col-md-5">
+        <div class="col-md-3">
             <label>Orden Stock</label>
             <select name="orden" id="orden" class="form-control">
                 <option value="">--SELECCIONE</option>
@@ -55,9 +57,30 @@
                 <option value="DESC">Descendente</option>
             </select>
         </div>
-    </div>
+        <div class="col-md-3 d-flex flex-column flex-md-row gap-2">
+            <button type="submit" class="btn btn-primary w-100 w-md-auto">
+                Buscar <i class="fa-solid fa-magnifying-glass me-1  fa-beat"></i>
+            </button>
 
-    <button type="submit" class="btn btn-primary">Buscar</button>
+            <a asp-action="Reporte2"
+               asp-route-categoria="@Context.Request.Query["idCategoria"]"
+               asp-route-orden="@Context.Request.Query["orden"]"
+               asp-route-export="excel"
+               class="btn btn-success w-100 w-md-auto">
+                <i class="fa-solid fa-file-excel me-1  fa-beat"></i> Download Excel
+            </a>
+
+            <a asp-action="Reporte2"
+               asp-route-categoria="@Context.Request.Query["idCategoria"]"
+               asp-route-orden="@Context.Request.Query["orden"]"
+               asp-route-export="pdf"
+               class="btn btn-danger w-100 w-md-auto ">
+                <i class="fa-regular fa-file-pdf me-1 fa-beat"></i> Download PDF
+            </a>
+        </div>
+
+   
+    </div>
 </form>
 
 <style>
@@ -138,7 +161,9 @@
         bool pagActual = (ViewBag.pagActual == pag);
         <a asp-action="Reporte2"
            asp-controller="Admin"
+           asp-route-idCategoria="@Context.Request.Query["idCategoria"]"
            asp-route-pag="@pag"
+           asp-route-orden="@Context.Request.Query["orden"]"
            class="btn @(pagActual ? "btn-danger" : "btn-outline-secondary")"
            style="@(pagActual ? "pointer-events: none; background-color: darkred" : null)">
             @pag

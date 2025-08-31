@@ -1,6 +1,7 @@
 ﻿@model ProyectoDSWToolify.Models.Producto
 
 @{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
     ViewData["Title"] = "Create";
 }
 
@@ -50,7 +51,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="fechaRegistro" class="control-label"></label>
-                <input asp-for="fechaRegistro" class="form-control" />
+                <input asp-for="fechaRegistro" class="form-control" type="date"/>
                 <span asp-validation-for="fechaRegistro" class="text-danger"></span>
             </div>
             <div class="form-group form-check">
@@ -69,6 +70,3 @@
     <a asp-action="Index">Back to List</a>
 </div>
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
