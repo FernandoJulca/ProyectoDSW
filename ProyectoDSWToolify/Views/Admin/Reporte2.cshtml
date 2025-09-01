@@ -1,0 +1,173 @@
+﻿@model IEnumerable<ProyectoDSWToolify.Models.ViewModels.ListarProductosPorCategoriaDTO>
+
+@{
+    ViewData["Title"] = "Reporte2";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/izitoast/dist/css/iziToast.min.css">
+<script src="https://cdn.jsdelivr.net/npm/izitoast/dist/js/iziToast.min.js"></script>
+<h1>Reporte2</h1>
+
+@{
+    if (TempData["ExitoListado"] != null)
+    {
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                iziToast.success({
+                    title: 'Éxito',
+                    message: '@TempData["ExitoListado"]',
+                    position: 'topRight',
+                    transitionIn: 'fadeInUp',
+                    transitionOut: 'fadeOut',
+                });
+            });
+        </script>
+    }
+    if (TempData["ErrorListado"] != null)
+    {
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                iziToast.warning({
+                    title: 'Error',
+                    message: '@TempData["ErrorListado"]',
+                    position: 'topRight',
+                    transitionIn: 'fadeInUp',
+                    transitionOut: 'fadeOut',
+                });
+            });
+        </script>
+    }
+}
+
+
+
+<form asp-action="Reporte2" method="get">
+    <div class="row g-3 align-items-end">
+        <div class="col-md-3">
+            <label>Proveedores</label>
+            <select name="idCategoria" class="form-control" asp-items="@ViewBag.Categorias">
+                <option value="0">--Seleccione--</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label>Orden Stock</label>
+            <select name="orden" id="orden" class="form-control">
+                <option value="">--SELECCIONE</option>
+                <option value="ASC">Ascendente </option>
+                <option value="DESC">Descendente</option>
+            </select>
+        </div>
+        <div class="col-md-3 d-flex flex-column flex-md-row gap-2">
+            <button type="submit" class="btn btn-primary w-100 w-md-auto">
+                Buscar <i class="fa-solid fa-magnifying-glass me-1  fa-beat"></i>
+            </button>
+
+            <a asp-action="Reporte2"
+               asp-route-idCategoria="@Context.Request.Query["idCategoria"]"
+               asp-route-orden="@Context.Request.Query["orden"]"
+               asp-route-export="excel"
+               class="btn btn-success w-100 w-md-auto">
+                <i class="fa-solid fa-file-excel me-1 fa-beat"></i> Download Excel
+            </a>
+
+            <a asp-action="Reporte2"
+               asp-route-idCategoria="@Context.Request.Query["idCategoria"]"
+               asp-route-orden="@Context.Request.Query["orden"]"
+               asp-route-export="pdf"
+               class="btn btn-danger w-100 w-md-auto">
+                <i class="fa-regular fa-file-pdf me-1 fa-beat"></i> Download PDF
+            </a>
+
+        </div>
+
+   
+    </div>
+</form>
+
+<style>
+    .textoRojo{
+        color: red !important;
+        font-weight: bold;
+    }
+
+    .textoVerde {
+        color: limegreen !important;
+        font-weight: bold;
+    }
+</style>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.idProducto)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.nombre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.descripcion)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.proveedor)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.categoria)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.precio)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.stock)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.fechaRegistro)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.idProducto)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.nombre)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.descripcion)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.proveedor)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.categoria)
+            </td>
+            <td>
+                @item.precio
+            </td>
+             <td class="@(item.stock > 20 ? "textoVerde" : "textoRojo")">
+                @item.stock
+            </td>
+            <td>
+                @item.fechaRegistro.ToString("yyyy-MM-dd")
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+<div class="text-center mt-3">
+    @for (int pag = 1; pag <= ViewBag.numeroPag; pag++)
+
+    {
+        bool pagActual = (ViewBag.pagActual == pag);
+        <a asp-action="Reporte2"
+           asp-controller="Admin"
+           asp-route-idCategoria="@Context.Request.Query["idCategoria"]"
+           asp-route-pag="@pag"
+           asp-route-orden="@Context.Request.Query["orden"]"
+           class="btn @(pagActual ? "btn-danger" : "btn-outline-secondary")"
+           style="@(pagActual ? "pointer-events: none; background-color: darkred" : null)">
+            @pag
+        </a>
+    }
+</div>

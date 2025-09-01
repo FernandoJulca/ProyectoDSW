@@ -1,0 +1,137 @@
+﻿@model IEnumerable<ProyectoDSWToolify.Models.Proveedor>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
+<link rel="stylesheet" href="~/css/EstilosChay.css"/>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/izitoast/dist/css/iziToast.min.css">
+<script src="https://cdn.jsdelivr.net/npm/izitoast/dist/js/iziToast.min.js"></script>
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+
+@{
+    if (TempData["ExitoListado"] != null)
+    {
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                iziToast.success({
+                    title: 'Éxito',
+                    message: '@TempData["ExitoListado"]',
+                    position: 'topRight',
+                    transitionIn: 'fadeInUp',
+                    transitionOut: 'fadeOut',
+                });
+            });
+        </script>
+    }
+
+    if (TempData["ExitoCreate"] != null)
+    {
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                iziToast.success({
+                    title: 'Registrado',
+                    message: '@TempData["ExitoCreate"]',
+                    position: 'bottomRight'
+                });
+            });
+        </script>
+    }
+    if (TempData["ExitoActualizar"] != null)
+    {
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                iziToast.info({
+                    title: 'Actualizado',
+                    message: '@TempData["ExitoActualizar"]',
+                    position: 'topRight',
+                    transitionIn: 'fadeInUp',
+                    transitionOut: 'fadeOut',
+                });
+            });
+        </script>
+    }
+    if (TempData["ExitoDesactivar"] != null)
+    {
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                iziToast.warning({
+                    title: 'Desactivado',
+                    message: '@TempData["ExitoDesactivar"]',
+                    position: 'topRight',
+                    transitionIn: 'fadeInUp',
+                    transitionOut: 'fadeOut',
+                });
+            });
+        </script>
+    }
+}
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.idProveedor)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ruc)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.razonSocial)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.telefono)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.direccion)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.distrito.nombre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.fechaRegistro)
+            </th>
+       
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.idProveedor)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ruc)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.razonSocial)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.telefono)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.direccion)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.distrito.nombre)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.fechaRegistro)
+            </td>
+     
+            <td>
+                    @Html.ActionLink("Edit", "Actualizar", new { id = item.idProveedor }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.idProveedor }) |
+                    @Html.ActionLink("Delete", "Desactivar", new { id = item.idProveedor })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

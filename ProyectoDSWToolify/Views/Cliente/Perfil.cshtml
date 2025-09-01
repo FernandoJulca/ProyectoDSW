@@ -1,0 +1,139 @@
+﻿@model ProyectoDSWToolify.Models.ViewModels.PerfilClienteViewModel
+
+@{
+    ViewBag.Title = "Mi Perfil";
+}
+
+<div class="container py-5 top--10">
+    <h1 class="display-4 fw-bold titulos-Primary mb-4">Mi Perfil</h1>
+    <p class="fs-5 text-muted mb-4">Consulta tus datos personales y el historial de tus compras en Toolify.</p>
+
+    <div class="card mb-5 shadow-sm">
+        <div class="card-body">
+            <h4 class="card-title fw-semibold">@Model.Nombre</h4>
+            <p class="card-text text-muted">@Model.Email</p>
+        </div>
+    </div>
+
+    <h2 class="fw-bold mb-4">Historial de Compras</h2>
+
+    @if (Model.HistorialVentas.Any())
+    {
+        <div class="accordion" id="accordionVentas">
+            @for (int i = 0; i < Model.HistorialVentas.Count; i++)
+            {
+                var venta = Model.HistorialVentas[i];
+                var collapseId = $"collapseVenta{i}";
+                var headingId = $"headingVenta{i}";
+                <div class="accordion-item shadow-sm mb-3 border-0">
+                    <h2 class="accordion-header d-flex align-items-center" id="headingVenta-@venta.idVenta">
+                        <button class="accordion-button collapsed fw-semibold bg-color-custom flex-grow-1" type="button" data-bs-toggle="collapse" data-bs-target="#collapseVenta-@venta.idVenta" aria-expanded="false" aria-controls="collapseVenta-@venta.idVenta">
+                            Venta #@venta.idVenta — @venta.fecha.ToString("dd/MM/yyyy") — S/. @venta.total
+                        </button>
+
+                        @if (venta.estado == "T")
+                        {
+                            <button type="button" class="btn btn-warning btn-sm ms-3 shadow-sm fw-semibold d-flex align-items-center justify-content-center mensaje-btn" data-bs-toggle="modal" data-bs-target="#mensajeModal" data-idventa="@venta.idVenta" style="min-width:110px;">
+                                <i class="fas fa-envelope me-2"></i> Mensajería
+                            </button>
+                        }
+                    </h2>
+                    <div id="collapseVenta-@venta.idVenta" class="accordion-collapse collapse" aria-labelledby="headingVenta-@venta.idVenta" data-bs-parent="#accordionVentas">
+                        <div class="accordion-body">
+                            <p>
+                                <strong>Estado:</strong>
+                                @(venta.estado == "P" ? "Pendiente" :
+                                    venta.estado == "T" ? "Transportado" :
+                                    venta.estado == "E" ? "Entregado" :
+                                    venta.estado == "C" ? "Cancelado" :
+                                    "Desconocido")
+                            </p>
+                            <p><strong>Tipo:</strong> @(venta.tipoVenta == "P" ? "Presencial" : "Remota")</p>
+
+                            @if (venta.Detalles != null && venta.Detalles.Any())
+                            {
+                                <table class="table table-bordered table-hover mt-3">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Producto</th>
+                                            <th>Cantidad</th>
+                                            <th>Subtotal</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in venta.Detalles)
+                                        {
+                                            <tr>
+                                                <td>@item.producto.nombre</td>
+                                                <td>@item.cantidad</td>
+                                                <td>S/. @item.subTotal</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            }
+                            else
+                            {
+                                <p class="text-muted">No hay detalles de productos para esta venta.</p>
+                            }
+                            <a asp-controller="Cliente" asp-action="DescargarVentaPdf"
+                               asp-route-idVenta="@venta.idVenta"
+                               asp-route-idCliente="@Model.idCliente"
+                               target="_blank" class="btn btn-primary mt-3">
+                                Descargar comprobante PDF
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            No tienes compras registradas.
+        </div>
+    }
+</div>
+
+<div class="modal fade" id="mensajeModal" tabindex="-1" aria-labelledby="mensajeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content shadow rounded-4 border-0">
+
+            <div class="modal-header bg-color-primary text-white rounded-top-4">
+                <h5 class="modal-title fw-bold" id="mensajeModalLabel">Chat de la Venta</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+
+            <div class="modal-body p-0">
+                <div class="chat-box p-3" id="chatBox" style="height: 350px; overflow-y: auto;">
+                    <!-- Mensajes se cargan dinámicamente -->
+                </div>
+
+                <form id="formMensaje" class="bg-light p-3 border-top">
+                    <div class="input-group">
+                        <input type="text" id="mensajeText" class="form-control" placeholder="Escribe un mensaje..." autocomplete="off" />
+                        <button type="submit" class="btn btn-primary" id="btnEnviar">Enviar</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Librerías -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    // Asumiendo que en tu vista asignas el usuario actual aquí
+    window.currentUser = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.UserName ?? ""));
+
+    document.addEventListener('DOMContentLoaded', () => {
+        // Inicializamos el modal para poder controlarlo con JS
+        const modalElement = document.getElementById('mensajeModal');
+        window.bootstrapModalInstance = bootstrap.Modal.getOrCreateInstance(modalElement);
+    });
+</script>
+<script src="~/js/ChatCliente.js" asp-append-version="true"></script>

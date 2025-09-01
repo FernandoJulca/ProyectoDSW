@@ -1,0 +1,172 @@
+﻿@model ProyectoDSWToolify.Models.ViewModels.ListadoHistorialViewModel
+
+@{
+	ViewData["Title"] = "Historial";
+	Layout = "~/Views/Shared/_LayoutVendedor.cshtml";
+}
+<div class="container-xl mx-auto">
+	<div class="max-w-7xl mx-auto space-y-6">
+		<div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-lg-between gap-3">
+			<div>
+				<h1 class="h3 fw-bold d-flex align-items-center gap-2 mt-4">
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+						 fill="none" stroke="currentColor" stroke-width="2"
+						 stroke-linecap="round" stroke-linejoin="round"
+						 class="bi bi-clock-history" aria-hidden="true">
+						<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+						<path d="M3 3v5h5"></path>
+						<path d="M12 7v5l4 2"></path>
+					</svg>
+					Historial de Ventas
+				</h1>
+				<p class="text-secondary mt-1">Consulta y gestiona el historial de todas tus ventas</p>
+			</div>
+		</div>
+
+		<div class="row g-3">
+			<!-- Total Ventas -->
+			<div class="col-12 col-md-4">
+				<div class="card shadow-sm border rounded-3">
+					<div class="card-body d-flex justify-content-between align-items-center">
+						<div>
+							<p class="text-muted fw-medium mb-1">Total Ventas</p>
+							<p id="totalVentas" class="h3 fw-bold mb-1 text-dark">0</p>
+							<p class="text-muted mb-0">Transacciones registradas</p>
+						</div>
+						<div class="p-3 rounded-circle bg-primary bg-opacity-10">
+							<i class="bi bi-arrow-up text-primary fs-4"></i>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Productos Vendidos -->
+			<div class="col-12 col-md-4">
+				<div class="card shadow-sm border rounded-3">
+					<div class="card-body d-flex justify-content-between align-items-center">
+						<div>
+							<p class="text-muted fw-medium mb-1">Productos Vendidos</p>
+							<p id="totalProductos" class="h3 fw-bold mb-1 text-dark">0</p>
+							<p class="text-muted mb-0">Unidades totales</p>
+						</div>
+						<div class="p-3 rounded-circle bg-success bg-opacity-10">
+							<i class="bi bi-box-seam text-success fs-4"></i>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Ingresos Totales -->
+			<div class="col-12 col-md-4">
+				<div class="card shadow-sm border rounded-3">
+					<div class="card-body d-flex justify-content-between align-items-center">
+						<div>
+							<p class="text-muted fw-medium mb-1">Ingresos Totales</p>
+							<p id="ingresosTotales" class="h3 fw-bold mb-1 text-dark">0</p>
+							<p class="text-muted mb-0">Monto acumulado</p>
+						</div>
+						<div class="p-3 rounded-circle bg-warning bg-opacity-10">
+							<i class="bi bi-currency-dollar text-warning fs-4"></i>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+        <!-- Listado de Ventas -->
+        <div class="d-flex justify-content-center">
+            <div class="card shadow mt-4" style="width: 80%;">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span class="fw-semibold">Listado de Ventas</span>
+                    <span id="cantidadVentas" class="badge bg-secondary">@Model.HistorialVentas.Count() resultados</span>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0 text-center">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>ID Venta</th>
+                                    <th>Fecha</th>
+                                    <th>Vendedor</th>
+                                    <th>Productos</th>
+                                    <th>Total</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.HistorialVentas.Any())
+                                {
+                                    @foreach (var venta in Model.HistorialVentas)
+                                    {
+                                        <tr>
+                                            <td class="font-monospace">#@venta.idVenta</td>
+                                            <td>@venta.fecha.ToString("dd/MM/yyyy")</td>
+                                            <td>@Model.Nombre</td>
+                                            <td>
+                                                @if (venta.Detalles != null && venta.Detalles.Any())
+                                                {
+                                                    <ul class="list-unstyled mb-0">
+                                                        <li>@venta.Detalles.Count() productos</li>
+                                                    </ul>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">Sin productos</span>
+                                                }
+                                            </td>
+                                            <td class="fw-bold">S/. @venta.total.ToString("F2")</td>
+                                            <td>
+                                                <span class="badge @(venta.estado == "G" ? "bg-warning" : venta.estado == "T" ? "bg-info" : venta.estado == "E" ? "bg-success" : venta.estado == "C" ? "bg-danger" : "bg-secondary") text-white">
+                                                    @(venta.estado == "G" ? "Generado" :
+                                                        venta.estado == "T" ? "Transportado" :
+                                                        venta.estado == "E" ? "Entregado" :
+                                                        venta.estado == "P" ? "Pendiente" :
+                                                        venta.estado == "C" ? "Cancelado" :
+                                                        "Desconocido")
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <!-- Botón para abrir el modal, pasa el ID de la venta en el atributo 'data-idventa' -->
+                                                <button class="btn btn-outline-secondary btn-sm me-1 btn-detalle-venta" data-bs-toggle="modal" data-bs-target="#detalleVentaModal" data-idventa="@venta.idVenta">
+                                                    <i class="bi bi-eye"></i>
+                                                </button>
+                                                <a asp-action="DescargarVentaPdf" asp-controller="Vendedor" asp-route-idVenta="@venta.idVenta" asp-route-idUsuario="@Model.idVendedor" target="_blank" class="btn btn-outline-secondary btn-sm">
+                                                    <i class="bi bi-download"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="7" class="text-muted">No hay ventas registradas.</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal para mostrar los detalles de la venta, su contenido será dinámico -->
+        <div class="modal fade" id="detalleVentaModal" tabindex="-1" aria-labelledby="detalleVentaLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="detalleVentaLabel"></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body">
+                    </div>
+                </div>
+            </div>
+        </div>
+	</div>
+</div>
+
+@section Scripts {
+	<script src="~/js/HistorialVendedor.js"></script>
+}

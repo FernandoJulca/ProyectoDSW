@@ -1,22 +1,360 @@
-html {
-  font-size: 14px;
+/* ================================
+   VARIABLES
+================================= */
+:root {
+    --color-primary: #576EAA;
+    --color-primary-dark: #4a5d94;
+    --color-gray-50: #f9fafb;
+    --color-gray-100: #f3f4f6;
+    --color-gray-200: #e5e7eb;
+    --color-gray-300: #d1d5db;
+    --color-gray-400: #9ca3af;
+    --color-gray-500: #6b7280;
+    --color-gray-600: #4b5563;
+    --color-gray-700: #374151;
+    --color-gray-800: #1f2937;
+    --color-gray-900: #111827;
+}
+
+/* ================================
+   SCROLLBAR PERSONALIZADO
+================================= */
+* {
+    scrollbar-width: auto;
+    scrollbar-color: var(--color-primary) #f1f1f1;
+}
+
+::-webkit-scrollbar {
+    width: 16px;
+    height: 16px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: var(--color-primary);
+    border-radius: 6px;
+    border: 2px solid #f1f1f1;
+}
+
+    ::-webkit-scrollbar-thumb:hover {
+        background-color: #43578f;
+    }
+
+/* ================================
+   UTILIDADES DE COLOR Y FONDO
+================================= */
+.bg-color-custom {
+    background-color: var(--color-gray-100);
+    color: var(--color-primary-dark) !important;
+}
+
+.bg-color-primary {
+    background-color: var(--color-primary);
+}
+
+.bg-gray-900 {
+    background-color: var(--color-gray-900);
+}
+
+.color-gray-500 {
+    color: var(--color-gray-400) !important;
+}
+
+.color-gray-900 {
+    color: var(--color-gray-900) !important;
+}
+
+.titulos-Primary {
+    color: var(--color-primary) !important;
+}
+
+.text-primary-custom {
+    color: #576EAA;
+}
+
+.text-white-hover {
+    color: var(--color-gray-300) !important;
+    transition: color 0.3s ease-in-out;
+}
+
+    .text-white-hover:hover {
+        color: white;
+    }
+
+/* ================================
+   BOTONES PERSONALIZADOS
+================================= */
+.btn {
+    border: none !important;
+}
+
+.btn-ancho {
+    min-width: 12rem;
+    width: 100%;
+}
+
+    .btn-ancho:hover,
+    .btn-personalizado:hover {
+        color: var(--color-gray-700);
+        background-color: var(--color-gray-100);
+    }
+
+.btn-icon {
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-gray-700);
+    border: 1px solid var(--color-gray-300) !important;
+    font-size: 1rem;
+    border-radius: 8px;
+    transition: color 0.3s ease-in-out, background-color 0.3s ease-in-out;
+}
+
+    .btn-icon:hover {
+        background-color: var(--color-gray-200);
+        color: var(--color-gray-700);
+    }
+
+    .btn-icon.btn-outline-danger:hover {
+        background-color: rgba(220, 53, 69, 0.1);
+    }
+
+.btn-outline-primary-custom {
+    background-color: transparent;
+    border-color: #576EAA;
+    border-radius: 0.375rem;
+    color: #576EAA;
+    font-size: 1.3rem;
+    font-weight: 500;
+    height: 2.25rem;
+    padding: 1.2rem 2rem !important;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+    .btn-outline-primary-custom:hover,
+    .btn-outline-primary-custom:focus {
+        background-color: #576EAA;
+        border-color: #576EAA;
+        box-shadow: 0 0 8px rgba(87, 110, 170, 0.5);
+        color: white;
+    }
+
+.btn-outline-secondary:hover {
+    background-color: var(--color-gray-100);
+    color: #6c757d;
+}
+
+.btn-primary-custom {
+    background-color: #576EAA !important;
+    border-color: #576EAA;
+    border-radius: 0.375rem !important;
+    color: white !important;
+    font-size: 1.3rem;
+    font-weight: 500 !important;
+    height: 2.25rem;
+    padding: 1.2rem 2rem !important;
+    transition: background-color 0.2s ease;
+}
+
+    .btn-primary-custom:hover,
+    .btn-primary-custom:focus {
+        background-color: #4a5d94 !important;
+        border-color: #4a5d94;
+        box-shadow: 0 0 8px rgba(74, 93, 148, 0.5);
+        color: white !important;
+    }
+
+/* ================================
+   UTILIDADES DE ESPACIADO Y POSICIONAMIENTO
+================================= */
+.gap-10 {
+    gap: 2.2rem;
+}
+
+.top-20 {
+    margin-top: 5rem !important;
+}
+
+.top--10 {
+    margin-top: -1.6rem !important;
+}
+
+.top-counter {
+    top: 10px !important;
+    right: -15px;
+}
+
+/* ================================
+   HEADER & NAVBAR
+================================= */
+header.navbar {
+    padding: 0.5rem 0rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1) !important;
+}
+
+.logo {
+    color: var(--color-primary) !important;
+    font-size: 1.8rem !important;
+}
+
+.nav-link {
+    padding: 0.5rem 1.2rem;
+    transition: color 0.2s ease-in-out;
+}
+
+    .nav-link:hover {
+        color: var(--color-primary) !important;
+        border-bottom: 2px solid var(--color-primary);
+    }
+
+.navbar .nav-link.active {
+    font-weight: bold;
+    color: var(--color-primary) !important;
+    border-bottom: 2px solid var(--color-primary);
+}
+
+/* ================================
+   OTROS
+================================= */
+.custom-col {
+    width: 100%;
+}
+
+@media (min-width: 600px) {
+    .custom-col {
+        width: 50%;
+    }
+}
+
+@media (min-width: 1100px) {
+    .custom-col {
+        width: 33.3333%;
+    }
+}
+
+.custom-paragraph {
+    color: var(--color-gray-600);
+    font-size: 1.4rem;
+    margin-bottom: 2rem;
+    max-width: 48rem;
+}
+
+.custom-section {
+    background: linear-gradient(to bottom, #f9fafb, #ffffff);
+    padding-top: 5rem;
+    padding-bottom: 3rem;
+}
+
+.custom-title {
+    color: #1f2937;
+    font-size: 2.25rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    .custom-title {
+        font-size: 4.3rem;
+    }
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+.section-servicio {
+    width: 64px;
+    height: 64px;
 }
 
-html {
-  position: relative;
-  min-height: 100%;
+.shadow-sm {
+    box-shadow: 0 1px 2px rgb(0 0 0 / 0.05);
 }
 
-body {
-  margin-bottom: 60px;
+span.fw-bold.color-gray-900 {
+    white-space: nowrap;
+}
+
+/* ================================
+   PAGINACIÓN
+================================= */
+.page-item.disabled .page-link {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.pagination-lg .page-item.active .page-link {
+    background-color: var(--color-primary-dark);
+    border-color: var(--color-primary-dark);
+    color: white;
+    font-weight: 600;
+}
+
+.pagination-lg .page-link {
+    background-color: transparent;
+    border: 1.5px solid transparent;
+    border-radius: 50% !important;
+    color: #212529;
+    font-size: 1.1rem;
+    height: 42px;
+    line-height: 40px;
+    padding: 0;
+    text-align: center;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    width: 42px;
+}
+
+    .pagination-lg .page-link:hover:not(:disabled):not(.active) {
+        background-color: var(--color-primary);
+        border-color: var(--color-primary);
+        color: white;
+    }
+
+    .pagination-lg .page-link:focus {
+        outline: none;
+        box-shadow: none;
+    }
+
+    .pagination-lg .page-link span {
+        display: inline-block;
+        line-height: normal;
+    }
+
+/* ================================
+   CAROUSEL INDICATORS
+================================= */
+.carousel-indicators.custom-indicators button {
+    background-color: rgba(255, 255, 255, 0.6);
+    border: none;
+    border-radius: 50%;
+    height: 12px;
+    margin: 0 6px;
+    opacity: 1;
+    transition: all 0.3s ease;
+    width: 12px;
+}
+
+    .carousel-indicators.custom-indicators button.active {
+        background-color: #ffffff;
+        transform: scale(1.2);
+    }
+
+    .carousel-indicators.custom-indicators button:hover {
+        background-color: #ffffff;
+        opacity: 0.9;
+    }
+
+.chat-box .bg-white {
+    background-color: #f1f1f1 !important;
+    border-radius: 15px 15px 15px 0;
+    padding: 10px 15px;
+}
+
+.chat-box .bg-color-primary {
+    background-color: var(--color-primary) !important;
+    border-radius: 15px 15px 0 15px;
+    padding: 10px 15px;
 }

@@ -1,0 +1,684 @@
+/*SCRIPTS TOOLIFY*/
+USE BD_TOOLIFY
+GO
+
+create or alter proc listarProveedores
+as
+begin
+	SELECT pv.ID_PROVEEDOR, pv.RUC, pv.RAZON_SOCIAL, pv.TELEFONO, 
+	pv.DIRECCION, dt.NOMBRE, pv.FECHA_REGISTRO, pv.ESTADO FROM TB_PROVEEDOR pv
+	INNER JOIN TB_DISTRITO dt ON pv.ID_DISTRITO = dt.ID_DISTRITO where pv.ESTADO = 1
+end
+go
+
+
+create or alter proc sp_Distrito
+@tipo varchar(50),
+@id int
+as
+begin
+	if @tipo= 'distritoId'
+	begin
+	select ID_DISTRITO,NOMBRE from TB_DISTRITO where ID_DISTRITO = @id
+	end
+end
+go
+
+
+create or alter proc crudProveedores
+@tipo varchar(50),
+@idProveedor int = 0,
+@ruc char(11) = '',
+@razon varchar(100) = '',
+@telefono char(15) = '',
+@direccion varchar(80) = '',
+@idDistrito int = 0,
+@fecha datetime = null,
+@estado bit = 1
+as 
+begin
+	if @tipo = 'registrar'
+		begin
+			insert into TB_PROVEEDOR(RUC, RAZON_SOCIAL, TELEFONO, DIRECCION, ID_DISTRITO, FECHA_REGISTRO,ESTADO)
+			values (@ruc,@razon,@telefono,@direccion,@idDistrito,@fecha,1);
+			select @@IDENTITY
+		end
+	
+	if @tipo = 'actualizar'
+		begin
+			update TB_PROVEEDOR 
+			set RUC = @ruc, RAZON_SOCIAL = @razon,TELEFONO= @telefono,DIRECCION = @direccion,
+			ID_DISTRITO=@idDistrito,FECHA_REGISTRO = @fecha ,estado = 1
+			where ID_PROVEEDOR = @idProveedor
+		end
+	
+	if @tipo = 'detalle'
+		begin
+			select ID_PROVEEDOR, RUC, RAZON_SOCIAL, TELEFONO, DIRECCION,d.ID_DISTRITO ,d.NOMBRE, FECHA_REGISTRO, ESTADO
+			from TB_PROVEEDOR p
+			Inner join TB_DISTRITO d on p.ID_DISTRITO = d.ID_DISTRITO 
+			where ID_PROVEEDOR = @idProveedor
+		end
+
+	if @tipo = 'desactivar'
+		begin
+			update TB_PROVEEDOR 
+			set ESTADO = 0 where ID_PROVEEDOR = @idProveedor
+		end
+end
+GO
+
+CREATE OR ALTER PROC listarProductosCliente
+AS
+BEGIN
+	SELECT ID_PRODUCTO, NOMBRE, P.DESCRIPCION AS DESCRIPCION_P,P.ID_PROVEEDOR, PRO.RAZON_SOCIAL,
+	P.ID_CATEGORIA,CAT.DESCRIPCION AS DESCRIPCION_C,PRECIO,STOCK, IMAGEN, P.FECHA_REGISTRO, P.ESTADO
+	FROM TB_PRODUCTO P
+	JOIN TB_PROVEEDOR PRO ON P.ID_PROVEEDOR = PRO.ID_PROVEEDOR
+	JOIN TB_CATEGORIA CAT ON P.ID_CATEGORIA = CAT.ID_CATEGORIA 
+	WHERE P.ESTADO = 1
+END
+GO
+
+CREATE OR ALTER PROC listarCategorias
+AS
+BEGIN
+	SELECT ID_CATEGORIA,DESCRIPCION FROM TB_CATEGORIA
+END
+GO
+
+CREATE OR ALTER PROC top4CategoriasMasVendidas
+AS
+BEGIN
+ SELECT TOP 4
+        c.ID_CATEGORIA AS idCategoria,
+        c.descripcion AS categoria,
+        COALESCE(SUM(dv.cantidad), 0) AS cantidadVendida,
+        (
+            SELECT COUNT(*) 
+            FROM TB_PRODUCTO p2 
+            WHERE p2.ID_CATEGORIA= c.ID_CATEGORIA
+        ) AS cantidadProductos
+    FROM TB_CATEGORIA c
+    LEFT JOIN TB_PRODUCTO p ON p.ID_CATEGORIA = c.ID_CATEGORIA
+    LEFT JOIN TB_DETALLE_VENTA dv ON dv.ID_PRODUCTO = p.ID_PRODUCTO
+    GROUP BY c.ID_CATEGORIA, c.descripcion
+    ORDER BY cantidadVendida DESC, c.ID_CATEGORIA DESC
+END
+GO
+
+CREATE OR ALTER PROC listCliente
+AS
+BEGIN
+	SELECT ID_USUARIO,NOMBRES,APE_MATERNO,APE_PATERNO,CORREO, CLAVE, NRO_DOC,DIRECCION, U.ID_DISTRITO, D.NOMBRE, U.ROL, R.DESCRIPCION,
+	FECHA_REGISTRO, TELEFONO
+	FROM TB_USUARIO U
+	JOIN TB_DISTRITO D ON D.ID_DISTRITO = U.ID_DISTRITO
+	JOIN TB_ROL R ON R.ID_ROL = U.ROL
+	WHERE ROL = 2
+END
+GO
+
+CREATE OR ALTER PROC agregarVenta
+    @ID_VENTA INT OUTPUT,
+    @ID_USUARIO INT,
+    @TOTAL DECIMAL(11,2),
+    @TIPO_VENTA CHAR(1)
+AS
+BEGIN
+    INSERT INTO TB_VENTA (ID_USUARIO, TOTAL, TIPO_VENTA, ESTADO)
+    VALUES (@ID_USUARIO, @TOTAL, @TIPO_VENTA, 'P');
+
+    SET @ID_VENTA = SCOPE_IDENTITY(); 
+END
+GO
+
+CREATE OR ALTER PROC detalleVenta
+    @ID_VENTA INT,
+    @ID_PRODUCTO INT,
+    @CANTIDAD INT,
+	@SUB_TOTAL DECIMAL(10,2)
+AS
+BEGIN
+    INSERT INTO TB_DETALLE_VENTA (ID_VENTA, ID_PRODUCTO, CANTIDAD, SUB_TOTAL)
+    VALUES (@ID_VENTA, @ID_PRODUCTO, @CANTIDAD, @SUB_TOTAL);
+END
+GO
+
+CREATE OR ALTER PROC obtenerCompraPorIdCliente
+    @ID_USUARIO INT
+AS
+BEGIN
+    SELECT 
+        V.ID_VENTA,
+        V.FECHA,
+        V.TOTAL,
+        V.ESTADO,
+        V.TIPO_VENTA,
+        DV.ID_PRODUCTO,
+        P.NOMBRE AS NOMBRE_PRODUCTO,
+		P.PRECIO,
+        DV.CANTIDAD,
+        DV.SUB_TOTAL
+    FROM TB_VENTA V
+    INNER JOIN TB_DETALLE_VENTA DV ON V.ID_VENTA = DV.ID_VENTA
+    INNER JOIN TB_PRODUCTO P ON DV.ID_PRODUCTO = P.ID_PRODUCTO
+    WHERE V.ID_USUARIO = @ID_USUARIO
+    ORDER BY V.FECHA DESC
+END
+GO
+
+exec obtenerCompraPorIdCliente 9
+go
+
+
+CREATE OR ALTER PROC obtenerCompraPorIdVenta
+    @ID_VENTA INT,
+    @ID_USUARIO INT
+AS
+BEGIN
+    SELECT 
+        V.ID_VENTA,
+        V.FECHA,
+        V.TOTAL,
+        V.ESTADO,
+        V.TIPO_VENTA,
+        U.ID_USUARIO,
+        U.NOMBRES AS NOMBRE_USUARIO,
+        U.APE_PATERNO,
+        U.APE_MATERNO,
+		R.ID_ROL,
+		R.DESCRIPCION,
+		u.DIRECCION,
+        DV.ID_PRODUCTO,
+        P.NOMBRE AS NOMBRE_PRODUCTO,
+        P.PRECIO,
+        DV.CANTIDAD,
+        DV.SUB_TOTAL
+    FROM TB_VENTA V
+    INNER JOIN TB_USUARIO U ON V.ID_USUARIO = U.ID_USUARIO
+    INNER JOIN TB_DETALLE_VENTA DV ON V.ID_VENTA = DV.ID_VENTA
+    INNER JOIN TB_PRODUCTO P ON DV.ID_PRODUCTO = P.ID_PRODUCTO
+	INNER JOIN TB_ROL R ON U.ROL = R.ID_ROL
+    WHERE V.ID_VENTA = @ID_VENTA AND V.ID_USUARIO = @ID_USUARIO
+END
+GO
+
+exec obtenerCompraPorIdVenta 5, 9
+go
+
+-- SCRIPTS PRODUCTOS
+create or alter proc listarProductos
+as 
+begin
+	select pr.ID_PRODUCTO, pr.NOMBRE,pr.DESCRIPCION, pv.ID_PROVEEDOR,pv.RAZON_SOCIAL, ct.ID_CATEGORIA,ct.DESCRIPCION,pr.IMAGEN, pr.PRECIO, pr.STOCK from TB_PRODUCTO pr 
+	INNER JOIN TB_CATEGORIA ct ON pr.ID_CATEGORIA = ct.ID_CATEGORIA
+	INNER JOIN TB_PROVEEDOR pv ON pr.ID_PROVEEDOR = pv.ID_PROVEEDOR where pr.ESTADO = 1
+end
+go
+
+create or alter proc crudProductos
+@tipo varchar(50) = '',
+@idProducto int = 0,
+@nombre varchar(50) = '',
+@descripcion varchar(100) = '',
+@idProveedor int = 0,
+@idCategoria int = 0,
+@precio decimal(10,2) =0.0,
+@stock int = 0,
+@imagen varchar(100) = '',
+@fecha datetime = null,
+@estado bit = 1  
+as
+begin
+	
+	if @tipo = 'registrar'
+		begin
+			insert into TB_PRODUCTO(NOMBRE, DESCRIPCION, ID_PROVEEDOR, ID_CATEGORIA, PRECIO, STOCK, IMAGEN, FECHA_REGISTRO, ESTADO)
+			values(@nombre,@descripcion,@idProveedor,@idCategoria,@precio,@stock,@imagen,@fecha,1)
+			select @@IDENTITY
+		end	
+	
+	if @tipo = 'actualizar'
+		begin
+			if @imagen is Null
+				update TB_PRODUCTO 
+					set NOMBRE = @nombre, DESCRIPCION = @descripcion,ID_PROVEEDOR=@idProveedor,ID_CATEGORIA = @idCategoria,
+					PRECIO = @precio, STOCK = @stock, FECHA_REGISTRO = @fecha, ESTADO = 1 where ID_PRODUCTO = @idProducto
+			else
+				update TB_PRODUCTO 
+					set NOMBRE = @nombre, DESCRIPCION = @descripcion,ID_PROVEEDOR=@idProveedor,ID_CATEGORIA = @idCategoria,
+					PRECIO = @precio, STOCK = @stock,IMAGEN = @imagen, FECHA_REGISTRO = @fecha, ESTADO = 1 where ID_PRODUCTO = @idProducto
+		end
+	if @tipo = 'desactivar'
+		begin
+			update TB_PRODUCTO set ESTADO = 0 where ID_PRODUCTO = @idProducto
+		end
+
+	if @tipo = 'detalle'
+		begin
+			select pr.ID_PRODUCTO, pr.NOMBRE, pr.DESCRIPCION,pv.ID_PROVEEDOR ,pv.RAZON_SOCIAL,ct.ID_CATEGORIA ,ct.DESCRIPCION, pr.PRECIO, pr.STOCK, pr.IMAGEN,
+				   pr.FECHA_REGISTRO, pr.ESTADO		
+			from TB_PRODUCTO pr 
+			INNER JOIN TB_CATEGORIA ct ON pr.ID_CATEGORIA = ct.ID_CATEGORIA
+			INNER JOIN TB_PROVEEDOR pv ON pr.ID_PROVEEDOR = pv.ID_PROVEEDOR where ID_PRODUCTO = @idProducto
+		end
+
+end
+go
+
+exec crudProductos 'detalle',54
+GO
+
+CREATE OR ALTER PROC iniciarSession
+	@CORREO VARCHAR(50),
+    @CLAVE VARCHAR(225)
+AS
+BEGIN
+	SELECT ID_USUARIO, NOMBRES, APE_MATERNO, APE_PATERNO, CORREO, CLAVE,
+	NRO_DOC, DIRECCION, U.ID_DISTRITO,D.NOMBRE, TELEFONO, U.ROL,R.DESCRIPCION, FECHA_REGISTRO FROM TB_USUARIO U
+	JOIN TB_DISTRITO D ON U.ID_DISTRITO = D.ID_DISTRITO
+	JOIN TB_ROL R ON U.ROL = R.ID_ROL
+	WHERE CORREO = @CORREO AND CLAVE = @CLAVE
+END
+GO
+
+CREATE OR ALTER PROC registrarCliente
+    @NOMBRES VARCHAR(50),
+    @APE_MATERNO VARCHAR(50),
+    @APE_PATERNO VARCHAR(50),
+    @CORREO VARCHAR(50),
+    @CLAVE VARCHAR(225),
+    @NRO_DOC VARCHAR(15),
+    @DIRECCION VARCHAR(50),
+    @ID_DISTRITO INT,
+    @TELEFONO CHAR(9)
+AS
+BEGIN
+	INSERT INTO TB_USUARIO(NOMBRES,APE_MATERNO, APE_PATERNO, CORREO,CLAVE,NRO_DOC,DIRECCION,ID_DISTRITO,TELEFONO,ROL)
+	VALUES(@NOMBRES,@APE_MATERNO, @APE_PATERNO, @CORREO,@CLAVE,@NRO_DOC,@DIRECCION,@ID_DISTRITO,@TELEFONO,2)
+	SELECT SCOPE_IDENTITY() AS NewUserId;
+END
+GO
+
+-- INICIO PROCS DE VENDEDOR --
+
+CREATE OR ALTER PROC usp_listarProductosVendedor
+AS
+BEGIN
+	SELECT P.ID_PRODUCTO, P.NOMBRE, P.ID_CATEGORIA, C.DESCRIPCION, PRECIO, STOCK
+	FROM TB_PRODUCTO P
+	JOIN TB_CATEGORIA C ON P.ID_CATEGORIA = C.ID_CATEGORIA 
+	WHERE P.ESTADO = 1
+	ORDER BY 1 ASC
+END
+GO
+
+
+CREATE OR ALTER PROC usp_obtenerHistorialVentas
+    @ID_USUARIO INT
+AS
+BEGIN
+    SELECT 
+        V.ID_VENTA,
+        V.FECHA,
+        U.NOMBRES,
+        V.TOTAL,
+        V.ESTADO,
+        V.TIPO_VENTA,
+        P.ID_PRODUCTO,
+        P.NOMBRE AS NOMBRE_PRODUCTO,
+        P.PRECIO,
+        DV.CANTIDAD,
+        DV.SUB_TOTAL
+    FROM TB_VENTA V
+    INNER JOIN TB_DETALLE_VENTA DV ON V.ID_VENTA = DV.ID_VENTA
+    INNER JOIN TB_PRODUCTO P ON DV.ID_PRODUCTO = P.ID_PRODUCTO
+    INNER JOIN TB_USUARIO U ON V.ID_USUARIO = U.ID_USUARIO
+    WHERE V.ID_USUARIO = @ID_USUARIO
+    ORDER BY V.FECHA DESC;
+END
+GO
+
+exec usp_obtenerHistorialVentas 9
+go
+
+CREATE OR ALTER PROC usp_obtenerListadoPedidos
+AS
+BEGIN
+    SELECT 
+        V.ID_VENTA,
+        V.FECHA,
+        U.NOMBRES,
+        V.TOTAL,
+        V.ESTADO,
+        V.TIPO_VENTA,
+        P.ID_PRODUCTO,
+        P.NOMBRE AS NOMBRE_PRODUCTO,
+        P.PRECIO,
+        DV.CANTIDAD,
+        DV.SUB_TOTAL
+    FROM TB_VENTA V
+    INNER JOIN TB_DETALLE_VENTA DV ON V.ID_VENTA = DV.ID_VENTA
+    INNER JOIN TB_PRODUCTO P ON DV.ID_PRODUCTO = P.ID_PRODUCTO
+    INNER JOIN TB_USUARIO U ON V.ID_USUARIO = U.ID_USUARIO
+    WHERE V.TIPO_VENTA = 'P'
+    ORDER BY V.FECHA DESC;
+END
+GO
+
+CREATE OR ALTER PROC usp_obtenerVentaPorId
+    @ID_VENTA INT
+AS
+BEGIN
+    SELECT 
+        V.ID_VENTA,
+        V.FECHA,
+        U.NOMBRES,
+		U.APE_PATERNO,
+		U.APE_MATERNO,
+		U.NRO_DOC,
+        V.TOTAL,
+        V.ESTADO,
+        V.TIPO_VENTA,
+        P.ID_PRODUCTO,
+        P.NOMBRE AS NOMBRE_PRODUCTO,
+        P.PRECIO,
+        DV.CANTIDAD,
+        DV.SUB_TOTAL
+    FROM TB_VENTA V
+    INNER JOIN TB_DETALLE_VENTA DV ON V.ID_VENTA = DV.ID_VENTA
+    INNER JOIN TB_PRODUCTO P ON DV.ID_PRODUCTO = P.ID_PRODUCTO
+    INNER JOIN TB_USUARIO U ON V.ID_USUARIO = U.ID_USUARIO
+    WHERE V.ID_VENTA = @ID_VENTA
+    ORDER BY V.FECHA DESC;
+END
+GO
+
+EXEC usp_obtenerVentaPorId 4
+go
+
+CREATE OR ALTER PROC usp_editarEstadoVenta
+@ID_VENTA INT,
+@ESTADO CHAR(1)
+AS
+	UPDATE TB_VENTA SET
+	ESTADO = @ESTADO
+	WHERE ID_VENTA = @ID_VENTA
+GO
+
+CREATE OR ALTER PROC usp_contarVentasPorMes
+@FechaMes CHAR(7)
+AS
+BEGIN
+    SELECT 
+        COUNT(v.ID_VENTA)
+    FROM TB_VENTA AS v
+    WHERE FORMAT(V.FECHA, 'yyyy-MM') = @FechaMes
+END
+GO
+
+exec usp_contarVentasPorMes '2025-08'
+go
+
+CREATE OR ALTER PROC usp_contarProductosVendidosPorMes
+@FechaMes CHAR(7)
+AS
+	SELECT COALESCE(SUM(d.CANTIDAD), 0) FROM TB_VENTA AS v
+    INNER JOIN TB_DETALLE_VENTA AS d ON v.ID_VENTA = d.ID_VENTA
+    WHERE CONVERT(CHAR(7), v.FECHA, 120) = @FechaMes
+GO
+
+exec usp_contarProductosVendidosPorMes '2025-08'
+go
+
+CREATE OR ALTER PROC usp_contarClientesAtendidosPorMes
+@FechaMes CHAR(7)
+AS
+	SELECT COUNT(DISTINCT v.ID_USUARIO) FROM TB_VENTA AS v
+	INNER JOIN TB_USUARIO AS u ON v.ID_USUARIO = u.ID_USUARIO
+	INNER JOIN TB_ROL AS r ON u.ROL = r.ID_ROL
+	WHERE CONVERT(CHAR(7), v.FECHA, 120) = @FechaMes and r.ID_ROL = 3
+GO
+
+exec usp_contarProductosVendidosPorMes '2025-08'
+go
+
+CREATE OR ALTER PROC usp_obtenerTotalVentas
+AS
+	SELECT COUNT(*) FROM TB_VENTA
+GO
+
+CREATE OR ALTER PROC usp_obtenerTotalProductosVendidos
+AS
+	SELECT COALESCE(SUM(d.CANTIDAD), 0) FROM TB_VENTA AS v
+    INNER JOIN TB_DETALLE_VENTA AS d ON v.ID_VENTA = d.ID_VENTA
+GO
+
+CREATE OR ALTER PROC usp_obtenerIngresosTotales
+AS
+    SELECT COALESCE(SUM(TOTAL), 0) FROM TB_VENTA
+GO
+
+CREATE OR ALTER PROC usp_agregarVenta
+    @ID_VENTA INT OUTPUT,
+    @ID_USUARIO INT,
+    @TOTAL DECIMAL(11,2)
+AS
+BEGIN
+    INSERT INTO TB_VENTA (ID_USUARIO, TOTAL, ESTADO)
+    VALUES (@ID_USUARIO, @TOTAL, 'G');
+
+    SET @ID_VENTA = SCOPE_IDENTITY(); 
+END
+GO
+
+CREATE OR ALTER PROC usp_detalleVenta
+    @ID_VENTA INT,
+    @ID_PRODUCTO INT,
+    @CANTIDAD INT,
+	@SUB_TOTAL DECIMAL(10,2)
+AS
+BEGIN
+    INSERT INTO TB_DETALLE_VENTA (ID_VENTA, ID_PRODUCTO, CANTIDAD, SUB_TOTAL)
+    VALUES (@ID_VENTA, @ID_PRODUCTO, @CANTIDAD, @SUB_TOTAL);
+END
+GO
+
+
+select * from TB_USUARIO
+go
+
+
+CREATE OR ALTER PROC countRemotasPendientes
+    @Estado CHAR(1)
+AS
+BEGIN
+    IF @Estado = 'E'
+    BEGIN
+        SELECT COUNT(*) AS totalPendientes
+        FROM TB_VENTA
+        WHERE TIPO_VENTA = 'R'
+          AND ESTADO = @Estado
+    END
+    ELSE IF @Estado = 'P'
+    BEGIN
+        SELECT COUNT(*) AS totalPendientes
+        FROM TB_VENTA
+        WHERE TIPO_VENTA = 'R'
+          AND ESTADO = @Estado;
+    END
+END
+GO
+
+-- FIN PROCS DE VENDEDOR --
+
+-- SCRPITS GRAFICOS --
+CREATE OR ALTER PROC GraficosDatosProcedure
+@consulta varchar(50)
+as
+begin
+	if @consulta = 'categoriaProducto'
+		begin
+			SELECT 
+				ct.DESCRIPCION,
+			sum(p.STOCK) as totalProdutos
+			FROM TB_PRODUCTO p
+			inner join TB_CATEGORIA ct on p.ID_CATEGORIA = ct.ID_CATEGORIA
+			group by  ct.DESCRIPCION
+			ORDER BY 2 asc
+		end
+   
+   if @consulta = 'proveedorProducto'
+		begin
+			SELECT 
+				pv.RAZON_SOCIAL,
+			sum(p.STOCK) as totalProdutos
+			FROM TB_PRODUCTO p
+			inner join TB_PROVEEDOR pv on p.ID_PROVEEDOR = pv.ID_PROVEEDOR
+			group by  pv.RAZON_SOCIAL
+			ORDER BY 2 asc
+		end
+
+	if @consulta = 'ventaPorMes'
+		begin
+			select 
+			DATENAME(MONTH,vt.FECHA)as Mes,
+			count(*) AS Ventas_totales
+			from TB_VENTA vt
+			where DATEPART(YEAR,vt.FECHA) = 2025
+			GROUP BY DATENAME(MONTH, vt.FECHA), DATEPART(MONTH, vt.FECHA)
+			ORDER BY DATEPART(MONTH, vt.FECHA);
+		end
+
+	if @consulta = 'ventaPorMesAndTipoVenta'
+		begin
+			select  
+				DATENAME(MONTH,FECHA) as mes,
+				TIPO_VENTA as tipoVenta,
+				COUNT(*) as cantidadVentas
+			from TB_VENTA
+			where datepart(year,FECHA) = 2025
+			group by DATENAME(MONTH,FECHA),TIPO_VENTA,DATEPART(MONTH,FECHA)
+			order by DATEPART(MONTH,FECHA) 
+		end
+
+	if @consulta = 'ventaPorDistrito'
+		begin
+			select 
+			dt.NOMBRE as distrito,
+			count(*) as ventasTotales 
+			from TB_VENTA vt
+			inner join TB_USUARIO us on vt.ID_USUARIO = us.ID_USUARIO
+			inner join TB_DISTRITO dt on us.ID_DISTRITO = dt.ID_DISTRITO
+			group by dt.NOMBRE
+			order by ventasTotales
+		end
+end
+go
+
+
+select * from TB_USUARIO
+exec GraficosDatosProcedure 'ventaPorMesAndTipoVenta'
+go
+
+create or alter proc ListadoVentaFechaAndTipoVenta
+@fechaInicio datetime = null,
+@fechaFin datetime = null,
+@tipoVenta CHAR(1) = null
+as
+begin
+	select  v.ID_VENTA, CONCAT(us.NOMBRES, ' ',us.APE_PATERNO) as nombresCompletos,
+			us.DIRECCION, cast (v.FECHA as date) fechaGenerada, v.TOTAL, v.ESTADO, v.TIPO_VENTA
+	from TB_VENTA v 
+	inner join TB_USUARIO us 
+	on v.ID_USUARIO = us.ID_USUARIO
+	where (@fechaInicio IS NULL OR v.FECHA >= @fechaInicio)
+		AND (@fechaFin IS NULL OR v.FECHA <= @fechaFin)
+		AND (@tipoVenta IS NULL OR V.TIPO_VENTA = @tipoVenta)
+end
+go
+
+EXEC ListadoVentaFechaAndTipoVenta 
+SELECT * FROM TB_VENTA where ID_VENTA = 41
+go
+
+
+CREATE OR ALTER PROC ListarProductosPorCategoria
+    @idCategoria INT = null,
+    @orden VARCHAR(4) = 'ASC'
+AS
+BEGIN
+    SELECT p.ID_PRODUCTO,p.NOMBRE, p.DESCRIPCION, pd.RAZON_SOCIAL,c.DESCRIPCION,p.PRECIO,p.STOCK,p.FECHA_REGISTRO 
+    FROM TB_PRODUCTO p
+    INNER JOIN TB_CATEGORIA c ON p.ID_CATEGORIA = c.ID_CATEGORIA
+	inner join TB_PROVEEDOR pd  on  p.ID_PROVEEDOR = pd.ID_PROVEEDOR
+    WHERE (@idCategoria IS NULL OR c.ID_CATEGORIA = @idCategoria)
+    ORDER BY
+        CASE WHEN @orden = 'ASC' THEN p.STOCK END ASC,
+        CASE WHEN @orden = 'DESC' THEN p.STOCK END DESC;
+END
+GO
+
+exec ListarProductosPorCategoria 
+go
+
+
+/**Repartidor**/
+CREATE OR ALTER PROC listarVentasRemotasPendientes
+    @filtrarEstado CHAR(1) = NULL
+AS
+BEGIN
+    SELECT 
+        V.ID_VENTA,
+        V.FECHA,
+        V.TOTAL,
+        V.ESTADO,
+        V.TIPO_VENTA,
+        U.ID_USUARIO,
+        U.NOMBRES,
+        U.APE_PATERNO,
+        U.APE_MATERNO,
+        U.DIRECCION
+    FROM TB_VENTA V
+    INNER JOIN TB_USUARIO U ON V.ID_USUARIO = U.ID_USUARIO
+    WHERE V.TIPO_VENTA = 'R'
+    AND (
+        (@filtrarEstado IS NULL AND (V.ESTADO = 'P' OR V.ESTADO = 'T'))
+        OR (V.ESTADO = @filtrarEstado)
+    )
+END
+GO
+
+CREATE OR ALTER PROCEDURE cambiarEstadoVenta
+    @ID_VENTA INT,
+    @ESTADO CHAR(1)
+AS
+BEGIN
+    UPDATE TB_VENTA
+    SET ESTADO = @ESTADO
+    WHERE ID_VENTA = @ID_VENTA;
+END
+GO
+
+CREATE OR ALTER PROC countRemotasPendientes
+    @Estado CHAR(1)
+AS
+BEGIN
+    IF @Estado = 'E'
+    BEGIN
+        SELECT COUNT(*) AS totalPendientes
+        FROM TB_VENTA
+        WHERE TIPO_VENTA = 'R'
+          AND ESTADO = @Estado
+    END
+    ELSE IF @Estado = 'P'
+    BEGIN
+        SELECT COUNT(*) AS totalPendientes
+        FROM TB_VENTA
+        WHERE TIPO_VENTA = 'R'
+          AND ESTADO = @Estado;
+    END
+END
+GO
+

@@ -1,0 +1,159 @@
+﻿@model ProyectoDSWToolify.Models.ViewModels.RepartidorIndexViewModel
+
+@{
+    Layout = "~/Views/Shared/_LayoutRepartidor.cshtml";
+    ViewData["Title"] = "Index";
+}
+
+<div class="container-fluid">
+    <!-- Panel repartidor -->
+    <div class="card mb-5 shadow-sm border-0">
+        <div class="card-body d-flex align-items-center gap-4">
+            <img src="https://ui-avatars.com/api/?name=@Model.Usuario.nombre&background=0D8ABC&color=fff&rounded=true&size=80"
+                 alt="Avatar" class="rounded-circle" />
+            <div>
+                <h4 class="fw-bold mb-1">@Model.Usuario.nombre</h4>
+                <p class="mb-1 text-muted"><i class="fas fa-envelope me-2"></i>@Model.Usuario.correo</p>
+                <span class="badge bg-primary px-3 py-2">Repartidor</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tarjetas principales -->
+    <div class="row gx-4 gy-4 mb-5">
+        <!-- Ruta Actual -->
+        <div class="col-md-6">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body d-flex flex-column">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="fas fa-route fa-2x text-primary me-3"></i>
+                        <h5 class="fw-semibold m-0">Ruta Actual</h5>
+                    </div>
+
+                    @if (Model.VentaEnRuta?.usuario != null)
+                    {
+                        <p class="mb-2"><strong>Estado:</strong> <span class="badge bg-warning text-dark">En progreso</span></p>
+                        <p class="mb-2"><i class="fas fa-map-marker-alt me-2 text-danger"></i>@Model.VentaEnRuta.usuario.direccion</p>
+                        <p class="mb-4"><i class="fas fa-user-circle me-2 text-secondary"></i>Cliente: @Model.VentaEnRuta.usuario.nombre</p>
+                        <div class="mt-auto">
+                            <button type="button" class="btn btn-outline-primary w-100" data-bs-toggle="modal"
+                                    data-bs-target="#chatModal" data-idventa="@Model.VentaEnRuta.idVenta">
+                                <i class="fas fa-comments me-2"></i>Chat
+                            </button>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="flex-fill d-flex flex-column align-items-center justify-content-center text-center">
+                            <i class="fas fa-box-open fa-4x text-muted mb-3"></i>
+                            <p class="lead text-muted">No hay pedidos en ruta.</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Resumen Día -->
+        <div class="col-md-6">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body d-flex flex-column">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="fas fa-chart-line fa-2x text-info me-3"></i>
+                        <h5 class="fw-semibold m-0">Resumen del Día</h5>
+                    </div>
+                    <div class="row text-center mb-4">
+                        <div class="col-6">
+                            <h2 class="text-success fw-bold mb-1">@Model.TotalPedidosEntregados</h2>
+                            <p class="text-muted">Entregados</p>
+                        </div>
+                        <div class="col-6">
+                            <h2 class="text-danger fw-bold mb-1">@Model.TotalPedidosPendientes</h2>
+                            <p class="text-muted">Pendientes</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pedidos Asignados -->
+    <div class="card shadow-sm border-0 mb-5">
+        <div class="card-header bg-white border-bottom d-flex align-items-center">
+            <h5 class="m-0 fw-semibold">Pedidos Asignados</h5>
+            <a href="@Url.Action("ListarVentas", "Repartidor")" class="btn btn-outline-link ms-auto">Ver todos</a>
+        </div>
+        <div class="card-body">
+            @if (Model.PedidosPendientes?.Any() == true)
+            {
+                <div class="list-group">
+                    @foreach (var pedido in Model.PedidosPendientes.Take(3))
+                    {
+                        <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center py-3">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-truck-loading fa-lg text-secondary me-3"></i>
+                                <div>
+                                    <h6 class="fw-bold mb-1">Pedido #@pedido.idVenta</h6>
+                                    <small class="text-muted">Dirección: @pedido.usuario.direccion</small>
+                                </div>
+                            </div>
+                            <small class="text-muted d-none d-md-block">@pedido.fecha.ToString("g")</small>
+                        </a>
+                    }
+                </div>
+            }
+            else
+            {
+                <p class="text-center text-muted my-4">No hay pedidos pendientes.</p>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Modal Chat -->
+<div class="modal fade" id="chatModal" tabindex="-1" aria-labelledby="chatModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content shadow rounded-4 border-0">
+            <div class="modal-header bg-color-primary text-white rounded-top-4">
+                <h5 class="modal-title fw-bold" id="chatModalLabel">Chat de la Venta</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-0">
+                <div class="chat-box p-3" id="messagesList" style="height: 350px; overflow-y: auto;"></div>
+                <form id="formMensaje" class="bg-light p-3 border-top">
+                    <div class="input-group">
+                        <input type="text" id="messageInput" class="form-control" placeholder="Escribe un mensaje..." autocomplete="off" />
+                        <button type="submit" class="btn btn-primary" id="btnEnviar">Enviar</button>
+                    </div>
+                </form>
+                <div class="d-flex justify-content-end gap-2 p-3 border-top">
+                    <form asp-action="GenerarVenta" method="post">
+                        <input type="hidden" id="idVentaGenerar" name="idVenta" />
+                        <button type="submit" class="btn btn-success">Confirmar Entrega</button>
+                    </form>
+                    <form asp-action="Cancelar" method="post">
+                        <input type="hidden" id="idVentaCancelar" name="idVenta" />
+                        <button type="submit" class="btn btn-danger">Cancelar Venta</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        window.currentUser = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(User.Identity.Name ?? ""));
+        document.addEventListener("DOMContentLoaded", function() {
+            const chatModal = document.getElementById("chatModal");
+            chatModal.addEventListener("show.bs.modal", function(event) {
+                const id = event.relatedTarget.getAttribute("data-idventa");
+                document.getElementById("chatModalLabel").textContent = `Chat - Venta #${id}`;
+                document.getElementById("idVentaGenerar").value = id;
+                document.getElementById("idVentaCancelar").value = id;
+            });
+        });
+    </script>
+    <script src="~/js/ChatRepartidor.js" asp-append-version="true"></script>
+}

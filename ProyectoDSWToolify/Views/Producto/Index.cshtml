@@ -1,0 +1,167 @@
+﻿@model IEnumerable<ProyectoDSWToolify.Models.Producto>
+
+@{
+    ViewData["Title"] = "Index";
+     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/izitoast/dist/css/iziToast.min.css">
+<script src="https://cdn.jsdelivr.net/npm/izitoast/dist/js/iziToast.min.js"></script>
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+
+@{
+    if (TempData["ExitoListado"] != null)
+    {
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                iziToast.success({
+                    title: 'Éxito',
+                    message: '@TempData["ExitoListado"]',
+                    position: 'topLeft',
+                    transitionIn: 'fadeInUp',
+                    transitionOut: 'fadeOut',
+                });
+            });
+        </script>
+    }
+
+    if (TempData["ExitoCreate"] != null)
+    {
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                iziToast.success({
+                    title: 'Registrado',
+                    message: '@TempData["ExitoCreate"]',
+                    position: 'topRight'
+                });
+            });
+        </script>
+    }
+    if (TempData["ExitoActualizar"] != null)
+    {
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                iziToast.info({
+                    title: 'Actualizado',
+                    message: '@TempData["ExitoActualizar"]',
+                    position: 'topRight',
+                    transitionIn: 'fadeInUp',
+                    transitionOut: 'fadeOut',
+                });
+            });
+        </script>
+    }
+    if (TempData["ExitoDesactivar"] != null)
+    {
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                iziToast.warning({
+                    title: 'Desactivado',
+                    message: '@TempData["ExitoDesactivar"]',
+                    position: 'topRight',
+                    transitionIn: 'fadeInUp',
+                    transitionOut: 'fadeOut',
+                });
+            });
+        </script>
+    }
+     if (TempData["ExitoFiltros"] != null)
+    {
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                iziToast.info({
+                    title: 'Filtros',
+                    message: '@TempData["ExitoFiltros"]',
+                    position: 'topRight',
+                    transitionIn: 'fadeInUp',
+                    transitionOut: 'fadeOut',
+                });
+            });
+        </script>
+    }
+     if (TempData["FalloFiltros"] != null)
+    {
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                iziToast.warning({
+                    title: 'Error',
+                    message: '@TempData["FalloFiltros"]',
+                    position: 'topRight',
+                    transitionIn: 'fadeInUp',
+                    transitionOut: 'fadeOut',
+                });
+            });
+        </script>
+    }
+
+
+}
+<form method="get">
+    <div class="row">
+    
+        <div class="col-md-5">
+            <label>Proveedores</label>
+            <select name="proveedor" class="form-control" asp-items="@ViewBag.Proveedores">
+                <option value="0">--Seleccione--</option>
+            </select>
+        </div>
+        <div class="col-md-5">
+            <label>Categorias</label>
+            <select name="categoria" class="form-control" asp-items="@ViewBag.Categorias">
+                <option value="0">--Seleccione--</option>
+            </select>
+        </div>
+
+        <div class="col-md-2">
+            <label>&nbsp;</label><br />
+            <button type="submit" class="btn btn-primary">Filtrar</button>
+            <a href="@Url.Action("Index")" class="btn btn-secondary">Limpiar</a>
+        </div>
+    </div>
+</form>
+
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    @foreach (var item in Model)
+    {
+        <div class="col">
+            <div class="card h-100">
+
+                <img src="@(string.IsNullOrEmpty(item.imagen) ? "/uploads/ErrorImagen.png" : item.imagen)"
+                     class="card-img-top" alt="@item.nombre" />
+
+                <div class="card-body">
+                    <h5 class="card-title">@item.nombre</h5>
+                    <p class="card-text">@item.descripcion</p>
+                    <p class="card-text"><strong>Proveedor:</strong> @item.proveedor.razonSocial</p>
+                    <p class="card-text"><strong>Categoría:</strong> @item.categoria.descripcion</p>
+                    <p class="card-text"><strong>Precio:</strong> S/ @item.precio</p>
+                    <p class="card-text"><strong>Stock:</strong> @item.stock</p>
+                </div>
+
+                <div class="card-footer text-center">
+                    @Html.ActionLink("Editar", "Edit", new { id = item.idProducto }, new { @class = "btn btn-warning btn-sm" })
+                    @Html.ActionLink("Detalles", "Details", new { id = item.idProducto }, new { @class = "btn btn-info btn-sm" })
+                    @Html.ActionLink("Eliminar", "Delete", new { id = item.idProducto }, new { @class = "btn btn-danger btn-sm" })
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<div class="text-center mt-3">
+    @for (int pag = 1; pag <= ViewBag.numeroPag; pag++)
+
+    {
+        bool pagActual = (ViewBag.pagActual == pag);
+        <a asp-action="Index"
+           asp-controller="Producto"
+           asp-route-pag="@pag"
+           class="btn @(pagActual ? "btn-danger" : "btn-outline-secondary")"
+           style="@(pagActual ? "pointer-events: none; background-color: darkred" : null)">
+            @pag
+        </a>
+    }
+</div>

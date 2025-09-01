@@ -1,0 +1,100 @@
+﻿body .navbar {
+    background-color: #fff;
+    border-bottom: 1px solid #eaeaea;
+    padding: 0.5rem 1rem;
+    z-index: 1030;
+}
+
+.logo {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #606CAC;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    color: #6c757d;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+    .nav-link:hover {
+        color: transparent;
+        background-color: rgba(0, 0, 0, 0.05);
+    }
+
+    .nav-link.activo {
+        background-color: #606CAC !important;
+        font-weight: 600;
+        color: #fff !important;
+    }
+
+.nav-link.activo svg {
+    stroke: #fff !important;
+ }
+
+
+.navbar-toggler {
+    border: none;
+    background: transparent;
+}
+
+    .navbar-toggler:focus {
+        outline: none;
+        box-shadow: none;
+    }
+
+.btn-personalizado {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    font-weight: 500;
+    padding: 0.4rem 0.8rem;
+    color: #495057;
+    transition: all 0.2s ease;
+}
+
+    .btn-personalizado:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+    }
+
+.btn-ancho {
+    min-width: 160px;
+}
+
+.dropdown-menu {
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+    padding: 0.4rem 0;
+}
+
+.nav-link svg,
+.btn-personalizado svg,
+.dropdown-item svg {
+    stroke: currentColor;
+}
+
+body .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* RESPONSIVE */
+@media (max-width: 992px) {
+    .navbar-collapse {
+        margin-top: 0.5rem;
+    }
+
+    .nav-link {
+        padding-left: 0;
+    }
+}

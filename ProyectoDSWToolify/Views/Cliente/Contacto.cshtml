@@ -1,0 +1,153 @@
+﻿@{
+    ViewBag.Title = "Contacto";
+}
+<div class="top--10">
+    <section class="py-5 bg-light text-center">
+        <div class="container">
+            <h1 class="display-4 fw-bold mb-3 titulos-Primary">Contáctanos</h1>
+            <p class="text-secondary fs-5">Ponte en contacto con nuestro equipo para asesoría experta, soporte o cualquier pregunta sobre nuestros productos y servicios.</p>
+        </div>
+    </section>
+
+    <!-- Información + Formulario -->
+    <section class="py-5 bg-white">
+        <div class="container">
+            <div class="row g-5">
+                <!-- Información de contacto -->
+                <div class="col-lg-6">
+                    <h2 class="fw-bold mb-4">Ponte en Contacto</h2>
+                    <p class="text-muted mb-4">Estamos aquí para ayudarte con todas tus necesidades de herramientas y ferretería.</p>
+
+                    <!-- Dirección -->
+                    <div class="mb-4 d-flex">
+                        <div class="me-3">
+                            <div class="bg-color-custom bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                                <i class="bi bi-geo-alt-fill fs-5"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <h5 class="fw-semibold mb-1">Visita Nuestra Tienda</h5>
+                            <p class="mb-0 text-muted">
+                                Calle Industrial 123<br />
+                                Ciudad Herramientas, CH 12345<br />
+                                España
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Teléfono -->
+                    <div class="mb-4 d-flex">
+                        <div class="me-3">
+                            <div class="bg-color-custom bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                                <i class="bi bi-telephone-fill fs-5"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <h5 class="fw-semibold mb-1">Llámanos</h5>
+                            <p class="mb-0 text-muted">
+                                Principal: (555) 123-TOOL<br />
+                                Soporte: (555) 123-4567<br />
+                                Gratuito: 1-800-TOOLIFY
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="mb-4 d-flex">
+                        <div class="me-3">
+                            <div class="bg-color-custom bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                                <i class="bi bi-envelope-fill fs-5"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <h5 class="fw-semibold mb-1">Envíanos un Email</h5>
+                            <p class="mb-0 text-muted">
+                                General: info&#64;toolify.com<br />
+                                Soporte: soporte&#64;toolify.com<br />
+                                Ventas: ventas&#64;toolify.com
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Horario -->
+                    <div class="mb-4 d-flex">
+                        <div class="me-3">
+                            <div class="bg-color-custom bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                                <i class="bi bi-clock-fill fs-5"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <h5 class="fw-semibold mb-1">Horario de Atención</h5>
+                            <p class="mb-0 text-muted">
+                                Lunes - Viernes: 7:00 AM - 7:00 PM<br />
+                                Sábado: 8:00 AM - 6:00 PM<br />
+                                Domingo: 9:00 AM - 5:00 PM
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Formulario -->
+                <div class="col-lg-6">
+                    <div class="card shadow-sm">
+                        <div class="card-body p-4">
+                            <h4 class="mb-4">Envíanos un Mensaje</h4>
+
+                            <!-- Puedes usar Html.BeginForm aquí si tienes una acción en tu controlador -->
+                            <form method="post">
+                                <div class="row g-3 mb-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Nombre *</label>
+                                        <input type="text" class="form-control" placeholder="Tu nombre completo" required />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Email *</label>
+                                        <input type="email" class="form-control" placeholder="tu@email.com" required />
+                                    </div>
+                                </div>
+                                <div class="row g-3 mb-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Teléfono</label>
+                                        <input type="tel" class="form-control" placeholder="(555) 123-4567" />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Asunto *</label>
+                                        <select class="form-select" required>
+                                            <option selected disabled>Selecciona un asunto</option>
+                                            <option value="general">Consulta General</option>
+                                            <option value="product">Pregunta sobre Producto</option>
+                                            <option value="support">Soporte Técnico</option>
+                                            <option value="order">Estado de Pedido</option>
+                                            <option value="warranty">Reclamo de Garantía</option>
+                                            <option value="rental">Alquiler de Equipos</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Mensaje *</label>
+                                    <textarea class="form-control" rows="5" placeholder="Por favor proporciona detalles sobre tu consulta..." required></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary-custom d-flex align-items-center justify-content-center  w-100">Enviar Mensaje</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Encuéntranos -->
+    <section class="py-5 bg-light">
+        <div class="container text-center">
+            <h2 class="fw-bold mb-3 fs-1">Encuéntranos</h2>
+            <p class="text-muted mb-4 fs-5">Ubicados en el corazón del distrito industrial para fácil acceso</p>
+            <div class="bg-secondary bg-opacity-25 rounded mb-3 d-flex align-items-center justify-content-center" style="height: 350px;">
+                <div>
+                    <i class="bi bi-geo-alt fs-1 text-secondary mb-3"></i>
+                    <p class="mb-1 text-muted fs-5">Mapa Interactivo Próximamente</p>
+                    <p class="text-secondary">Calle Industrial 123, Ciudad Herramientas, CH 12345</p>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>

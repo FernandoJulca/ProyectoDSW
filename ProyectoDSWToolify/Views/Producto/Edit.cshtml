@@ -1,0 +1,87 @@
+﻿@model ProyectoDSWToolify.Models.Producto
+
+@{
+	Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+	ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Producto</h4>
+<hr />
+<div class="row">
+	<div class="col-md-4">
+		<form asp-action="Edit" method="post" enctype="multipart/form-data">
+			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+			<div class="form-group">
+				<label asp-for="idProducto" class="control-label"></label>
+				<input asp-for="idProducto" class="form-control" readonly />
+				<span asp-validation-for="idProducto" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="nombre" class="control-label"></label>
+				<input asp-for="nombre" class="form-control" />
+				<span asp-validation-for="nombre" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="descripcion" class="control-label"></label>
+				<input asp-for="descripcion" class="form-control" />
+				<span asp-validation-for="descripcion" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="categoria.idCategoria" class="control-label"></label>
+				@Html.DropDownListFor(model => model.categoria.idCategoria, (SelectList)ViewBag.Categorias, "--Seleccione--", new { @class = "form-control" })
+				<span asp-validation-for="categoria.idCategoria" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="proveedor.idProveedor" class="control-label"></label>
+				@Html.DropDownListFor(model => model.proveedor.idProveedor, (SelectList)ViewBag.Proveedores, "--Seleccione--", new { @class = "form-control" })
+				<span asp-validation-for="proveedor.idProveedor" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="precio" class="control-label"></label>
+				<input asp-for="precio" class="form-control" />
+				<span asp-validation-for="precio" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="stock" class="control-label"></label>
+				<input asp-for="stock" class="form-control" />
+				<span asp-validation-for="stock" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="imagen" class="control-label"></label>
+				<img src="@(string.IsNullOrEmpty(Model.imagen)
+													  		 ? Url.Content("~/uploads/ErrorImagen.png")
+													  		 : Url.Content(Model.imagen))"
+					 style="max-width:200px; height:auto;" />
+				<span asp-validation-for="imagen" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="file" class="control-label"></label>
+				<input asp-for="file" class="form-control" type="file" />
+				<span asp-validation-for="file" class="text-danger"></span>
+			</div>
+			<input type="hidden" asp-for="imagen" /> 
+			<!-- Aca ocultamos la ruta de la imagen q se tiene para mandarlo tambien en el form -->
+			<div class="form-group">
+				<label asp-for="fechaRegistro" class="control-label"></label>
+				<input asp-for="fechaRegistro" class="form-control" />
+				<span asp-validation-for="fechaRegistro" class="text-danger"></span>
+			</div>
+
+			<div class="form-group">
+				<input type="submit" value="Save" class="btn btn-primary" />
+			</div>
+		</form>
+	</div>
+</div>
+
+<div>
+	<a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	}
+}

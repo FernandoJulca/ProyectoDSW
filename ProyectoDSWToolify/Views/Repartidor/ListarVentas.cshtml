@@ -1,0 +1,155 @@
+﻿@model IEnumerable<ProyectoDSWToolify.Models.Venta>
+
+@{
+    ViewData["Title"] = "Ventas Pendientes";
+    Layout = "~/Views/Shared/_LayoutRepartidor.cshtml";
+    var ventaTransportando = Model.FirstOrDefault(v => v.estado == "T");
+}
+<h1 class="display-5 fw-bold titulos-Primary mb-4">
+    <i class="fas fa-truck-loading me-2"></i> Ventas Pendientes para Reparto
+</h1>
+<p class="text-muted mb-5">Aquí puedes ver y gestionar los pedidos asignados que aún no han sido entregados.</p>
+
+
+@if (!Model.Any())
+{
+    <div class="d-flex flex-column align-items-center justify-content-center text-center p-5 bg-light rounded-4 shadow-sm">
+        <i class="fas fa-box-open fa-4x text-muted mb-3"></i>
+        <h4 class="text-muted">No hay ventas pendientes por entregar</h4>
+        <p class="text-secondary">Cuando se te asignen nuevas entregas, aparecerán aquí.</p>
+    </div>
+}
+
+else
+{
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        @foreach (var venta in Model)
+        {
+            <div class="col">
+                @{
+                    bool estaActiva = ventaTransportando == null || ventaTransportando.idVenta == venta.idVenta;
+                    string cardClass = estaActiva ? "" : "opacity-50";
+                    string pointerEvents = estaActiva ? "" : "pointer-events-none";
+                }
+                <div class="card h-100 shadow-sm border-0 rounded-4 @cardClass @pointerEvents">
+                    <div class="card-body d-flex flex-column justify-content-between">
+                        <div>
+                            <h5 class="card-title mb-2 fw-bold titulos-Primary">Venta #@venta.idVenta</h5>
+                            <h6 class="card-subtitle mb-3 text-muted">@venta.fecha.ToString("dd MMM yyyy")</h6>
+                            <p class="mb-2">
+                                <i class="fas fa-money-bill-wave text-success me-2"></i>
+                                <strong>Total:</strong> S/. @venta.total.ToString("F2")
+                            </p>
+                            <p class="mb-2">
+                                <i class="fas fa-shopping-cart me-2 text-secondary"></i>
+                                <strong>Tipo:</strong> @(venta.tipoVenta == "P" ? "Presencial" : "Remota")
+                            </p>
+                            <p class="mb-3">
+                                <i class="fas fa-info-circle me-2 text-warning"></i>
+                                <strong>Estado:</strong>
+                                @if (venta.estado == "P")
+                                {
+                                    <span class="badge bg-warning text-dark">Pendiente</span>
+                                }
+                                else if (venta.estado == "T")
+                                {
+                                    <span class="badge bg-success">Transportado</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">@venta.estado</span>
+                                }
+                            </p>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-3">
+                            @if (venta.estado != "T")
+                            {
+                                <form asp-action="CambiarEstadoVenta" method="post" class="me-2">
+                                    <input type="hidden" name="idVenta" value="@venta.idVenta" />
+                                    <button type="submit" class="btn btn-success btn-sm w-100" @(estaActiva ? "" : "disabled")>
+                                        <i class="fas fa-check-circle me-1"></i> Aceptar Pedido
+                                    </button>
+                                </form>
+                            }
+                            else
+                            {
+                                <button type="button"
+                                        class="btn btn-primary-custom  btn-sm w-100"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#chatModal"
+                                        data-idventa="@venta.idVenta" style="font-size: 1rem; 
+
+     height: 100%; 
+    padding: .5rem !important;">
+                                    <i class="fas fa-comments me-1"></i> Abrir Chat
+                                </button>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        }
+    </div>
+
+}
+
+<div class="modal fade" id="chatModal" tabindex="-1" aria-labelledby="chatModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content shadow rounded-4 border-0">
+
+            <div class="modal-header bg-color-primary text-white rounded-top-4">
+                <h5 class="modal-title fw-bold" id="chatModalLabel">
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+
+            <div class="modal-body p-0">
+                <div class="chat-box p-3" id="messagesList" style="height: 350px; overflow-y: auto;">
+                </div>
+                <form id="formMensaje" class="bg-light p-3 border-top">
+                    <div class="input-group">
+                        <input type="text" id="messageInput" class="form-control" placeholder="Escribe un mensaje..." autocomplete="off" />
+                        <button type="submit" class="btn btn-primary" id="btnEnviar">Enviar</button>
+                    </div>
+
+                </form>
+                <div class="d-flex justify-content-end gap-2 p-3 border-top">
+                    <form asp-action="GenerarVenta" method="post">
+                        <input type="hidden" id="idVentaGenerar" name="idVenta" />
+                        <button type="submit" class="btn btn-success">Confirmar Entrega</button>
+                    </form>
+                    <form asp-action="Cancelar" method="post">
+                        <input type="hidden" name="idVenta" id="idVentaCancelar" />
+                        <button type="submit" class="btn btn-danger">Cancelar Venta</button>
+                    </form>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<script>
+    window.currentUser = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(User.Identity.Name ?? ""));
+        document.addEventListener("DOMContentLoaded", function () {
+        const chatModal = document.getElementById('chatModal');
+        chatModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            const idVenta = button.getAttribute('data-idventa');
+
+            // Asignar el ID de la venta a los formularios del modal
+            document.getElementById('idVentaGenerar').value = idVenta;
+            document.getElementById('idVentaCancelar').value = idVenta;
+
+            // Cambiar título del modal
+            document.getElementById('chatModalLabel').textContent = `Chat - Venta #${idVenta}`;
+        });
+    });
+
+</script>
+<script src="~/js/ChatRepartidor.js" asp-append-version="true"></script>

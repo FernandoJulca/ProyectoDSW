@@ -1,0 +1,132 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>@ViewData["Title"] - ProyectoDSWToolify</title>
+	<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+	<link rel="stylesheet" href="~/ProyectoDSWToolify.styles.css" asp-append-version="true" />
+	<!-- Colocando LINK para alerta CSS -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/izitoast/dist/css/iziToast.min.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+	<link rel="stylesheet" href="~/css/LayoutVendedor.css" asp-append-version="true" />
+	<link rel="stylesheet" href="~/css/InicioVendedor.css" asp-append-version="true" />
+
+</head>
+<body>
+	<nav class="navbar navbar-expand-lg">
+		<div class="container">
+			<!-- Logo y nombre -->
+			<a class="navbar-brand logo d-flex align-items-center" asp-controller="Vendedor" asp-action="Index">
+				<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none"
+					 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-2">
+					<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.106-3.105c.32-.322.863-.22.983.218a6 6 0 0 1-8.259 7.057l-7.91 7.91a1 1 0 0 1-2.999-3l7.91-7.91a6 6 0 0 1 7.057-8.259c.438.12.54.662.219.984z" />
+				</svg>
+				Toolify
+			</a>
+
+			<!-- Botón hamburguesa -->
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarVendedor"
+					aria-controls="navbarVendedor" aria-expanded="false" aria-label="Toggle navigation">
+				<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2"
+					 stroke-linecap="round" stroke-linejoin="round">
+					<path d="M4 6h16M4 12h16M4 18h16" />
+				</svg>
+			</button>
+
+			<!-- Menú -->
+			<div class="collapse navbar-collapse" id="navbarVendedor">
+				<ul class="navbar-nav ms-4 mb-2 mb-lg-0">
+					<li class="nav-item">
+						<a class="nav-link @(ViewData["Title"]?.ToString()=="Inicio" ? "activo" : "")" asp-controller="Vendedor" asp-action="Index">
+							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+								 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1">
+								<path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8" />
+								<path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+							</svg>
+							Inicio
+						</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link @(ViewData["Title"]?.ToString()=="Ventas" ? "activo" : "")" asp-controller="Vendedor" asp-action="Ventas">
+							<svg xmlns="http://www.w3.org/2000/svg" class="me-1" width="16" height="16" viewBox="0 0 24 24" fill="none"
+								 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+								<circle cx="9" cy="21" r="1"></circle>
+								<circle cx="20" cy="21" r="1"></circle>
+								<path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6">
+								</path>
+							</svg>
+							Ventas
+						</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link @(ViewData["Title"]?.ToString()=="Historial" ? "activo" : "")" asp-controller="Vendedor" asp-action="Historial">
+							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+								 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1"
+								 aria-hidden="true" role="img" aria-label="Icono de historial">
+								<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+								<path d="M3 3v5h5"></path>
+								<path d="M12 7v5l4 2"></path>
+							</svg>
+							Historial
+						</a>
+					</li>
+					<!--
+					<li class="nav-item">
+						<a class="nav-link @(ViewData["Title"]?.ToString()=="Pedidos" ? "activo" : "")" asp-controller="Vendedor" asp-action="Pedidos">
+							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+								 class="bi bi-box-seam me-1" viewBox="0 0 16 16"
+								 aria-hidden="true" role="img" aria-label="Icono de pedidos">
+								<path d="M8.186 1.113a.5.5 0 0 0-.372 0l-6 2.25a.5.5 0 0 0-.314.465v8.344a.5.5 0 0 0 .314.465l6 2.25a.5.5 0 0 0 .372 0l6-2.25a.5.5 0 0 0 .314-.465V3.828a.5.5 0 0 0-.314-.465l-6-2.25Zm-.372 1.198L13 4.243v7.514l-5.186 1.948V2.311ZM2 4.243l5.186-1.93v11.394L2 11.757V4.243Z" />
+							</svg>
+							Pedidos
+						</a>
+					</li>
+					-->
+				</ul>
+			</div>
+
+			<!-- Perfil y salir -->
+			<div class="d-flex align-items-center gap-3">
+				<div class="dropdown">
+					<button class="btn-personalizado d-flex align-items-center gap-2" type="button" id="dropdownCuenta"
+							data-bs-toggle="dropdown" aria-expanded="false">
+						<i class="bi bi-person me-2"></i>
+						Cuenta
+					</button>
+					<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownCuenta">
+						<li>
+							<form method="post" asp-controller="UserAuth" asp-action="Logout">
+								<button class="dropdown-item d-flex align-items-center gap-2 btn-ancho" type="submit">
+									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor"
+										 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+										<path d="M10 17l5-5-5-5" />
+										<path d="M15 12H3" />
+										<path d="M19 19v-14" />
+									</svg>
+									Cerrar sesión
+								</button>
+							</form>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</nav>
+	<main class="bg-light p-4">
+		@RenderBody()
+	</main>
+	<script src="~/lib/jquery/dist/jquery.min.js"></script>
+	<script src="~/js/site.js" asp-append-version="true"></script>
+	<!-- SCRIPT para la Alerta-->
+	<!-- Bootstrap JS + Popper -->
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/izitoast/dist/js/iziToast.min.js"></script>
+	<script src="~/js/layoutVendedor.js"></script>
+	@Html.Partial("_SweetAlert")
+	@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

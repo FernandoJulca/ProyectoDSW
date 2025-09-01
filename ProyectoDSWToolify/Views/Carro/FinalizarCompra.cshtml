@@ -1,0 +1,237 @@
+﻿@model ProyectoDSWToolify.Models.ViewModels.CarritoViewModel
+
+@{
+    ViewBag.Title = "Finalizar Compra";
+	var carrito = Model.Carrito;
+	var total = Model.Total;
+	var nombreusuario = Model.NombreUsuario;
+	var correo = Model.Correo;
+	var direccion = Model.Direccion;
+	var telefono = Model.Telefono;
+	var meses = Model.Meses;
+	var anios = Model.Anios;
+	var metodoPago = Model.MetodoPago;
+	var tarjeta = Model.Tarjeta;
+}
+<div class="container top--10 mb-2">
+
+	<h1 class="display-4 mb-2 text-center fw-bold titulos-Primary">Resumen de tu compra</h1>
+	<p class="text-center text-muted fs-5 mb-4">Verifica los productos y elige cómo finalizar tu compra</p>
+
+	@if (carrito != null && carrito.Any())
+	{
+		<div class="row">
+			<!-- 🛒 Productos -->
+			<div class="col-md-8">
+				@foreach (var item in carrito)
+				{
+					<div class="card mb-4 shadow-sm">
+						<div class="card-body d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
+							<!-- Imagen + Detalles -->
+							<div class="d-flex align-items-start">
+								@if (!string.IsNullOrEmpty(item.Imagen))
+								{
+									<img src="@item.Imagen"
+										 alt="Producto" width="80" height="80"
+										 class="rounded me-3 object-fit-cover border" onerror="this.onerror=null;this.src='/assets/no-imagen.jpg';" />
+								}
+								else
+								{
+									<img src="@Url.Content("~/assets/productos/P" + item.IdProducto + ".jpg")"
+										 alt="Producto" width="80" height="80"
+										 class="rounded me-3 object-fit-cover border"
+										 onerror="this.onerror=null;this.src='~/assets/default-product.jpg';" />
+								}
+
+								<div>
+									<h5 class="fw-semibold mb-1">@item.Nombre</h5>
+									<p class="mb-1">Precio Unitario: <strong>S/. @item.Precio.ToString("F2")</strong></p>
+									<p class="mb-1">Subtotal: <strong>S/. @((item.Precio * item.Cantidad).ToString("F2"))</strong></p>
+								</div>
+							</div>
+
+							<!-- Controles cantidad -->
+							<div class="d-flex align-items-center justify-content-center gap-3 mt-3 mt-md-0">
+								<form method="post" asp-action="RestarCantidad">
+									<input type="hidden" name="id" value="@item.IdProducto" />
+									<button type="submit" class="btn btn-outline-secondary btn-sm">
+										<i class="fas fa-minus"></i>
+									</button>
+								</form>
+								<span class="fs-5 fw-bold">@item.Cantidad</span>
+								<form method="post" asp-action="SumarCantidad">
+									<input type="hidden" name="id" value="@item.IdProducto" />
+									<button type="submit" class="btn btn-outline-secondary btn-sm">
+										<i class="fas fa-plus"></i>
+									</button>
+								</form>
+							</div>
+						</div>
+					</div>
+				}
+			</div>
+
+			<!-- 💰 Total y botón -->
+			<div class="col-md-4">
+				<div class="card shadow-sm">
+					<div class="card-body">
+						<h4 class="fw-bold text-black text-end">Total:</h4>
+						<h2 class="titulos-Primary fw-bold text-end">S/. @total.ToString("F2")</h2>
+						<button type="button" class="btn btn-primary-custom w-100 mt-4 d-flex align-items-center justify-content-center" data-bs-toggle="modal" data-bs-target="#modalPago">
+							<i class="fas fa-credit-card me-2"></i> Confirmar y pagar
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	}
+	else
+	{
+		<div class="text-center py-5 rounded">
+			<i class="fas fa-box-open fa-3x text-secondary mb-3"></i>
+			<h5 class="text-dark mb-2">Tu carrito está vacío</h5>
+			<p class="text-muted mb-4">Aún no has agregado productos al carrito.</p>
+			<div class="d-flex align-items-center justify-content-center">
+				<a href="@Url.Action("Producto", "Cliente")" class="btn btn-primary-custom d-flex align-items-center justify-content-center">
+				<i class="fas fa-store me-2"></i> Explorar Productos
+				</a>
+			</div>
+		</div>
+	}
+
+
+	<!-- Modal Pago -->
+	<div class="modal fade" id="modalPago" tabindex="-1" aria-labelledby="modalPagoLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg modal-dialog-centered">
+			<div class="modal-content shadow-lg border-0">
+				<form asp-action="RealizarPago" method="post" class="bg-color-custom">
+					<input type="hidden" name="IdUsuario" value="@Model.idUsuario" />
+					<!-- Encabezado -->
+					<div class="modal-header bg-color-primary text-white">
+						<h5 class="modal-title d-flex align-items-center gap-2" id="modalPagoLabel">
+							<i class="bi bi-credit-card-2-front-fill fs-4"></i> Confirmar método de pago
+						</h5>
+						<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+					</div>
+
+					<!-- Cuerpo -->
+					<div class="modal-body px-4 py-4">
+						<!-- Información del usuario -->
+						<div class="row g-3 mb-4">
+							<div class="col-md-6">
+								<label for="nombre" class="form-label fw-semibold color-gray-900">Nombre</label>
+								<input type="text" class="form-control" id="nombre" value="@nombreusuario" readonly />
+							</div>
+							<div class="col-md-6">
+								<label for="correo" class="form-label fw-semibold color-gray-900">Correo</label>
+								<input type="email" class="form-control" id="correo" value="@correo" readonly />
+							</div>
+							<div class="col-md-8">
+								<label for="direccion" class="form-label fw-semibold color-gray-900">Dirección de entrega</label>
+								<input type="text" class="form-control" id="direccion" value="@direccion" readonly />
+							</div>
+							<div class="col-md-4">
+								<label for="telefono" class="form-label fw-semibold color-gray-900">Teléfono</label>
+								<input type="text" class="form-control" id="telefono" value="@telefono" readonly />
+							</div>
+						</div>
+
+						<hr class="my-4" />
+
+						<!-- Método de pago -->
+						<h5 class="mb-3 titulos-Primary"><i class="bi bi-wallet2 me-2"></i>Opción de pago</h5>
+
+						<!-- Retiro presencial -->
+						<div class="form-check mb-2">
+							<input class="form-check-input" type="radio" name="MetodoPago" id="pagoPresencial" value="P" required />
+							<label class="form-check-label" for="pagoPresencial">
+								Retirar en tienda y pagar de forma presencial
+							</label>
+						</div>
+
+						<!-- Delivery con tarjeta -->
+						<div class="form-check mb-4">
+							<input class="form-check-input" type="radio" name="MetodoPago" id="pagoDelivery" value="R" @(metodoPago == "R" ? "checked" : "") required />
+							<label class="form-check-label" for="pagoDelivery">
+								Envío a domicilio y pagar con tarjeta débito/crédito
+							</label>
+						</div>
+
+
+						<!-- Datos tarjeta (condicional) -->
+						<div id="datosTarjeta" class="mt-3 border rounded p-2 bg-light" style="font-size: 0.92rem; display:@(metodoPago == "tarjeta" ? "block" : "none");">
+							<div class="mb-3">
+								<label for="tarjetaNumber" class="form-label fw-semibold">Número de tarjeta</label>
+								<input type="text"
+									   id="tarjetaNumber"
+									   name="TarjetaNumero"
+									   class="form-control"
+									   maxlength="19"
+									   placeholder="#### #### #### ####"
+									   value="@tarjeta?.Numero"
+									   pattern="[0-9 ]*"
+									   inputmode="numeric"
+									   required
+									   oninput="formatearNumeroTarjeta(this)"
+									   onkeypress="return soloNumeros(event)" />
+							</div>
+
+							<div class="row g-3">
+								<!-- MES -->
+								<div class="col-md-4">
+									<label class="form-label fw-semibold">Mes</label>
+									<select name="TarjetaMes" class="form-select" required>
+										<option value="0" disabled selected="@(string.IsNullOrEmpty(tarjeta?.Mes) ? "selected" : null)">Mes</option>
+										@foreach (var mes in meses)
+										{
+											<option value="@mes" selected="@(tarjeta?.Mes == mes ? "selected" : null)">@mes</option>
+										}
+									</select>
+
+								</div>
+
+								<!-- AÑO -->
+								<div class="col-md-4">
+									<label class="form-label fw-semibold">Año</label>
+									<select name="TarjetaAnio" class="form-select" required>
+										<option value="" disabled selected="@((string.IsNullOrEmpty(tarjeta?.Anio)).ToString().ToLower())">Año</option>
+										@foreach (var anio in anios)
+										{
+											<option value="@anio" selected="@(tarjeta?.Anio == anio ? "selected" : null)">@anio</option>
+										}
+									</select>
+								</div>
+
+								<div class="col-md-4">
+									<label for="cvv" class="form-label fw-semibold">CVV</label>
+									<input type="tel"
+										   id="cvv"
+										   name="TarjetaCVV"
+										   maxlength="3"
+										   class="form-control"
+										   placeholder="***"
+										   pattern="[0-9]{3}"
+										   inputmode="numeric"
+										   onkeypress="return soloNumeros(event)"
+										   value="@tarjeta?.CVV"
+										   required />
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- Footer -->
+					<div class="modal-footer bg-light border-top px-4 py-3">
+						<button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+							Cancelar
+						</button>
+						<button type="submit" class="btn btn-primary-custom d-flex align-items-center justify-content-center">
+							<i class="bi bi-bag-check-fill me-1"></i> Confirmar Compra
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<script src="~/js/finalizarCompra.js"></script>
